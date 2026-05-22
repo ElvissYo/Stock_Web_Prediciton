@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ihsg-forecasting-dashboard"
+version = "0.1.0"
+description = "KAG stock forecasting dashboard for IHSG market analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "neo4j>=5.24,<6",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+data = [
+    "numpy>=1.26,<3",
+    "pandas>=2.2,<3",
+    "yfinance>=0.2,<1",
+]
+ml = [
+    "joblib>=1.4,<2",
+    "lightgbm>=4.5,<5",
+    "scikit-learn>=1.5,<2",
+]
+nlp = [
+    "sentence-transformers>=3.0,<4",
+    "spacy>=3.7,<4",
+    "transformers>=4.44,<5",
+]
+dashboard = [
+    "plotly>=5.24,<6",
+    "streamlit>=1.38,<2",
+]
+dev = [
+    "pytest>=8.0,<9",
+    "ruff>=0.6,<1",
+]
+
+[tool.setuptools.packages.find]
+include = ["kag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

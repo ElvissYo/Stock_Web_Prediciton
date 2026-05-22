@@ -1,0 +1,6 @@
+"""Core package for the KAG IHSG forecasting project."""
+
+__all__ = ["__version__"]
+
+__version__ = "0.1.0"
+

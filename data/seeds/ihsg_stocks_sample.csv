@@ -1,0 +1,11 @@
+ticker,name,sector,exchange,yfinance_symbol
+BBCA,Bank Central Asia Tbk,Financials,IDX,BBCA.JK
+BBRI,Bank Rakyat Indonesia Persero Tbk,Financials,IDX,BBRI.JK
+BMRI,Bank Mandiri Persero Tbk,Financials,IDX,BMRI.JK
+TLKM,Telkom Indonesia Persero Tbk,Infrastructures,IDX,TLKM.JK
+ASII,Astra International Tbk,Industrials,IDX,ASII.JK
+UNVR,Unilever Indonesia Tbk,Consumer Non-Cyclicals,IDX,UNVR.JK
+ANTM,Aneka Tambang Tbk,Basic Materials,IDX,ANTM.JK
+ICBP,Indofood CBP Sukses Makmur Tbk,Consumer Non-Cyclicals,IDX,ICBP.JK
+MDKA,Merdeka Copper Gold Tbk,Basic Materials,IDX,MDKA.JK
+PGAS,Perusahaan Gas Negara Tbk,Energy,IDX,PGAS.JK
