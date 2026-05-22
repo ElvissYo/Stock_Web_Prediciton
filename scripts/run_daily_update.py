@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stock-csv", type=Path, default=Path("data/seeds/ihsg_stocks_sample.csv"))
+    parser.add_argument("--stock-csv", type=Path, default=Path("data/seeds/idx_stock_universe.csv"))
     parser.add_argument("--ticker", action="append", help="Limit pipeline to selected IDX ticker(s).")
     parser.add_argument("--limit", type=int, help="Limit number of Stock nodes for price fetch.")
     parser.add_argument("--price-period", default="1mo")

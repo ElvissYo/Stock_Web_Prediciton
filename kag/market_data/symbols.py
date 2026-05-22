@@ -21,7 +21,7 @@ def load_stock_symbols(
         WHERE size($tickers) = 0 OR stock.ticker IN $tickers
         RETURN stock.ticker AS ticker,
                coalesce(stock.yfinance_symbol, stock.ticker + '.JK') AS yfinance_symbol
-        ORDER BY stock.ticker
+        ORDER BY coalesce(stock.universe_rank, 1000000), stock.ticker
         LIMIT $limit
         """,
         {
@@ -37,4 +37,3 @@ def load_stock_symbols(
         raise ValueError("No Stock nodes found for historical price ingestion")
 
     return symbols
-

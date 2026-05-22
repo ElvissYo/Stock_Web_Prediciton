@@ -40,8 +40,22 @@ def test_load_stock_records_normalizes_required_values(tmp_path):
             sector="Financials",
             exchange="IDX",
             yfinance_symbol="BBCA.JK",
+            universe_rank=None,
         )
     ]
+
+
+def test_load_stock_records_accepts_optional_universe_rank(tmp_path):
+    csv_path = tmp_path / "stocks.csv"
+    csv_path.write_text(
+        "ticker,name,sector,universe_rank\n"
+        "BBRI,Bank Rakyat Indonesia Tbk,Financials,3\n",
+        encoding="utf-8",
+    )
+
+    records = load_stock_records(csv_path)
+
+    assert records[0].universe_rank == 3
 
 
 def test_load_stock_records_rejects_missing_columns(tmp_path):
@@ -66,4 +80,4 @@ def test_ingest_stocks_sends_rows_to_neo4j():
     assert result.sectors_processed == 2
     assert len(client.calls) == 1
     assert client.calls[0][1]["rows"][0]["ticker"] == "BBCA"
-
+    assert client.calls[0][1]["rows"][0]["universe_rank"] is None

@@ -1,0 +1,908 @@
+ticker,name,sector,exchange,yfinance_symbol,universe_rank
+BBCA,PT Bank Central Asia Tbk,UNKNOWN,IDX,BBCA.JK,1
+DCII,PT DCI Indonesia Tbk,UNKNOWN,IDX,DCII.JK,2
+BBRI,PT Bank Rakyat Indonesia (Persero) Tbk,UNKNOWN,IDX,BBRI.JK,3
+BMRI,PT Bank Mandiri (Persero) Tbk,UNKNOWN,IDX,BMRI.JK,4
+BYAN,PT Bayan Resources Tbk.,UNKNOWN,IDX,BYAN.JK,5
+BREN,PT Barito Renewables Energy Tbk,UNKNOWN,IDX,BREN.JK,6
+TLKM,Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk,UNKNOWN,IDX,TLKM.JK,7
+ASII,PT Astra International Tbk,UNKNOWN,IDX,ASII.JK,8
+AMMN,PT Amman Mineral Internasional Tbk,UNKNOWN,IDX,AMMN.JK,9
+TPIA,PT Chandra Asri Pacific Tbk,UNKNOWN,IDX,TPIA.JK,10
+SRAJ,PT Sejahteraraya Anugrahjaya Tbk,UNKNOWN,IDX,SRAJ.JK,11
+MORA,PT Mora Telematika Indonesia Tbk,UNKNOWN,IDX,MORA.JK,12
+BRPT,PT Barito Pacific Tbk,UNKNOWN,IDX,BRPT.JK,13
+BBNI,PT Bank Negara Indonesia (Persero) Tbk,UNKNOWN,IDX,BBNI.JK,14
+PANI,PT Pantai Indah Kapuk Dua Tbk,UNKNOWN,IDX,PANI.JK,15
+DNET,PT Indoritel Makmur Internasional Tbk.,UNKNOWN,IDX,DNET.JK,16
+SMMA,PT Sinar Mas Multiartha Tbk,UNKNOWN,IDX,SMMA.JK,17
+BNLI,PT Bank Permata Tbk,UNKNOWN,IDX,BNLI.JK,18
+EMAS,PT Merdeka Gold Resources Tbk,UNKNOWN,IDX,EMAS.JK,19
+IMPC,PT Impack Pratama Industri Tbk,UNKNOWN,IDX,IMPC.JK,20
+DSSA,PT Dian Swastatika Sentosa Tbk,UNKNOWN,IDX,DSSA.JK,21
+MPRO,PT Maha Properti Indonesia Tbk,UNKNOWN,IDX,MPRO.JK,22
+BRMS,PT Bumi Resources Minerals Tbk,UNKNOWN,IDX,BRMS.JK,23
+CDIA,PT Chandra Daya Investasi TBK.,UNKNOWN,IDX,CDIA.JK,24
+HMSP,PT Hanjaya Mandala Sampoerna Tbk,UNKNOWN,IDX,HMSP.JK,25
+UNTR,PT United Tractors Tbk,UNKNOWN,IDX,UNTR.JK,26
+BRIS,PT Bank Syariah Indonesia Tbk,UNKNOWN,IDX,BRIS.JK,27
+ICBP,PT Indofood CBP Sukses Makmur Tbk,UNKNOWN,IDX,ICBP.JK,28
+CASA,PT Capital Financial Indonesia Tbk,UNKNOWN,IDX,CASA.JK,29
+ANTM,PT Antam (Persero) Tbk,UNKNOWN,IDX,ANTM.JK,30
+CPIN,PT Charoen Pokphand Indonesia Tbk,UNKNOWN,IDX,CPIN.JK,31
+ADRO,PT Alamtri Resources Indonesia Tbk,UNKNOWN,IDX,ADRO.JK,32
+UNVR,PT Unilever Indonesia Tbk,UNKNOWN,IDX,UNVR.JK,33
+ISAT,PT Indosat Ooredoo Hutchison Tbk,UNKNOWN,IDX,ISAT.JK,34
+AADI,PT Adaro Andalan Indonesia Tbk,UNKNOWN,IDX,AADI.JK,35
+BUMI,PT Bumi Resources Tbk,UNKNOWN,IDX,BUMI.JK,36
+CUAN,PT Petrindo Jaya Kreasi Tbk,UNKNOWN,IDX,CUAN.JK,37
+INDF,PT Indofood Sukses Makmur Tbk,UNKNOWN,IDX,INDF.JK,38
+AMRT,PT Sumber Alfaria Trijaya Tbk,UNKNOWN,IDX,AMRT.JK,39
+INCO,PT Vale Indonesia Tbk,UNKNOWN,IDX,INCO.JK,40
+TCPI,PT Transcoal Pacific Tbk,UNKNOWN,IDX,TCPI.JK,41
+ADMR,PT Alamtri Minerals Indonesia Tbk,UNKNOWN,IDX,ADMR.JK,42
+NCKL,PT Trimegah Bangun Persada Tbk,UNKNOWN,IDX,NCKL.JK,43
+MDKA,PT Merdeka Copper Gold Tbk,UNKNOWN,IDX,MDKA.JK,44
+GOTO,PT GoTo Gojek Tokopedia Tbk,UNKNOWN,IDX,GOTO.JK,45
+EXCL,PT XLSMART Telecom Sejahtera Tbk,UNKNOWN,IDX,EXCL.JK,46
+SUPR,PT Solusi Tunas Pratama Tbk,UNKNOWN,IDX,SUPR.JK,47
+MBMA,PT Merdeka Battery Materials Tbk.,UNKNOWN,IDX,MBMA.JK,48
+BELI,PT Global Digital Niaga Tbk,UNKNOWN,IDX,BELI.JK,49
+BDMN,PT Bank Danamon Indonesia Tbk,UNKNOWN,IDX,BDMN.JK,50
+GEMS,PT Golden Energy Mines Tbk,UNKNOWN,IDX,GEMS.JK,51
+INKP,PT Indah Kiat Pulp & Paper Tbk,UNKNOWN,IDX,INKP.JK,52
+PGAS,PT Perusahaan Gas Negara (Persero) Tbk,UNKNOWN,IDX,PGAS.JK,53
+MEGA,PT Bank Mega Tbk,UNKNOWN,IDX,MEGA.JK,54
+BNGA,PT Bank CIMB Niaga Tbk,UNKNOWN,IDX,BNGA.JK,55
+EMTK,PT Elang Mahkota Teknologi Tbk,UNKNOWN,IDX,EMTK.JK,56
+MYOR,PT Mayora Indah Tbk,UNKNOWN,IDX,MYOR.JK,57
+MTEL,PT Dayamitra Telekomunikasi Tbk.,UNKNOWN,IDX,MTEL.JK,58
+PGUN,PT Pradiksi Gunatama Tbk,UNKNOWN,IDX,PGUN.JK,59
+ENRG,PT Energi Mega Persada Tbk,UNKNOWN,IDX,ENRG.JK,60
+PGEO,PT Pertamina Geothermal Energy Tbk,UNKNOWN,IDX,PGEO.JK,61
+PTRO,PT Petrosea Tbk,UNKNOWN,IDX,PTRO.JK,62
+KLBF,PT Kalbe Farma Tbk.,UNKNOWN,IDX,KLBF.JK,63
+MLPT,PT Multipolar Technology Tbk,UNKNOWN,IDX,MLPT.JK,64
+CMRY,PT Cisarua Mountain Dairy Tbk,UNKNOWN,IDX,CMRY.JK,65
+MEDC,PT Medco Energi Internasional Tbk,UNKNOWN,IDX,MEDC.JK,66
+VKTR,PT VKTR Teknologi Mobilitas Tbk,UNKNOWN,IDX,VKTR.JK,67
+TAPG,PT Triputra Agro Persada Tbk,UNKNOWN,IDX,TAPG.JK,68
+MSIN,PT MNC Digital Entertainment Tbk,UNKNOWN,IDX,MSIN.JK,69
+PTBA,PT Bukit Asam (Persero) Tbk,UNKNOWN,IDX,PTBA.JK,70
+SILO,PT Siloam International Hospitals Tbk,UNKNOWN,IDX,SILO.JK,71
+GGRM,PT Gudang Garam Tbk,UNKNOWN,IDX,GGRM.JK,72
+TBIG,PT Tower Bersama Infrastructure Tbk,UNKNOWN,IDX,TBIG.JK,73
+JPFA,PT Japfa Comfeed Indonesia Tbk,UNKNOWN,IDX,JPFA.JK,74
+NISP,PT Bank OCBC NISP Tbk,UNKNOWN,IDX,NISP.JK,75
+SUPA,PT Super Bank Indonesia Tbk,UNKNOWN,IDX,SUPA.JK,76
+ARCI,PT Archi Indonesia Tbk,UNKNOWN,IDX,ARCI.JK,77
+AKRA,PT AKR Corporindo Tbk,UNKNOWN,IDX,AKRA.JK,78
+TINS,PT TIMAH Tbk,UNKNOWN,IDX,TINS.JK,79
+BTPN,PT Bank SMBC Indonesia Tbk,UNKNOWN,IDX,BTPN.JK,80
+ITMG,PT Indo Tambangraya Megah Tbk,UNKNOWN,IDX,ITMG.JK,81
+MAPI,PT. Mitra Adiperkasa Tbk,UNKNOWN,IDX,MAPI.JK,82
+FAPA,PT FAP Agri Tbk,UNKNOWN,IDX,FAPA.JK,83
+BINA,PT Bank Ina Perdana Tbk,UNKNOWN,IDX,BINA.JK,84
+GIAA,PT. Garuda Indonesia (Persero) Tbk,UNKNOWN,IDX,GIAA.JK,85
+TOWR,PT Sarana Menara Nusantara Tbk.,UNKNOWN,IDX,TOWR.JK,86
+PNBN,PT Bank Pan Indonesia Tbk,UNKNOWN,IDX,PNBN.JK,87
+CBDK,PT Bangun Kosambi Sukses Tbk,UNKNOWN,IDX,CBDK.JK,88
+MIKA,PT Mitra Keluarga Karyasehat Tbk,UNKNOWN,IDX,MIKA.JK,89
+FILM,PT.MD Entertainment Tbk,UNKNOWN,IDX,FILM.JK,90
+SRTG,PT Saratoga Investama Sedaya Tbk,UNKNOWN,IDX,SRTG.JK,91
+BNBR,PT Bakrie & Brothers Tbk,UNKNOWN,IDX,BNBR.JK,92
+RISE,PT Jaya Sukses Makmur Sentosa Tbk,UNKNOWN,IDX,RISE.JK,93
+JSMR,PT Jasa Marga (Persero) Tbk,UNKNOWN,IDX,JSMR.JK,94
+MKPI,PT Metropolitan Kentjana Tbk,UNKNOWN,IDX,MKPI.JK,95
+TKIM,PT Pabrik Kertas Tjiwi Kimia Tbk,UNKNOWN,IDX,TKIM.JK,96
+SOHO,PT Soho Global Health Tbk,UNKNOWN,IDX,SOHO.JK,97
+MDIY,PT Daya Intiguna Yasa Tbk,UNKNOWN,IDX,MDIY.JK,98
+AVIA,PT Avia Avian Tbk,UNKNOWN,IDX,AVIA.JK,99
+ARKO,PT Arkora Hydro Tbk,UNKNOWN,IDX,ARKO.JK,100
+APIC,PT Pacific Strategic Financial Tbk,UNKNOWN,IDX,APIC.JK,101
+BBTN,PT Bank Tabungan Negara (Persero) Tbk,UNKNOWN,IDX,BBTN.JK,102
+BUVA,PT Bukit Uluwatu Villa Tbk,UNKNOWN,IDX,BUVA.JK,103
+ULTJ,PT Ultrajaya Milk Industry & Trading Company Tbk,UNKNOWN,IDX,ULTJ.JK,104
+BBHI,PT Allo Bank Indonesia Tbk,UNKNOWN,IDX,BBHI.JK,105
+MAPA,PT Map Aktif Adiperkasa Tbk,UNKNOWN,IDX,MAPA.JK,106
+BBSI,PT Krom Bank Indonesia Tbk,UNKNOWN,IDX,BBSI.JK,107
+INTP,PT Indocement Tunggal Prakarsa Tbk,UNKNOWN,IDX,INTP.JK,108
+BSIM,PT Bank Sinarmas Tbk,UNKNOWN,IDX,BSIM.JK,109
+ARTO,PT Bank Jago Tbk,UNKNOWN,IDX,ARTO.JK,110
+HEAL,PT Medikaloka Hermina Tbk,UNKNOWN,IDX,HEAL.JK,111
+CITA,PT Cita Mineral Investindo Tbk,UNKNOWN,IDX,CITA.JK,112
+BNII,PT Bank Maybank Indonesia Tbk,UNKNOWN,IDX,BNII.JK,113
+MCOL,PT Prima Andalan Mandiri Tbk,UNKNOWN,IDX,MCOL.JK,114
+SCMA,PT Surya Citra Media Tbk,UNKNOWN,IDX,SCMA.JK,115
+BSDE,PT Bumi Serpong Damai Tbk,UNKNOWN,IDX,BSDE.JK,116
+JRPT,"PT Jaya Real Property, Tbk.",UNKNOWN,IDX,JRPT.JK,117
+PWON,PT Pakuwon Jati Tbk,UNKNOWN,IDX,PWON.JK,118
+LIFE,PT MSIG Life Insurance Indonesia Tbk,UNKNOWN,IDX,LIFE.JK,119
+SMAR,PT Sinar Mas Agro Resources and Technology Tbk,UNKNOWN,IDX,SMAR.JK,120
+CMNT,PT Cemindo Gemilang Tbk,UNKNOWN,IDX,CMNT.JK,121
+CARE,PT Metro Healthcare Indonesia Tbk,UNKNOWN,IDX,CARE.JK,122
+JARR,PT Jhonlin Agro Raya Tbk,UNKNOWN,IDX,JARR.JK,123
+DEWA,PT Darma Henwa Tbk,UNKNOWN,IDX,DEWA.JK,124
+DSNG,PT Dharma Satya Nusantara Tbk,UNKNOWN,IDX,DSNG.JK,125
+FASW,PT Fajar Surya Wisesa Tbk,UNKNOWN,IDX,FASW.JK,126
+MGLV,PT Panca Anugrah Wisesa Tbk,UNKNOWN,IDX,MGLV.JK,127
+BUKA,PT Bukalapak.com Tbk.,UNKNOWN,IDX,BUKA.JK,128
+RAJA,PT Rukun Raharja Tbk,UNKNOWN,IDX,RAJA.JK,129
+AALI,PT Astra Agro Lestari Tbk,UNKNOWN,IDX,AALI.JK,130
+ALII,PT Ancara Logistics Indonesia Tbk,UNKNOWN,IDX,ALII.JK,131
+MLBI,PT Multi Bintang Indonesia Tbk,UNKNOWN,IDX,MLBI.JK,132
+STTP,PT Siantar Top Tbk,UNKNOWN,IDX,STTP.JK,133
+BKSL,PT Sentul City Tbk,UNKNOWN,IDX,BKSL.JK,134
+GOOD,PT Garudafood Putra Putri Jaya Tbk,UNKNOWN,IDX,GOOD.JK,135
+YUPI,PT Yupi Indo Jelly Gum Tbk,UNKNOWN,IDX,YUPI.JK,136
+AUTO,PT Astra Otoparts Tbk,UNKNOWN,IDX,AUTO.JK,137
+ADES,PT Akasha Wira International Tbk,UNKNOWN,IDX,ADES.JK,138
+ESSA,PT ESSA Industries Indonesia Tbk.,UNKNOWN,IDX,ESSA.JK,139
+CTRA,PT Ciputra Development Tbk,UNKNOWN,IDX,CTRA.JK,140
+RMKE,PT RMK Energy Tbk,UNKNOWN,IDX,RMKE.JK,141
+SMGR,PT Semen Indonesia (Persero) Tbk,UNKNOWN,IDX,SMGR.JK,142
+COIN,PT Indokripto Koin Semesta Tbk,UNKNOWN,IDX,COIN.JK,143
+INDY,PT. Indika Energy Tbk,UNKNOWN,IDX,INDY.JK,144
+NSSS,PT Nusantara Sawit Sejahtera Tbk,UNKNOWN,IDX,NSSS.JK,145
+SIDO,PT Industri Jamu dan Farmasi Sido Muncul Tbk,UNKNOWN,IDX,SIDO.JK,146
+IBST,PT Inti Bangun Sejahtera Tbk,UNKNOWN,IDX,IBST.JK,147
+POWR,PT Cikarang Listrindo Tbk,UNKNOWN,IDX,POWR.JK,148
+PSAB,PT J Resources Asia Pasifik Tbk,UNKNOWN,IDX,PSAB.JK,149
+STAA,PT Sumber Tani Agung Resources Tbk,UNKNOWN,IDX,STAA.JK,150
+BIPI,PT Astrindo Nusantara Infrastruktur Tbk,UNKNOWN,IDX,BIPI.JK,151
+TSPC,PT Tempo Scan Pacific Tbk,UNKNOWN,IDX,TSPC.JK,152
+HRTA,PT Hartadinata Abadi Tbk,UNKNOWN,IDX,HRTA.JK,153
+BFIN,PT BFI Finance Indonesia Tbk,UNKNOWN,IDX,BFIN.JK,154
+BBKP,PT Bank KB Indonesia Tbk,UNKNOWN,IDX,BBKP.JK,155
+RATU,PT Raharja Energi Cepu Tbk,UNKNOWN,IDX,RATU.JK,156
+HRUM,PT Harum Energy Tbk,UNKNOWN,IDX,HRUM.JK,157
+BSSR,PT Baramulti Suksessarana Tbk,UNKNOWN,IDX,BSSR.JK,158
+WIFI,PT Solusi Sinergi Digital Tbk,UNKNOWN,IDX,WIFI.JK,159
+MIDI,PT Midi Utama Indonesia Tbk,UNKNOWN,IDX,MIDI.JK,160
+PRAY,PT Famon Awal Bros Sedaya Tbk,UNKNOWN,IDX,PRAY.JK,161
+ADMF,PT Adira Dinamika Multi Finance Tbk,UNKNOWN,IDX,ADMF.JK,162
+ELPI,PT Pelayaran Nasional Ekalya Purnamasari Tbk,UNKNOWN,IDX,ELPI.JK,163
+SMSM,PT Selamat Sempurna Tbk,UNKNOWN,IDX,SMSM.JK,164
+EDGE,PT Indointernet Tbk.,UNKNOWN,IDX,EDGE.JK,165
+CMNP,PT Citra Marga Nusaphala Persada Tbk,UNKNOWN,IDX,CMNP.JK,166
+CLEO,PT Sariguna Primatirta Tbk,UNKNOWN,IDX,CLEO.JK,167
+RLCO,PT Abadi Lestari Indonesia Tbk,UNKNOWN,IDX,RLCO.JK,168
+PACK,PT Abadi Nusantara Hijau Investama Tbk,UNKNOWN,IDX,PACK.JK,169
+BMAS,PT Bank Maspion Indonesia Tbk,UNKNOWN,IDX,BMAS.JK,170
+KPIG,PT MNC Tourism Indonesia Tbk,UNKNOWN,IDX,KPIG.JK,171
+LSIP,PT Perusahaan Perkebunan London Sumatra Indonesia Tbk,UNKNOWN,IDX,LSIP.JK,172
+PLIN,PT Plaza Indonesia Realty Tbk,UNKNOWN,IDX,PLIN.JK,173
+INPP,PT Indonesian Paradise Property Tbk,UNKNOWN,IDX,INPP.JK,174
+AGII,PT Samator Indo Gas Tbk,UNKNOWN,IDX,AGII.JK,175
+SSMS,PT Sawit Sumbermas Sarana Tbk.,UNKNOWN,IDX,SSMS.JK,176
+SIMP,PT Salim Ivomas Pratama Tbk,UNKNOWN,IDX,SIMP.JK,177
+WIKA,PT Wijaya Karya (Persero) Tbk,UNKNOWN,IDX,WIKA.JK,178
+FORE,PT Fore Kopi Indonesia Tbk,UNKNOWN,IDX,FORE.JK,179
+BJBR,PT Bank Pembangunan Daerah Jawa Barat dan Banten Tbk,UNKNOWN,IDX,BJBR.JK,180
+DUTI,PT Duta Pertiwi Tbk,UNKNOWN,IDX,DUTI.JK,181
+CYBR,PT ITSEC Asia Tbk,UNKNOWN,IDX,CYBR.JK,182
+BBMD,PT Bank Mestika Dharma Tbk,UNKNOWN,IDX,BBMD.JK,183
+BJTM,PT Bank Pembangunan Daerah Jawa Timur Tbk,UNKNOWN,IDX,BJTM.JK,184
+PNLF,PT Panin Financial Tbk,UNKNOWN,IDX,PNLF.JK,185
+SSIA,PT Surya Semesta Internusa Tbk,UNKNOWN,IDX,SSIA.JK,186
+CLAY,PT Citra Putra Realty Tbk,UNKNOWN,IDX,CLAY.JK,187
+CNMA,PT Nusantara Sejahtera Raya Tbk,UNKNOWN,IDX,CNMA.JK,188
+BTPS,PT Bank BTPN Syariah Tbk,UNKNOWN,IDX,BTPS.JK,189
+POLU,PT Golden Flower Tbk,UNKNOWN,IDX,POLU.JK,190
+DMAS,PT Puradelta Lestari Tbk,UNKNOWN,IDX,DMAS.JK,191
+SMCB,PT Solusi Bangun Indonesia Tbk,UNKNOWN,IDX,SMCB.JK,192
+TLDN,PT Teladan Prima Agro Tbk,UNKNOWN,IDX,TLDN.JK,193
+MTDL,PT Metrodata Electronics Tbk,UNKNOWN,IDX,MTDL.JK,194
+TMAS,PT Temas Tbk.,UNKNOWN,IDX,TMAS.JK,195
+OMED,PT Jayamas Medica Industri Tbk,UNKNOWN,IDX,OMED.JK,196
+ABMM,PT ABM Investama Tbk,UNKNOWN,IDX,ABMM.JK,197
+GMFI,PT Garuda Maintenance Facility Aero Asia Tbk,UNKNOWN,IDX,GMFI.JK,198
+EPMT,PT Enseval Putera Megatrading Tbk.,UNKNOWN,IDX,EPMT.JK,199
+ACES,PT Aspirasi Hidup Indonesia Tbk,UNKNOWN,IDX,ACES.JK,200
+NICL,PT PAM Mineral Tbk,UNKNOWN,IDX,NICL.JK,201
+ERAA,PT Erajaya Swasembada Tbk,UNKNOWN,IDX,ERAA.JK,202
+WBSA,PT BSA Logistics Indonesia Tbk,UNKNOWN,IDX,WBSA.JK,203
+DMND,PT Diamond Food Indonesia Tbk,UNKNOWN,IDX,DMND.JK,204
+BHAT,PT Bhakti Multi Artha Tbk,UNKNOWN,IDX,BHAT.JK,205
+UNIC,PT Unggul Indah Cahaya Tbk,UNKNOWN,IDX,UNIC.JK,206
+EURO,PT Estee Gold Feet Tbk,UNKNOWN,IDX,EURO.JK,207
+ANJT,PT Austindo Nusantara Jaya Tbk,UNKNOWN,IDX,ANJT.JK,208
+SAME,PT Sarana Meditama Metropolitan Tbk,UNKNOWN,IDX,SAME.JK,209
+SMMT,PT Golden Eagle Energy Tbk,UNKNOWN,IDX,SMMT.JK,210
+BSWD,PT Bank of India Indonesia Tbk,UNKNOWN,IDX,BSWD.JK,211
+PALM,PT Provident Investasi Bersama Tbk,UNKNOWN,IDX,PALM.JK,212
+YULE,PT Yulie Sekuritas Indonesia Tbk,UNKNOWN,IDX,YULE.JK,213
+SGRO,PT Prime Agri Resources Tbk,UNKNOWN,IDX,SGRO.JK,214
+BULL,PT Buana Lintas Lautan Tbk,UNKNOWN,IDX,BULL.JK,215
+INET,PT Sinergi Inti Andalan Prima Tbk,UNKNOWN,IDX,INET.JK,216
+SHIP,PT Sillo Maritime Perdana Tbk,UNKNOWN,IDX,SHIP.JK,217
+LPKR,PT Lippo Karawaci Tbk,UNKNOWN,IDX,LPKR.JK,218
+BOGA,PT Apollo Global Interactive Tbk,UNKNOWN,IDX,BOGA.JK,219
+ELSA,PT Elnusa Tbk,UNKNOWN,IDX,ELSA.JK,220
+BALI,PT Bali Towerindo Sentra Tbk,UNKNOWN,IDX,BALI.JK,221
+SMRA,PT Summarecon Agung Tbk,UNKNOWN,IDX,SMRA.JK,222
+SMDR,PT Samudera Indonesia Tbk,UNKNOWN,IDX,SMDR.JK,223
+NATO,PT Surya Permata Andalan Tbk,UNKNOWN,IDX,NATO.JK,224
+TGKA,PT Tigaraksa Satria Tbk,UNKNOWN,IDX,TGKA.JK,225
+MASB,PT Bank Multiarta Sentosa Tbk,UNKNOWN,IDX,MASB.JK,226
+SGER,PT Sumber Global Energy Tbk,UNKNOWN,IDX,SGER.JK,227
+DRMA,PT Dharma Polimetal Tbk,UNKNOWN,IDX,DRMA.JK,228
+CTBN,PT Citra Tubindo Tbk,UNKNOWN,IDX,CTBN.JK,229
+BPII,PT Batavia Prosperindo Internasional Tbk,UNKNOWN,IDX,BPII.JK,230
+MDIA,PT Intermedia Capital Tbk,UNKNOWN,IDX,MDIA.JK,231
+KRAS,PT Krakatau Steel (Persero) Tbk,UNKNOWN,IDX,KRAS.JK,232
+SINI,PT Singaraja Putra Tbk,UNKNOWN,IDX,SINI.JK,233
+MPMX,PT Mitra Pinasthika Mustika Tbk,UNKNOWN,IDX,MPMX.JK,234
+BANK,PT Bank Aladin Syariah Tbk,UNKNOWN,IDX,BANK.JK,235
+MSTI,PT Mastersystem Infotama Tbk,UNKNOWN,IDX,MSTI.JK,236
+TUGU,PT Asuransi Tugu Pratama Indonesia Tbk,UNKNOWN,IDX,TUGU.JK,237
+RDTX,PT Roda Vivatex Tbk,UNKNOWN,IDX,RDTX.JK,238
+JTPE,PT Jasuindo Tiga Perkasa Tbk,UNKNOWN,IDX,JTPE.JK,239
+GJTL,PT. Gajah Tunggal Tbk,UNKNOWN,IDX,GJTL.JK,240
+DKFT,PT Central Omega Resources Tbk,UNKNOWN,IDX,DKFT.JK,241
+GGRP,PT Gunung Raja Paksi Tbk,UNKNOWN,IDX,GGRP.JK,242
+AGRO,PT Bank Raya Indonesia Tbk,UNKNOWN,IDX,AGRO.JK,243
+MTLA,PT Metropolitan Land Tbk,UNKNOWN,IDX,MTLA.JK,244
+BIRD,PT Blue Bird Tbk,UNKNOWN,IDX,BIRD.JK,245
+TBLA,PT Tunas Baru Lampung Tbk,UNKNOWN,IDX,TBLA.JK,246
+SURE,PT Super Energy Tbk,UNKNOWN,IDX,SURE.JK,247
+WIIM,PT Wismilak Inti Makmur Tbk,UNKNOWN,IDX,WIIM.JK,248
+CASS,PT Cahaya Aero Services Tbk,UNKNOWN,IDX,CASS.JK,249
+PSGO,PT Palma Serasih Tbk,UNKNOWN,IDX,PSGO.JK,250
+TOBA,PT TBS Energi Utama Tbk,UNKNOWN,IDX,TOBA.JK,251
+VICI,PT Victoria Care Indonesia Tbk,UNKNOWN,IDX,VICI.JK,252
+BESS,PT Batulicin Nusantara Maritim Tbk,UNKNOWN,IDX,BESS.JK,253
+HEXA,PT Hexindo Adiperkasa Tbk,UNKNOWN,IDX,HEXA.JK,254
+MAPB,PT Map Boga Adiperkasa Tbk,UNKNOWN,IDX,MAPB.JK,255
+IMAS,PT Indomobil Sukses Internasional Tbk,UNKNOWN,IDX,IMAS.JK,256
+TOTL,PT Total Bangun Persada Tbk,UNKNOWN,IDX,TOTL.JK,257
+PBID,PT Panca Budi Idaman Tbk,UNKNOWN,IDX,PBID.JK,258
+LPPF,PT MDS Retailing Tbk,UNKNOWN,IDX,LPPF.JK,259
+APLN,PT Agung Podomoro Land Tbk,UNKNOWN,IDX,APLN.JK,260
+MKAP,PT Multikarya Asia Pasifik Raya Tbk,UNKNOWN,IDX,MKAP.JK,261
+AMAR,PT Bank Amar Indonesia Tbk,UNKNOWN,IDX,AMAR.JK,262
+NOBU,PT Bank Nationalnobu Tbk,UNKNOWN,IDX,NOBU.JK,263
+TRIM,PT Trimegah Sekuritas Indonesia Tbk,UNKNOWN,IDX,TRIM.JK,264
+MBSS,PT Mitrabahtera Segara Sejati Tbk,UNKNOWN,IDX,MBSS.JK,265
+BBYB,PT Bank Neo Commerce Tbk,UNKNOWN,IDX,BBYB.JK,266
+LINK,PT Link Net Tbk,UNKNOWN,IDX,LINK.JK,267
+DAAZ,PT Daaz Bara Lestari Tbk,UNKNOWN,IDX,DAAZ.JK,268
+SDRA,PT Bank Woori Saudara Indonesia 1906 Tbk,UNKNOWN,IDX,SDRA.JK,269
+GOLF,PT Intra Golflink Resorts Tbk,UNKNOWN,IDX,GOLF.JK,270
+NIRO,PT City Retail Developments Tbk,UNKNOWN,IDX,NIRO.JK,271
+FISH,PT FKS Multi Agro Tbk,UNKNOWN,IDX,FISH.JK,272
+IFSH,PT Ifishdeco Tbk,UNKNOWN,IDX,IFSH.JK,273
+KEEN,PT Kencana Energi Lestari Tbk,UNKNOWN,IDX,KEEN.JK,274
+ARNA,PT Arwana Citramulia Tbk,UNKNOWN,IDX,ARNA.JK,275
+CBRE,PT Cakra Buana Resources Energi Tbk,UNKNOWN,IDX,CBRE.JK,276
+PNIN,PT Paninvest Tbk,UNKNOWN,IDX,PNIN.JK,277
+KEJU,PT Mulia Boga Raya Tbk,UNKNOWN,IDX,KEJU.JK,278
+SKRN,PT Superkrane Mitra Utama Tbk,UNKNOWN,IDX,SKRN.JK,279
+CPRO,PT Central Proteina Prima Tbk,UNKNOWN,IDX,CPRO.JK,280
+MARK,PT Mark Dynamics Indonesia Tbk,UNKNOWN,IDX,MARK.JK,281
+PKPK,PT Paragon Karya Perkasa Tbk,UNKNOWN,IDX,PKPK.JK,282
+AGRS,PT Bank IBK Indonesia Tbk,UNKNOWN,IDX,AGRS.JK,283
+SAMF,"PT Saraswanti Anugerah Makmur, Tbk",UNKNOWN,IDX,SAMF.JK,284
+TFCO,PT Tifico Fiber Indonesia Tbk,UNKNOWN,IDX,TFCO.JK,285
+MDLA,PT Medela Potentia Tbk,UNKNOWN,IDX,MDLA.JK,286
+ROTI,PT Nippon Indosari Corpindo Tbk,UNKNOWN,IDX,ROTI.JK,287
+JSPT,PT Jakarta Setiabudi Internasional Tbk,UNKNOWN,IDX,JSPT.JK,288
+BGTG,PT Bank Ganesha Tbk,UNKNOWN,IDX,BGTG.JK,289
+ISSP,PT Steel Pipe Industry of Indonesia Tbk,UNKNOWN,IDX,ISSP.JK,290
+KAEF,PT Kimia Farma Tbk,UNKNOWN,IDX,KAEF.JK,291
+SOCI,PT Soechi Lines Tbk,UNKNOWN,IDX,SOCI.JK,292
+ROCK,PT Rockfields Properti Indonesia Tbk.,UNKNOWN,IDX,ROCK.JK,293
+NETV,PT MDTV Media Technologies Tbk,UNKNOWN,IDX,NETV.JK,294
+MNCN,PT. Media Nusantara Citra Tbk,UNKNOWN,IDX,MNCN.JK,295
+ARGO,PT Argo Pantes Tbk,UNKNOWN,IDX,ARGO.JK,296
+HUMI,PT Humpuss Maritim Internasional Tbk,UNKNOWN,IDX,HUMI.JK,297
+GTSI,PT GTS Internasional Tbk,UNKNOWN,IDX,GTSI.JK,298
+LPCK,PT Lippo Cikarang Tbk,UNKNOWN,IDX,LPCK.JK,299
+PNGO,PT PINAGO UTAMA Tbk,UNKNOWN,IDX,PNGO.JK,300
+SFAN,PT Surya Fajar Capital Tbk,UNKNOWN,IDX,SFAN.JK,301
+MINA,PT Sanurhasta Mitra Tbk,UNKNOWN,IDX,MINA.JK,302
+PYFA,PT Pyridam Farma Tbk,UNKNOWN,IDX,PYFA.JK,303
+BWPT,PT Eagle High Plantations Tbk,UNKNOWN,IDX,BWPT.JK,304
+DAYA,PT Duta Intidaya Tbk,UNKNOWN,IDX,DAYA.JK,305
+MYOH,PT Samindo Resources Tbk,UNKNOWN,IDX,MYOH.JK,306
+PORT,PT Nusantara Pelabuhan Handal Tbk,UNKNOWN,IDX,PORT.JK,307
+MCOR,PT Bank China Construction Bank Indonesia Tbk,UNKNOWN,IDX,MCOR.JK,308
+INPC,PT Bank Artha Graha Internasional Tbk,UNKNOWN,IDX,INPC.JK,309
+UANG,PT Pakuan Tbk,UNKNOWN,IDX,UANG.JK,310
+TOTO,PT Surya Toto Indonesia Tbk,UNKNOWN,IDX,TOTO.JK,311
+DWGL,PT Dwi Guna Laksana Tbk,UNKNOWN,IDX,DWGL.JK,312
+KIJA,PT Kawasan Industri Jababeka Tbk,UNKNOWN,IDX,KIJA.JK,313
+BACA,PT Bank Capital Indonesia Tbk,UNKNOWN,IDX,BACA.JK,314
+OMRE,PT Indonesia Prima Property Tbk,UNKNOWN,IDX,OMRE.JK,315
+HATM,PT Habco Trans Maritima Tbk,UNKNOWN,IDX,HATM.JK,316
+RALS,PT Ramayana Lestari Sentosa Tbk,UNKNOWN,IDX,RALS.JK,317
+ASSA,PT Adi Sarana Armada Tbk,UNKNOWN,IDX,ASSA.JK,318
+OASA,PT Maharaksa Biru Energi Tbk,UNKNOWN,IDX,OASA.JK,319
+MAHA,PT Mandiri Herindo Adiperkasa Tbk,UNKNOWN,IDX,MAHA.JK,320
+CENT,PT Centratama Telekomunikasi Indonesia Tbk,UNKNOWN,IDX,CENT.JK,321
+SMIL,PT Sarana Mitra Luas Tbk,UNKNOWN,IDX,SMIL.JK,322
+SMDM,PT Suryamas Dutamakmur Tbk,UNKNOWN,IDX,SMDM.JK,323
+UDNG,PT Agro Bahari Nusantara Tbk,UNKNOWN,IDX,UDNG.JK,324
+VISI,PT Satu Visi Putra Tbk,UNKNOWN,IDX,VISI.JK,325
+IRSX,PT Folago Global Nusantara Tbk,UNKNOWN,IDX,IRSX.JK,326
+BLTZ,PT Graha Layar Prima Tbk,UNKNOWN,IDX,BLTZ.JK,327
+MSJA,PT Multi Spunindo Jaya Tbk,UNKNOWN,IDX,MSJA.JK,328
+MGRO,PT Mahkota Group Tbk,UNKNOWN,IDX,MGRO.JK,329
+BHIT,PT MNC Asia Holding Tbk,UNKNOWN,IDX,BHIT.JK,330
+BNBA,PT Bank Bumi Arta Tbk,UNKNOWN,IDX,BNBA.JK,331
+BUKK,PT Bukaka Teknik Utama Tbk.,UNKNOWN,IDX,BUKK.JK,332
+PRDA,PT Prodia Widyahusada Tbk,UNKNOWN,IDX,PRDA.JK,333
+WINS,PT Wintermar Offshore Marine Tbk,UNKNOWN,IDX,WINS.JK,334
+MAYA,PT Bank Mayapada Internasional Tbk,UNKNOWN,IDX,MAYA.JK,335
+BABP,PT Bank MNC Internasional Tbk,UNKNOWN,IDX,BABP.JK,336
+IPCC,PT Indonesia Kendaraan Terminal Tbk,UNKNOWN,IDX,IPCC.JK,337
+ASRI,PT Alam Sutera Realty Tbk,UNKNOWN,IDX,ASRI.JK,338
+DATA,PT Remala Abadi Tbk,UNKNOWN,IDX,DATA.JK,339
+VICO,PT Victoria Investama Tbk,UNKNOWN,IDX,VICO.JK,340
+IATA,PT MNC Energy Investments Tbk,UNKNOWN,IDX,IATA.JK,341
+MMLP,PT Mega Manunggal Property Tbk,UNKNOWN,IDX,MMLP.JK,342
+ABDA,PT Asuransi Bina Dana Arta Tbk,UNKNOWN,IDX,ABDA.JK,343
+TRIN,PT Perintis Triniti Properti Tbk,UNKNOWN,IDX,TRIN.JK,344
+BCAP,PT MNC Kapital Indonesia Tbk,UNKNOWN,IDX,BCAP.JK,345
+BISI,PT BISI International Tbk,UNKNOWN,IDX,BISI.JK,346
+IFII,PT Indonesia Fibreboard Industry Tbk,UNKNOWN,IDX,IFII.JK,347
+BMTR,PT Global Mediacom Tbk,UNKNOWN,IDX,BMTR.JK,348
+JAWA,PT Jaya Agra Wattie Tbk,UNKNOWN,IDX,JAWA.JK,349
+DNAR,PT Bank Oke Indonesia Tbk,UNKNOWN,IDX,DNAR.JK,350
+BRAM,PT Indo Kordsa Tbk,UNKNOWN,IDX,BRAM.JK,351
+PSKT,PT Red Planet Indonesia Tbk,UNKNOWN,IDX,PSKT.JK,352
+BCIC,PT Bank JTrust Indonesia Tbk,UNKNOWN,IDX,BCIC.JK,353
+NEST,PT Esta Indonesia Tbk,UNKNOWN,IDX,NEST.JK,354
+LPGI,PT Lippo General Insurance Tbk,UNKNOWN,IDX,LPGI.JK,355
+STAR,PT Buana Artha Anugerah Tbk,UNKNOWN,IDX,STAR.JK,356
+CBUT,PT Citra Borneo Utama Tbk,UNKNOWN,IDX,CBUT.JK,357
+PBSA,PT Paramita Bangun Sarana Tbk,UNKNOWN,IDX,PBSA.JK,358
+INDS,PT Indospring Tbk,UNKNOWN,IDX,INDS.JK,359
+ASGR,PT Astra Graphia Tbk,UNKNOWN,IDX,ASGR.JK,360
+MBAP,PT Mitrabara Adiperdana Tbk,UNKNOWN,IDX,MBAP.JK,361
+AMAG,PT Asuransi Multi Artha Guna Tbk,UNKNOWN,IDX,AMAG.JK,362
+SCCO,PT Supreme Cable Manufacturing & Commerce Tbk,UNKNOWN,IDX,SCCO.JK,363
+MTMH,PT Murni Sadar Tbk,UNKNOWN,IDX,MTMH.JK,364
+PNBS,PT Bank Panin Dubai Syariah Tbk,UNKNOWN,IDX,PNBS.JK,365
+DGWG,PT Delta Giri Wacana Tbk,UNKNOWN,IDX,DGWG.JK,366
+BKSW,PT Bank QNB Indonesia Tbk,UNKNOWN,IDX,BKSW.JK,367
+MAIN,PT Malindo Feedmill Tbk,UNKNOWN,IDX,MAIN.JK,368
+ITMA,PT Sumber Energi Andalan Tbk,UNKNOWN,IDX,ITMA.JK,369
+BOLT,PT Garuda Metalindo Tbk,UNKNOWN,IDX,BOLT.JK,370
+FPNI,PT Lotte Chemical Titan Tbk,UNKNOWN,IDX,FPNI.JK,371
+GMTD,PT Gowa Makassar Tourism Development Tbk,UNKNOWN,IDX,GMTD.JK,372
+BVIC,PT Bank Victoria International Tbk,UNKNOWN,IDX,BVIC.JK,373
+KMTR,PT Kirana Megatara Tbk,UNKNOWN,IDX,KMTR.JK,374
+MERK,PT Merck Tbk,UNKNOWN,IDX,MERK.JK,375
+ALDO,PT Alkindo Naratama Tbk,UNKNOWN,IDX,ALDO.JK,376
+DVLA,PT Darya-Varia Laboratoria Tbk,UNKNOWN,IDX,DVLA.JK,377
+TPMA,PT Trans Power Marine Tbk,UNKNOWN,IDX,TPMA.JK,378
+MMIX,PT Multi Medika Internasional Tbk,UNKNOWN,IDX,MMIX.JK,379
+NICE,PT Adhi Kartiko Pratama Tbk,UNKNOWN,IDX,NICE.JK,380
+IPCM,PT Jasa Armada Indonesia Tbk,UNKNOWN,IDX,IPCM.JK,381
+KETR,PT Ketrosden Triasmitra,UNKNOWN,IDX,KETR.JK,382
+HERO,PT DFI Retail Nusantara Tbk,UNKNOWN,IDX,HERO.JK,383
+MLIA,PT Mulia Industrindo Tbk,UNKNOWN,IDX,MLIA.JK,384
+WOOD,PT Integra Indocabinet Tbk,UNKNOWN,IDX,WOOD.JK,385
+DEPO,PT Caturkarda Depo Bangunan Tbk,UNKNOWN,IDX,DEPO.JK,386
+SMBR,PT Semen Baturaja (Persero) Tbk,UNKNOWN,IDX,SMBR.JK,387
+CSRA,PT Cisadane Sawit Raya Tbk,UNKNOWN,IDX,CSRA.JK,388
+POLI,PT Pollux Hotels Group Tbk,UNKNOWN,IDX,POLI.JK,389
+IMJS,PT Indomobil Multi Jasa Tbk,UNKNOWN,IDX,IMJS.JK,390
+JGLE,PT Graha Andrasentra Propertindo Tbk,UNKNOWN,IDX,JGLE.JK,391
+UCID,PT Uni-Charm Indonesia Tbk,UNKNOWN,IDX,UCID.JK,392
+LUCY,PT Lima Dua Lima Tiga Tbk,UNKNOWN,IDX,LUCY.JK,393
+FMII,PT Fortune Mate Indonesia Tbk,UNKNOWN,IDX,FMII.JK,394
+PMJS,PT Putra Mandiri Jembar Tbk,UNKNOWN,IDX,PMJS.JK,395
+DLTA,PT Delta Djakarta Tbk,UNKNOWN,IDX,DLTA.JK,396
+BMHS,PT Bundamedik Tbk,UNKNOWN,IDX,BMHS.JK,397
+KINO,PT Kino Indonesia Tbk,UNKNOWN,IDX,KINO.JK,398
+CSAP,PT Catur Sentosa Adiprana Tbk,UNKNOWN,IDX,CSAP.JK,399
+MKTR,PT Menthobi Karyatama Raya Tbk,UNKNOWN,IDX,MKTR.JK,400
+ERAL,PT Sinar Eka Selaras Tbk,UNKNOWN,IDX,ERAL.JK,401
+SIPD,PT Sreeya Sewu Indonesia Tbk,UNKNOWN,IDX,SIPD.JK,402
+SPTO,PT Surya Pertiwi Tbk,UNKNOWN,IDX,SPTO.JK,403
+SUNI,PT Sunindo Pratama Tbk,UNKNOWN,IDX,SUNI.JK,404
+IPTV,PT MNC Vision Networks Tbk,UNKNOWN,IDX,IPTV.JK,405
+ASLI,PT Asri Karya Lestari Tbk,UNKNOWN,IDX,ASLI.JK,406
+DOID,PT Buma Internasional Grup Tbk,UNKNOWN,IDX,DOID.JK,407
+ADHI,PT Adhi Karya (Persero) Tbk,UNKNOWN,IDX,ADHI.JK,408
+INDR,PT. Indo-Rama Synthetics Tbk,UNKNOWN,IDX,INDR.JK,409
+PSSI,PT IMC Pelita Logistik Tbk,UNKNOWN,IDX,PSSI.JK,410
+ACST,PT Acset Indonusa Tbk,UNKNOWN,IDX,ACST.JK,411
+PTSN,PT Sat Nusapersada Tbk,UNKNOWN,IDX,PTSN.JK,412
+TRGU,PT Cerestar Indonesia Tbk,UNKNOWN,IDX,TRGU.JK,413
+CEKA,PT Wilmar Cahaya Indonesia Tbk.,UNKNOWN,IDX,CEKA.JK,414
+ELTY,PT Bakrieland Development Tbk,UNKNOWN,IDX,ELTY.JK,415
+SONA,PT Sona Topas Tourism Industry Tbk,UNKNOWN,IDX,SONA.JK,416
+GSMF,PT Equity Development Investment Tbk,UNKNOWN,IDX,GSMF.JK,417
+KING,PT Hoffmen Cleanindo Tbk,UNKNOWN,IDX,KING.JK,418
+AMFG,PT Asahimas Flat Glass Tbk,UNKNOWN,IDX,AMFG.JK,419
+MLPL,PT Multipolar Tbk,UNKNOWN,IDX,MLPL.JK,420
+CFIN,PT. Clipan Finance Indonesia Tbk,UNKNOWN,IDX,CFIN.JK,421
+PTPP,PT PP (Persero) Tbk,UNKNOWN,IDX,PTPP.JK,422
+KKGI,PT Resource Alam Indonesia Tbk,UNKNOWN,IDX,KKGI.JK,423
+BLES,PT Superior Prima Sukses Tbk,UNKNOWN,IDX,BLES.JK,424
+RONY,PT Aesler Grup Internasional Tbk,UNKNOWN,IDX,RONY.JK,425
+BSBK,PT Wulandari Bangun Laksana Tbk,UNKNOWN,IDX,BSBK.JK,426
+KBLI,PT KMI Wire and Cable Tbk,UNKNOWN,IDX,KBLI.JK,427
+DMMX,PT Digital Mediatama Maxima Tbk,UNKNOWN,IDX,DMMX.JK,428
+TRST,PT Trias Sentosa Tbk,UNKNOWN,IDX,TRST.JK,429
+RAAM,PT Tripar Multivision Plus Tbk,UNKNOWN,IDX,RAAM.JK,430
+DILD,PT Intiland Development Tbk,UNKNOWN,IDX,DILD.JK,431
+CARS,PT Industri dan Perdagangan Bintraco Dharma Tbk,UNKNOWN,IDX,CARS.JK,432
+BLUE,PT Berkah Prima Perkasa Tbk,UNKNOWN,IDX,BLUE.JK,433
+AYAM,PT Janu Putra Sejahtera Tbk.,UNKNOWN,IDX,AYAM.JK,434
+BEEF,PT Estika Tata Tiara Tbk,UNKNOWN,IDX,BEEF.JK,435
+KOTA,PT DMS Propertindo Tbk,UNKNOWN,IDX,KOTA.JK,436
+PANS,PT Panin Sekuritas Tbk,UNKNOWN,IDX,PANS.JK,437
+FUTR,PT Lini Imaji Kreasi Ekosistem Tbk,UNKNOWN,IDX,FUTR.JK,438
+BLOG,PT Trimitra Trans Persada Tbk,UNKNOWN,IDX,BLOG.JK,439
+NRCA,PT Nusa Raya Cipta Tbk,UNKNOWN,IDX,NRCA.JK,440
+SKLT,PT Sekar Laut Tbk,UNKNOWN,IDX,SKLT.JK,441
+TEBE,PT Dana Brata Luhur Tbk,UNKNOWN,IDX,TEBE.JK,442
+JKON,PT Jaya Konstruksi Manggala Pratama Tbk,UNKNOWN,IDX,JKON.JK,443
+TCID,PT. Mandom Indonesia Tbk,UNKNOWN,IDX,TCID.JK,444
+TIFA,PT KDB Tifa Finance Tbk,UNKNOWN,IDX,TIFA.JK,445
+PSAT,PT Pancaran Samudera Transport Tbk,UNKNOWN,IDX,PSAT.JK,446
+BEKS,"PT. Bank Pembangunan Daerah Banten, Tbk",UNKNOWN,IDX,BEKS.JK,447
+ATIC,PT Anabatic Technologies Tbk,UNKNOWN,IDX,ATIC.JK,448
+NFCX,PT NFC Indonesia Tbk,UNKNOWN,IDX,NFCX.JK,449
+ADCP,PT Adhi Commuter Properti Tbk,UNKNOWN,IDX,ADCP.JK,450
+LTLS,PT Lautan Luas Tbk,UNKNOWN,IDX,LTLS.JK,451
+PPRE,PT PP Presisi Tbk,UNKNOWN,IDX,PPRE.JK,452
+DOOH,PT Era Media Sejahtera Tbk,UNKNOWN,IDX,DOOH.JK,453
+CAMP,"PT Campina Ice Cream Industry, Tbk.",UNKNOWN,IDX,CAMP.JK,454
+BUAH,PT Segar Kumala Indonesia Tbk,UNKNOWN,IDX,BUAH.JK,455
+BBRM,PT Pelayaran Nasional Bina Buana Raya Tbk,UNKNOWN,IDX,BBRM.JK,456
+MINE,PT SINAR TERANG MANDIRI Tbk,UNKNOWN,IDX,MINE.JK,457
+FAST,PT Fast Food Indonesia Tbk,UNKNOWN,IDX,FAST.JK,458
+TALF,PT Tunas Alfin Tbk,UNKNOWN,IDX,TALF.JK,459
+JIHD,PT Jakarta International Hotels & Development Tbk,UNKNOWN,IDX,JIHD.JK,460
+BBLD,PT Buana Finance Tbk,UNKNOWN,IDX,BBLD.JK,461
+LIVE,PT Homeco Victoria Makmur Tbk,UNKNOWN,IDX,LIVE.JK,462
+PADI,PT Minna Padi Investama Sekuritas Tbk,UNKNOWN,IDX,PADI.JK,463
+GWSA,PT Greenwood Sejahtera Tbk,UNKNOWN,IDX,GWSA.JK,464
+ARII,PT Atlas Resources Tbk,UNKNOWN,IDX,ARII.JK,465
+WOMF,PT Wahana Ottomitra Multiartha Tbk,UNKNOWN,IDX,WOMF.JK,466
+PPRO,PT Pembangunan Perumahan Properti Tbk,UNKNOWN,IDX,PPRO.JK,467
+MFMI,PT Multifiling Mitra Indonesia Tbk,UNKNOWN,IDX,MFMI.JK,468
+KDTN,PT Puri Sentul Permai Tbk,UNKNOWN,IDX,KDTN.JK,469
+BEST,PT Bekasi Fajar Industrial Estate Tbk,UNKNOWN,IDX,BEST.JK,470
+AISA,PT FKS Food Sejahtera Tbk,UNKNOWN,IDX,AISA.JK,471
+AMAN,PT Makmur Berkah Amanda Tbk,UNKNOWN,IDX,AMAN.JK,472
+GHON,PT Gihon Telekomunikasi Indonesia Tbk,UNKNOWN,IDX,GHON.JK,473
+BOLA,PT Bali Bintang Sejahtera Tbk,UNKNOWN,IDX,BOLA.JK,474
+STRK,PT Lovina Beach Brewery Tbk,UNKNOWN,IDX,STRK.JK,475
+BUDI,PT Budi Starch & Sweetener Tbk,UNKNOWN,IDX,BUDI.JK,476
+TBMS,PT Tembaga Mulia Semanan Tbk,UNKNOWN,IDX,TBMS.JK,477
+WMPP,PT Widodo Makmur Perkasa Tbk,UNKNOWN,IDX,WMPP.JK,478
+ARTA,PT Arthavest Tbk,UNKNOWN,IDX,ARTA.JK,479
+COCO,PT Wahana Interfood Nusantara Tbk,UNKNOWN,IDX,COCO.JK,480
+SKBM,PT Sekar Bumi Tbk,UNKNOWN,IDX,SKBM.JK,481
+VOKS,PT Voksel Electric Tbk,UNKNOWN,IDX,VOKS.JK,482
+BLTA,PT Berlian Laju Tanker Tbk,UNKNOWN,IDX,BLTA.JK,483
+SOTS,PT Satria Mega Kencana Tbk,UNKNOWN,IDX,SOTS.JK,484
+RELI,PT Reliance Sekuritas Indonesia Tbk,UNKNOWN,IDX,RELI.JK,485
+RODA,PT Pikko Land Development Tbk,UNKNOWN,IDX,RODA.JK,486
+GRIA,PT Ingria Pratama Capitalindo Tbk,UNKNOWN,IDX,GRIA.JK,487
+CITY,PT Natura City Developments Tbk,UNKNOWN,IDX,CITY.JK,488
+ASLC,PT Autopedia Sukses Lestari Tbk,UNKNOWN,IDX,ASLC.JK,489
+RSGK,PT Kedoya Adyaraya Tbk,UNKNOWN,IDX,RSGK.JK,490
+FOLK,PT Multi Garam Utama Tbk,UNKNOWN,IDX,FOLK.JK,491
+SPMA,PT Suparma Tbk,UNKNOWN,IDX,SPMA.JK,492
+DPUM,PT Dua Putra Utama Makmur Tbk,UNKNOWN,IDX,DPUM.JK,493
+GZCO,PT Gozco Plantations Tbk,UNKNOWN,IDX,GZCO.JK,494
+PDPP,PT Primadaya Plastisindo Tbk,UNKNOWN,IDX,PDPP.JK,495
+HGII,PT Hero Global Investment Tbk,UNKNOWN,IDX,HGII.JK,496
+WSBP,PT Waskita Beton Precast Tbk,UNKNOWN,IDX,WSBP.JK,497
+HITS,PT Humpuss Intermoda Transportasi Tbk.,UNKNOWN,IDX,HITS.JK,498
+INRU,PT Toba Pulp Lestari Tbk,UNKNOWN,IDX,INRU.JK,499
+PTPW,PT Pratama Widya Tbk,UNKNOWN,IDX,PTPW.JK,500
+SHID,PT Hotel Sahid Jaya International Tbk,UNKNOWN,IDX,SHID.JK,501
+RANC,PT Supra Boga Lestari Tbk,UNKNOWN,IDX,RANC.JK,502
+GDST,PT Gunawan Dianjaya Steel Tbk,UNKNOWN,IDX,GDST.JK,503
+MTWI,PT Malacca Trust Wuwungan Insurance Tbk,UNKNOWN,IDX,MTWI.JK,504
+TAMU,PT Pelayaran Tamarin Samudra Tbk,UNKNOWN,IDX,TAMU.JK,505
+CHIP,PT Pelita Teknologi Global Tbk,UNKNOWN,IDX,CHIP.JK,506
+ASPR,PT Asia Pramulia Tbk,UNKNOWN,IDX,ASPR.JK,507
+BELL,PT Trisula Textile Industries Tbk,UNKNOWN,IDX,BELL.JK,508
+IPOL,PT Indopoly Swakarsa Industry Tbk,UNKNOWN,IDX,IPOL.JK,509
+CMPP,PT AirAsia Indonesia Tbk,UNKNOWN,IDX,CMPP.JK,510
+KONI,PT Perdana Bangun Pusaka Tbk,UNKNOWN,IDX,KONI.JK,511
+ZINC,PT Kapuas Prima Coal Tbk,UNKNOWN,IDX,ZINC.JK,512
+TRUE,PT Triniti Dinamik Tbk,UNKNOWN,IDX,TRUE.JK,513
+PJAA,PT Pembangunan Jaya Ancol Tbk,UNKNOWN,IDX,PJAA.JK,514
+BSML,PT Bintang Samudera Mandiri Lines Tbk,UNKNOWN,IDX,BSML.JK,515
+AMOR,PT Ashmore Asset Management Indonesia Tbk,UNKNOWN,IDX,AMOR.JK,516
+WMUU,PT Widodo Makmur Unggas Tbk,UNKNOWN,IDX,WMUU.JK,517
+WIRG,PT WIR ASIA Tbk,UNKNOWN,IDX,WIRG.JK,518
+ADMG,PT. Polychem Indonesia Tbk,UNKNOWN,IDX,ADMG.JK,519
+KDSI,PT Kedawung Setia Industrial Tbk,UNKNOWN,IDX,KDSI.JK,520
+BKDP,PT Bukit Darmo Property Tbk,UNKNOWN,IDX,BKDP.JK,521
+NICK,PT Charnic Capital Tbk,UNKNOWN,IDX,NICK.JK,522
+PTMR,PT Master Print Tbk,UNKNOWN,IDX,PTMR.JK,523
+WTON,PT Wijaya Karya Beton Tbk,UNKNOWN,IDX,WTON.JK,524
+INDO,PT Royalindo Investa Wijaya Tbk,UNKNOWN,IDX,INDO.JK,525
+ENAK,PT Champ Resto Indonesia Tbk,UNKNOWN,IDX,ENAK.JK,526
+BDKR,PT Berdikari Pondasi Perkasa Tbk,UNKNOWN,IDX,BDKR.JK,527
+RSCH,PT Charlie Hospital Semarang Tbk,UNKNOWN,IDX,RSCH.JK,528
+PANR,PT Panorama Sentrawisata Tbk,UNKNOWN,IDX,PANR.JK,529
+BPFI,PT Woori Finance Indonesia Tbk,UNKNOWN,IDX,BPFI.JK,530
+IBOS,PT Indo Boga Sukses Tbk,UNKNOWN,IDX,IBOS.JK,531
+KSIX,PT Kentanix Supra International Tbk,UNKNOWN,IDX,KSIX.JK,532
+SQMI,PT Wilton Makmur Indonesia Tbk.,UNKNOWN,IDX,SQMI.JK,533
+BIKE,PT Sepeda Bersama Indonesia Tbk,UNKNOWN,IDX,BIKE.JK,534
+MITI,PT Mitra Investindo Tbk,UNKNOWN,IDX,MITI.JK,535
+ZATA,PT Bersama Zatta Jaya Tbk,UNKNOWN,IDX,ZATA.JK,536
+AXIO,PT Tera Data Indonusa Tbk,UNKNOWN,IDX,AXIO.JK,537
+SOSS,PT Shield On Service Tbk,UNKNOWN,IDX,SOSS.JK,538
+DGIK,PT Nusa Konstruksi Enjiniring Tbk,UNKNOWN,IDX,DGIK.JK,539
+NIKL,PT Pelat Timah Nusantara Tbk,UNKNOWN,IDX,NIKL.JK,540
+IKBI,PT Sumi Indo Kabel Tbk,UNKNOWN,IDX,IKBI.JK,541
+MOLI,PT Madusari Murni Indah Tbk,UNKNOWN,IDX,MOLI.JK,542
+BBSS,PT Bumi Benowo Sukses Sejahtera Tbk,UNKNOWN,IDX,BBSS.JK,543
+SMGA,PT Sumber Mineral Global Abadi Tbk,UNKNOWN,IDX,SMGA.JK,544
+LFLO,PT Imago Mulia Persada Tbk,UNKNOWN,IDX,LFLO.JK,545
+AREA,PT Dunia Virtual Online Tbk,UNKNOWN,IDX,AREA.JK,546
+URBN,PT Urban Jakarta Propertindo Tbk.,UNKNOWN,IDX,URBN.JK,547
+BRNA,PT Berlina Tbk,UNKNOWN,IDX,BRNA.JK,548
+LABS,PT UBC Medical Indonesia Tbk,UNKNOWN,IDX,LABS.JK,549
+MSKY,PT MNC Sky Vision Tbk,UNKNOWN,IDX,MSKY.JK,550
+EKAD,PT Ekadharma International Tbk,UNKNOWN,IDX,EKAD.JK,551
+MDLN,PT Modernland Realty Tbk,UNKNOWN,IDX,MDLN.JK,552
+IDPR,PT Indonesia Pondasi Raya Tbk,UNKNOWN,IDX,IDPR.JK,553
+SULI,PT SLJ Global Tbk,UNKNOWN,IDX,SULI.JK,554
+HDFA,PT Radana Bhaskara Finance Tbk,UNKNOWN,IDX,HDFA.JK,555
+PEVE,PT. Penta Valent Tbk,UNKNOWN,IDX,PEVE.JK,556
+MPPA,PT Matahari Putra Prima Tbk,UNKNOWN,IDX,MPPA.JK,557
+HOKI,PT Buyung Poetra Sembada Tbk,UNKNOWN,IDX,HOKI.JK,558
+PGJO,PT Bahtera Bumi Raya Tbk,UNKNOWN,IDX,PGJO.JK,559
+SOFA,PT Solusi Environment Asia Tbk,UNKNOWN,IDX,SOFA.JK,560
+NELY,PT Pelayaran Nelly Dwi Putri Tbk,UNKNOWN,IDX,NELY.JK,561
+IRRA,PT Itama Ranoraya Tbk,UNKNOWN,IDX,IRRA.JK,562
+FORU,PT Fortune Indonesia Tbk,UNKNOWN,IDX,FORU.JK,563
+SSTM,PT Sunson Textile Manufacturer Tbk,UNKNOWN,IDX,SSTM.JK,564
+VERN,PT Verona Indah Pictures Tbk,UNKNOWN,IDX,VERN.JK,565
+UNSP,PT Bakrie Sumatera Plantations Tbk,UNKNOWN,IDX,UNSP.JK,566
+PZZA,PT Sarimelati Kencana Tbk,UNKNOWN,IDX,PZZA.JK,567
+JECC,PT Jembo Cable Company Tbk,UNKNOWN,IDX,JECC.JK,568
+PBRX,PT Pan Brothers Tbk,UNKNOWN,IDX,PBRX.JK,569
+BAIK,PT Bersama Mencapai Puncak Tbk,UNKNOWN,IDX,BAIK.JK,570
+LEAD,PT Logindo Samudramakmur Tbk.,UNKNOWN,IDX,LEAD.JK,571
+VIVA,PT Visi Media Asia Tbk,UNKNOWN,IDX,VIVA.JK,572
+ATAP,PT Trimitra Prawara Goldland Tbk,UNKNOWN,IDX,ATAP.JK,573
+SMKL,PT Satyamitra Kemas Lestari Tbk,UNKNOWN,IDX,SMKL.JK,574
+TRIS,PT Trisula International Tbk,UNKNOWN,IDX,TRIS.JK,575
+MREI,PT Maskapai Reasuransi Indonesia Tbk,UNKNOWN,IDX,MREI.JK,576
+MHKI,PT Multi Hanna Kreasindo Tbk,UNKNOWN,IDX,MHKI.JK,577
+GLVA,PT Galva Technologies Tbk,UNKNOWN,IDX,GLVA.JK,578
+APEX,PT Apexindo Pratama Duta Tbk,UNKNOWN,IDX,APEX.JK,579
+PMUI,PT Prima Multi Usaha Indonesia Tbk,UNKNOWN,IDX,PMUI.JK,580
+SWID,PT Saraswanti Indoland Development Tbk,UNKNOWN,IDX,SWID.JK,581
+CHEK,PT Diastika Biotekindo Tbk,UNKNOWN,IDX,CHEK.JK,582
+TGUK,PT Platinum Wahab Nusantara Tbk,UNKNOWN,IDX,TGUK.JK,583
+HBAT,PT Minahasa Membangun Hebat Tbk,UNKNOWN,IDX,HBAT.JK,584
+WEGE,PT Wijaya Karya Bangunan Gedung Tbk,UNKNOWN,IDX,WEGE.JK,585
+UNTD,PT Terang Dunia Internusa Tbk,UNKNOWN,IDX,UNTD.JK,586
+ESTA,PT Esta Multi Usaha Tbk,UNKNOWN,IDX,ESTA.JK,587
+MAXI,PT Maxindo Karya Anugerah Tbk,UNKNOWN,IDX,MAXI.JK,588
+GTBO,PT Garda Tujuh Buana Tbk,UNKNOWN,IDX,GTBO.JK,589
+AWAN,PT Era Digital Media Tbk,UNKNOWN,IDX,AWAN.JK,590
+CLPI,PT Colorpak Indonesia Tbk,UNKNOWN,IDX,CLPI.JK,591
+PNSE,PT Pudjiadi and Sons Tbk,UNKNOWN,IDX,PNSE.JK,592
+GUNA,PT Gunanusa Eramandiri Tbk,UNKNOWN,IDX,GUNA.JK,593
+MDKI,PT Emdeki Utama Tbk,UNKNOWN,IDX,MDKI.JK,594
+BTEK,PT Bumi Teknokultura Unggul Tbk,UNKNOWN,IDX,BTEK.JK,595
+HAIS,PT Hasnur Internasional Shipping Tbk,UNKNOWN,IDX,HAIS.JK,596
+GULA,PT Aman Agrindo Tbk,UNKNOWN,IDX,GULA.JK,597
+UVCR,PT Trimegah Karya Pratama Tbk,UNKNOWN,IDX,UVCR.JK,598
+GDYR,PT Goodyear Indonesia Tbk,UNKNOWN,IDX,GDYR.JK,599
+VRNA,PT Mizuho Leasing Indonesia Tbk,UNKNOWN,IDX,VRNA.JK,600
+MTFN,PT Capitalinc Investment Tbk,UNKNOWN,IDX,MTFN.JK,601
+AMMS,PT Agung Menjangan Mas Tbk,UNKNOWN,IDX,AMMS.JK,602
+WINE,PT HATTEN BALI Tbk,UNKNOWN,IDX,WINE.JK,603
+GRPM,PT Graha Prima Mentari Tbk,UNKNOWN,IDX,GRPM.JK,604
+SURI,PT Maja Agung Latexindo Tbk,UNKNOWN,IDX,SURI.JK,605
+KMDS,"PT Kurniamitra Duta Sentosa, Tbk",UNKNOWN,IDX,KMDS.JK,606
+AHAP,PT Asuransi Harta Aman Pratama Tbk,UNKNOWN,IDX,AHAP.JK,607
+GPRA,PT Perdana Gapuraprima Tbk,UNKNOWN,IDX,GPRA.JK,608
+RIGS,PT Rig Tenders Indonesia Tbk,UNKNOWN,IDX,RIGS.JK,609
+FITT,PT Hotel Fitra International Tbk,UNKNOWN,IDX,FITT.JK,610
+KOCI,PT Kokoh Exa Nusantara Tbk,UNKNOWN,IDX,KOCI.JK,611
+IGAR,PT Champion Pacific Indonesia Tbk,UNKNOWN,IDX,IGAR.JK,612
+RMKO,PT Royaltama Mulia Kontraktorindo Tbk,UNKNOWN,IDX,RMKO.JK,613
+HALO,PT Haloni Jane Tbk,UNKNOWN,IDX,HALO.JK,614
+INPS,PT Indah Prakasa Sentosa Tbk,UNKNOWN,IDX,INPS.JK,615
+PIPA,PT. Multi Makmur Lemindo,UNKNOWN,IDX,PIPA.JK,616
+BAYU,PT Bayu Buana Tbk,UNKNOWN,IDX,BAYU.JK,617
+CBPE,PT Citra Buana Prasida Tbk,UNKNOWN,IDX,CBPE.JK,618
+KOBX,PT Kobexindo Tractors Tbk,UNKNOWN,IDX,KOBX.JK,619
+YPAS,PT Yanaprima Hastapersada Tbk,UNKNOWN,IDX,YPAS.JK,620
+PADA,PT Personel Alih Daya Tbk,UNKNOWN,IDX,PADA.JK,621
+CRAB,PT Toba Surimi Industries Tbk,UNKNOWN,IDX,CRAB.JK,622
+INAF,PT Indofarma Tbk,UNKNOWN,IDX,INAF.JK,623
+BOAT,PT Newport Marine Services TBK,UNKNOWN,IDX,BOAT.JK,624
+UFOE,PT Damai Sejahtera Abadi Tbk,UNKNOWN,IDX,UFOE.JK,625
+TIRT,PT Tirta Mahakam Resources Tbk,UNKNOWN,IDX,TIRT.JK,626
+GTRA,PT Grahaprima Suksesmandiri Tbk,UNKNOWN,IDX,GTRA.JK,627
+SRSN,PT Indo Acidatama Tbk,UNKNOWN,IDX,SRSN.JK,628
+NASA,PT Andalan Perkasa Abadi Tbk,UNKNOWN,IDX,NASA.JK,629
+CNKO,PT Exploitasi Energi Indonesia Tbk,UNKNOWN,IDX,CNKO.JK,630
+BABY,PT Multitrend Indo Tbk,UNKNOWN,IDX,BABY.JK,631
+TYRE,PT King Tire Indonesia Tbk,UNKNOWN,IDX,TYRE.JK,632
+ELIT,PT Data Sinergitama Jaya Tbk,UNKNOWN,IDX,ELIT.JK,633
+HYGN,PT Ecocare Indo Pasifik Tbk,UNKNOWN,IDX,HYGN.JK,634
+DADA,PT Diamond Citra Propertindo Tbk,UNKNOWN,IDX,DADA.JK,635
+DART,PT Duta Anggada Realty Tbk.,UNKNOWN,IDX,DART.JK,636
+VAST,PT Vastland Indonesia Tbk,UNKNOWN,IDX,VAST.JK,637
+BOBA,PT Formosa Ingredient Factory Tbk,UNKNOWN,IDX,BOBA.JK,638
+SOLA,PT Xolare RCR Energy TBK,UNKNOWN,IDX,SOLA.JK,639
+PDES,PT Destinasi Tirta Nusantara Tbk,UNKNOWN,IDX,PDES.JK,640
+FUJI,PT Fuji Finance Indonesia Tbk,UNKNOWN,IDX,FUJI.JK,641
+VTNY,PT Venteny Fortuna International Tbk,UNKNOWN,IDX,VTNY.JK,642
+EAST,PT Eastparc Hotel Tbk,UNKNOWN,IDX,EAST.JK,643
+TIRA,PT Tira Austenite Tbk,UNKNOWN,IDX,TIRA.JK,644
+GOLD,PT Visi Telekomunikasi Infrastruktur Tbk,UNKNOWN,IDX,GOLD.JK,645
+PJHB,PT Pelayaran Jaya Hidup Baru TBK,UNKNOWN,IDX,PJHB.JK,646
+TFAS,PT Telefast Indonesia Tbk,UNKNOWN,IDX,TFAS.JK,647
+SCNP,PT Selaras Citra Nusantara Perkasa Tbk,UNKNOWN,IDX,SCNP.JK,648
+CCSI,PT Communication Cable Systems Indonesia Tbk,UNKNOWN,IDX,CCSI.JK,649
+SATU,PT Kota Satu Properti Tbk,UNKNOWN,IDX,SATU.JK,650
+APLI,PT Asiaplast Industries Tbk,UNKNOWN,IDX,APLI.JK,651
+BMSR,PT Bintang Mitra Semestaraya Tbk,UNKNOWN,IDX,BMSR.JK,652
+KOKA,PT Koka Indonesia Tbk,UNKNOWN,IDX,KOKA.JK,653
+ASRM,PT Asuransi Ramayana Tbk,UNKNOWN,IDX,ASRM.JK,654
+MUTU,PT Mutuagung Lestari Tbk,UNKNOWN,IDX,MUTU.JK,655
+UNIQ,PT Ulima Nitra Tbk,UNKNOWN,IDX,UNIQ.JK,656
+MGNA,PT Magna Investama Mandiri Tbk,UNKNOWN,IDX,MGNA.JK,657
+BEER,PT Jobubu Jarum Minahasa Tbk,UNKNOWN,IDX,BEER.JK,658
+REAL,PT Repower Asia Indonesia Tbk,UNKNOWN,IDX,REAL.JK,659
+KBLM,PT Kabelindo Murni Tbk,UNKNOWN,IDX,KBLM.JK,660
+DYAN,PT Dyandra Media International Tbk,UNKNOWN,IDX,DYAN.JK,661
+AKPI,PT Argha Karya Prima Industry Tbk,UNKNOWN,IDX,AKPI.JK,662
+HOMI,PT Grand House Mulia Tbk,UNKNOWN,IDX,HOMI.JK,663
+PEGE,PT Panca Global Kapital Tbk,UNKNOWN,IDX,PEGE.JK,664
+JATI,PT Informasi Teknologi Indonesia Tbk,UNKNOWN,IDX,JATI.JK,665
+MYTX,PT Asia Pacific Investama Tbk,UNKNOWN,IDX,MYTX.JK,666
+GPSO,PT Geoprima Solusi Tbk,UNKNOWN,IDX,GPSO.JK,667
+ASHA,PT Cilacap Samudera Fishing Industry Tbk,UNKNOWN,IDX,ASHA.JK,668
+KIAS,PT Keramika Indonesia Assosiasi Tbk,UNKNOWN,IDX,KIAS.JK,669
+IKPM,PT Ikapharmindo Putramas Tbk,UNKNOWN,IDX,IKPM.JK,670
+COAL,PT Black Diamond Resources Tbk,UNKNOWN,IDX,COAL.JK,671
+ATLA,PT Atlantis Subsea Indonesia Tbk,UNKNOWN,IDX,ATLA.JK,672
+CRSN,PT Carsurin Tbk,UNKNOWN,IDX,CRSN.JK,673
+ZONE,PT Mega Perintis Tbk,UNKNOWN,IDX,ZONE.JK,674
+NAIK,PT Adiwarna Anugerah Abadi Tbk,UNKNOWN,IDX,NAIK.JK,675
+MPXL,PT MPX Logistics International Tbk,UNKNOWN,IDX,MPXL.JK,676
+DGNS,PT Diagnos Laboratorium Utama Tbk,UNKNOWN,IDX,DGNS.JK,677
+IOTF,PT Sumber Sinergi Makmur Tbk,UNKNOWN,IDX,IOTF.JK,678
+HAJJ,PT Arsy Buana Travelindo Tbk,UNKNOWN,IDX,HAJJ.JK,679
+WICO,Pt Wicaksana Overseas International Tbk,UNKNOWN,IDX,WICO.JK,680
+PTPS,PT Pulau Subur Tbk,UNKNOWN,IDX,PTPS.JK,681
+TRON,PT Teknologi Karya Digital Nusa Tbk,UNKNOWN,IDX,TRON.JK,682
+PRIM,PT Royal Prima Tbk,UNKNOWN,IDX,PRIM.JK,683
+MICE,PT Multi Indocitra Tbk,UNKNOWN,IDX,MICE.JK,684
+CASH,PT Cashlez Worldwide Indonesia Tbk,UNKNOWN,IDX,CASH.JK,685
+BIPP,PT Bhuwanatala Indah Permai Tbk,UNKNOWN,IDX,BIPP.JK,686
+LPLI,PT Star Pacific Tbk,UNKNOWN,IDX,LPLI.JK,687
+ALMI,PT Alumindo Light Metal Industry Tbk,UNKNOWN,IDX,ALMI.JK,688
+TARA,PT Agung Semesta Sejahtera Tbk,UNKNOWN,IDX,TARA.JK,689
+CGAS,PT Citra Nusantara Gemilang Tbk,UNKNOWN,IDX,CGAS.JK,690
+PART,PT Cipta Perdana Lancar Tbk,UNKNOWN,IDX,PART.JK,691
+ESTI,PT Ever Shine Tex Tbk,UNKNOWN,IDX,ESTI.JK,692
+HOPE,PT Harapan Duta Pertiwi Tbk,UNKNOWN,IDX,HOPE.JK,693
+NZIA,PT Nusantara Almazia Tbk,UNKNOWN,IDX,NZIA.JK,694
+JMAS,PT Asuransi Jiwa Syariah Jasa Mitra Abadi Tbk,UNKNOWN,IDX,JMAS.JK,695
+BTON,PT Betonjaya Manunggal Tbk,UNKNOWN,IDX,BTON.JK,696
+YOII,PT Asuransi Digital Bersama TBK,UNKNOWN,IDX,YOII.JK,697
+SAFE,PT Steady Safe Tbk,UNKNOWN,IDX,SAFE.JK,698
+DFAM,PT Dafam Property Indonesia Tbk,UNKNOWN,IDX,DFAM.JK,699
+LAPD,PT Leyand International Tbk,UNKNOWN,IDX,LAPD.JK,700
+KLAS,PT Pelayaran Kurnia Lautan Semesta Tbk,UNKNOWN,IDX,KLAS.JK,701
+KBAG,PT Karya Bersama Anugerah Tbk,UNKNOWN,IDX,KBAG.JK,702
+HRME,PT Menteng Heritage Realty Tbk,UNKNOWN,IDX,HRME.JK,703
+SMLE,PT Sinergi Multi Lestarindo Tbk,UNKNOWN,IDX,SMLE.JK,704
+KREN,PT Quantum Clovera Investama Tbk,UNKNOWN,IDX,KREN.JK,705
+BATR,PT Benteng Api Technic Tbk,UNKNOWN,IDX,BATR.JK,706
+IKAI,PT Intikeramik Alamasri Industri Tbk,UNKNOWN,IDX,IKAI.JK,707
+BAJA,PT Saranacentral Bajatama Tbk,UNKNOWN,IDX,BAJA.JK,708
+ASPI,PT Andalan Sakti Primaindo Tbk,UNKNOWN,IDX,ASPI.JK,709
+BPTR,PT Batavia Prosperindo Trans Tbk,UNKNOWN,IDX,BPTR.JK,710
+SAGE,PT Saptausaha Gemilangindah Tbk,UNKNOWN,IDX,SAGE.JK,711
+CTTH,PT Citatah Tbk,UNKNOWN,IDX,CTTH.JK,712
+ASJT,PT Asuransi Jasa Tania Tbk,UNKNOWN,IDX,ASJT.JK,713
+ALKA,PT Alakasa Industrindo Tbk,UNKNOWN,IDX,ALKA.JK,714
+AMIN,PT Ateliers Mecaniques D'Indonesie Tbk,UNKNOWN,IDX,AMIN.JK,715
+AKKU,PT Anugerah Kagum Karya Utama Tbk,UNKNOWN,IDX,AKKU.JK,716
+PEHA,PT Phapros Tbk,UNKNOWN,IDX,PEHA.JK,717
+DEWI,PT Dewi Shri Farmindo Tbk.,UNKNOWN,IDX,DEWI.JK,718
+EPAC,PT Megalestari Epack Sentosaraya Tbk,UNKNOWN,IDX,EPAC.JK,719
+TAMA,PT Lancartama Sejati Tbk,UNKNOWN,IDX,TAMA.JK,720
+CSIS,PT Cahayasakti Investindo Sukses Tbk,UNKNOWN,IDX,CSIS.JK,721
+OKAS,PT Ancora Indonesia Resources Tbk,UNKNOWN,IDX,OKAS.JK,722
+BINO,PT Perma Plasindo Tbk,UNKNOWN,IDX,BINO.JK,723
+TOSK,PT Topindo Solusi Komunika Tbk,UNKNOWN,IDX,TOSK.JK,724
+MDRN,PT Modern Internasional Tbk,UNKNOWN,IDX,MDRN.JK,725
+AGAR,PT Asia Sejahtera Mina Tbk,UNKNOWN,IDX,AGAR.JK,726
+MCAS,PT M Cash Integrasi Tbk,UNKNOWN,IDX,MCAS.JK,727
+PURA,PT Putra Rajawali Kencana Tbk,UNKNOWN,IDX,PURA.JK,728
+SDPC,PT Millennium Pharmacon International Tbk,UNKNOWN,IDX,SDPC.JK,729
+BEBS,PT Berkah Beton Sadaya Tbk,UNKNOWN,IDX,BEBS.JK,730
+DOSS,PT Global Sukses Digital Tbk,UNKNOWN,IDX,DOSS.JK,731
+INOV,PT Inocycle Technology Group Tbk,UNKNOWN,IDX,INOV.JK,732
+NTBK,PT Nusatama Berkah Tbk,UNKNOWN,IDX,NTBK.JK,733
+HILL,PT Hillcon Tbk,UNKNOWN,IDX,HILL.JK,734
+VINS,PT Victoria Insurance Tbk,UNKNOWN,IDX,VINS.JK,735
+TRUS,PT Trust Finance Indonesia Tbk,UNKNOWN,IDX,TRUS.JK,736
+INTA,PT Intraco Penta Tbk,UNKNOWN,IDX,INTA.JK,737
+NPGF,PT Nusa Palapa Gemilang Tbk,UNKNOWN,IDX,NPGF.JK,738
+MSIE,PT Multisarana Intan Eduka Tbk,UNKNOWN,IDX,MSIE.JK,739
+ACRO,PT Samcro Hyosung Adilestari Tbk,UNKNOWN,IDX,ACRO.JK,740
+EMDE,PT Megapolitan Developments Tbk,UNKNOWN,IDX,EMDE.JK,741
+ERTX,PT Eratex Djaja Tbk,UNKNOWN,IDX,ERTX.JK,742
+ECII,PT Electronic City Indonesia Tbk,UNKNOWN,IDX,ECII.JK,743
+ITIC,PT Indonesian Tobacco Tbk,UNKNOWN,IDX,ITIC.JK,744
+NINE,PT Techno9 Indonesia Tbk,UNKNOWN,IDX,NINE.JK,745
+WGSH,PT Wira Global Solusi Tbk,UNKNOWN,IDX,WGSH.JK,746
+PTSP,PT Pioneerindo Gourmet International Tbk,UNKNOWN,IDX,PTSP.JK,747
+LION,PT Lion Metal Works Tbk,UNKNOWN,IDX,LION.JK,748
+APII,PT Arita Prima Indonesia Tbk,UNKNOWN,IDX,APII.JK,749
+MEJA,PT Harta Djaya Karya Tbk,UNKNOWN,IDX,MEJA.JK,750
+RELF,PT Graha Mitra Asia Tbk,UNKNOWN,IDX,RELF.JK,751
+ASDM,PT Asuransi Dayin Mitra Tbk,UNKNOWN,IDX,ASDM.JK,752
+PUDP,PT Pudjiadi Prestige Tbk,UNKNOWN,IDX,PUDP.JK,753
+PTMP,PT Mitra Pack Tbk,UNKNOWN,IDX,PTMP.JK,754
+LPPS,PT Lenox Pasifik Investama Tbk,UNKNOWN,IDX,LPPS.JK,755
+POLA,PT Pool Advista Finance Tbk,UNKNOWN,IDX,POLA.JK,756
+DIVA,PT Distribusi Voucher Nusantara Tbk,UNKNOWN,IDX,DIVA.JK,757
+TRJA,PT Transkon Jaya Tbk,UNKNOWN,IDX,TRJA.JK,758
+PSDN,PT Prasidha Aneka Niaga Tbk,UNKNOWN,IDX,PSDN.JK,759
+KAQI,PT Jantra Grupo Indonesia Tbk,UNKNOWN,IDX,KAQI.JK,760
+LAND,PT Trimitra Propertindo Tbk,UNKNOWN,IDX,LAND.JK,761
+MRAT,PT Mustika Ratu Tbk,UNKNOWN,IDX,MRAT.JK,762
+CAKK,PT Cahayaputra Asa Keramik Tbk,UNKNOWN,IDX,CAKK.JK,763
+DKHH,PT Cipta Sarana Medika Tbk,UNKNOWN,IDX,DKHH.JK,764
+MANG,PT Manggung Polahraya Tbk,UNKNOWN,IDX,MANG.JK,765
+SLIS,PT Gaya Abadi Sempurna Tbk,UNKNOWN,IDX,SLIS.JK,766
+ZYRX,PT Zyrexindo Mandiri Buana Tbk,UNKNOWN,IDX,ZYRX.JK,767
+GLOB,PT Globe Kita Terang Tbk,UNKNOWN,IDX,GLOB.JK,768
+CINT,PT Chitose Internasional Tbk,UNKNOWN,IDX,CINT.JK,769
+SAPX,PT Satria Antaran Prima Tbk,UNKNOWN,IDX,SAPX.JK,770
+RBMS,PT Ristia Bintang Mahkotasejati Tbk,UNKNOWN,IDX,RBMS.JK,771
+OBAT,PT Brigit Biofarmaka Technologi Tbk,UNKNOWN,IDX,OBAT.JK,772
+MTPS,PT Meta Epsi Tbk.,UNKNOWN,IDX,MTPS.JK,773
+AKSI,PT Mineral Sumberdaya Mandiri Tbk,UNKNOWN,IDX,AKSI.JK,774
+ANDI,"PT Andira Agro, Tbk",UNKNOWN,IDX,ANDI.JK,775
+WEHA,PT WEHA Transportasi Indonesia Tbk,UNKNOWN,IDX,WEHA.JK,776
+LPIN,PT Multi Prima Sejahtera Tbk,UNKNOWN,IDX,LPIN.JK,777
+PAMG,PT Bima Sakti Pertiwi Tbk,UNKNOWN,IDX,PAMG.JK,778
+LCKM,PT LCK Global Kedaton Tbk,UNKNOWN,IDX,LCKM.JK,779
+KARW,PT Meratus Jasa Prima Tbk,UNKNOWN,IDX,KARW.JK,780
+OBMD,PT OBM Drilchem Tbk,UNKNOWN,IDX,OBMD.JK,781
+ENZO,PT Morenzo Abadi Perkasa Tbk,UNKNOWN,IDX,ENZO.JK,782
+SDMU,PT Sidomulyo Selaras Tbk,UNKNOWN,IDX,SDMU.JK,783
+FIRE,PT Alfa Energi Investama Tbk,UNKNOWN,IDX,FIRE.JK,784
+FWCT,PT Wijaya Cahaya Timber Tbk,UNKNOWN,IDX,FWCT.JK,785
+PTIS,PT Indo Straits Tbk,UNKNOWN,IDX,PTIS.JK,786
+BAPA,PT Bekasi Asri Pemula Tbk,UNKNOWN,IDX,BAPA.JK,787
+TOOL,PT Rohartindo Nusantara Luas Tbk,UNKNOWN,IDX,TOOL.JK,788
+KBLV,PT First Media Tbk,UNKNOWN,IDX,KBLV.JK,789
+LMPI,PT Langgeng Makmur Industri Tbk,UNKNOWN,IDX,LMPI.JK,790
+TRUK,PT Guna Timur Raya Tbk,UNKNOWN,IDX,TRUK.JK,791
+YELO,PT Yelooo Integra Datanet Tbk,UNKNOWN,IDX,YELO.JK,792
+INTD,PT Inter Delta Tbk,UNKNOWN,IDX,INTD.JK,793
+PPRI,PT Paperocks Indonesia Tbk,UNKNOWN,IDX,PPRI.JK,794
+WOWS,PT Ginting Jaya Energi Tbk,UNKNOWN,IDX,WOWS.JK,795
+HELI,PT Jaya Trishindo Tbk,UNKNOWN,IDX,HELI.JK,796
+WAPO,PT Wahana Pronatural Tbk,UNKNOWN,IDX,WAPO.JK,797
+INCI,PT Intanwijaya Internasional Tbk,UNKNOWN,IDX,INCI.JK,798
+ASMI,PT Asuransi Maximus Graha Persada Tbk,UNKNOWN,IDX,ASMI.JK,799
+TAXI,PT Express Transindo Utama Tbk,UNKNOWN,IDX,TAXI.JK,800
+DSFI,PT Dharma Samudera Fishing Industries Tbk,UNKNOWN,IDX,DSFI.JK,801
+KOPI,PT Mitra Energi Persada Tbk,UNKNOWN,IDX,KOPI.JK,802
+ASBI,PT Asuransi Bintang Tbk,UNKNOWN,IDX,ASBI.JK,803
+KLIN,PT Klinko Karya Imaji Tbk,UNKNOWN,IDX,KLIN.JK,804
+MEDS,PT Hetzer Medical Indonesia Tbk,UNKNOWN,IDX,MEDS.JK,805
+SEMA,PT Semacom Integrated Tbk,UNKNOWN,IDX,SEMA.JK,806
+ESIP,PT Sinergi Inti Plastindo Tbk,UNKNOWN,IDX,ESIP.JK,807
+RGAS,PT Kian Santang Muliatama Tbk,UNKNOWN,IDX,RGAS.JK,808
+PPGL,PT Prima Globalindo Logistik Tbk,UNKNOWN,IDX,PPGL.JK,809
+PURI,PT Puri Global Sukses Tbk,UNKNOWN,IDX,PURI.JK,810
+MARI,PT Mahaka Radio Integra Tbk,UNKNOWN,IDX,MARI.JK,811
+WINR,PT Winner Nusantara Jaya Tbk,UNKNOWN,IDX,WINR.JK,812
+GEMA,PT Gema Grahasarana Tbk,UNKNOWN,IDX,GEMA.JK,813
+RUIS,PT Radiant Utama Interinsco Tbk,UNKNOWN,IDX,RUIS.JK,814
+MPIX,PT Mitra Pedagang Indonesia Tbk,UNKNOWN,IDX,MPIX.JK,815
+ABBA,PT Mahaka Media Tbk,UNKNOWN,IDX,ABBA.JK,816
+PMMP,PT Panca Mitra Multiperdana Tbk,UNKNOWN,IDX,PMMP.JK,817
+IPAC,PT Era Graharealty Tbk,UNKNOWN,IDX,IPAC.JK,818
+LAJU,PT Jasa Berdikari Logistics Tbk,UNKNOWN,IDX,LAJU.JK,819
+ZBRA,PT Dosni Roha Indonesia Tbk,UNKNOWN,IDX,ZBRA.JK,820
+ICON,PT Island Concepts Indonesia Tbk,UNKNOWN,IDX,ICON.JK,821
+NAYZ,PT Hassana Boga Sejahtera Tbk,UNKNOWN,IDX,NAYZ.JK,822
+BAUT,PT Mitra Angkasa Sejahtera Tbk,UNKNOWN,IDX,BAUT.JK,823
+KUAS,PT Ace Oldfields Tbk,UNKNOWN,IDX,KUAS.JK,824
+MERI,PT Merry Riana Edukasi Tbk,UNKNOWN,IDX,MERI.JK,825
+MBTO,PT Martina Berto Tbk,UNKNOWN,IDX,MBTO.JK,826
+MTSM,PT Metro Realty Tbk,UNKNOWN,IDX,MTSM.JK,827
+FLMC,PT Falmaco Nonwoven Industri Tbk,UNKNOWN,IDX,FLMC.JK,828
+NANO,PT Nanotech Indonesia Global Tbk,UNKNOWN,IDX,NANO.JK,829
+CHEM,PT Chemstar Indonesia Tbk,UNKNOWN,IDX,CHEM.JK,830
+XCIS,DIRE Ciptadana Properti Ritel Indonesia,UNKNOWN,IDX,XCIS.JK,831
+AYLS,PT Agro Yasa Lestari Tbk,UNKNOWN,IDX,AYLS.JK,832
+TMPO,PT Tempo Inti Media Tbk,UNKNOWN,IDX,TMPO.JK,833
+RAFI,PT Sari Kreasi Boga Tbk,UNKNOWN,IDX,RAFI.JK,834
+CANI,PT Capitol Nusantara Indonesia Tbk,UNKNOWN,IDX,CANI.JK,835
+SMKM,PT Sumber Mas Konstruksi Tbk,UNKNOWN,IDX,SMKM.JK,836
+BAPI,PT Bhakti Agung Propertindo Tbk,UNKNOWN,IDX,BAPI.JK,837
+SNLK,PT Sunter Lakeside Hotel Tbk,UNKNOWN,IDX,SNLK.JK,838
+LOPI,PT Logisticsplus International Tbk,UNKNOWN,IDX,LOPI.JK,839
+PTDU,PT Djasa Ubersakti Tbk,UNKNOWN,IDX,PTDU.JK,840
+INAI,PT Indal Aluminium Industry Tbk,UNKNOWN,IDX,INAI.JK,841
+SBMA,PT Surya Biru Murni Acetylene Tbk,UNKNOWN,IDX,SBMA.JK,842
+DPNS,PT Duta Pertiwi Nusantara Tbk,UNKNOWN,IDX,DPNS.JK,843
+PGLI,PT Pembangunan Graha Lestari Indah Tbk,UNKNOWN,IDX,PGLI.JK,844
+JAYA,PT Armada Berjaya Trans Tbk,UNKNOWN,IDX,JAYA.JK,845
+NASI,PT Wahana Inti Makmur Tbk,UNKNOWN,IDX,NASI.JK,846
+ISAP,PT Isra Presisi Indonesia Tbk,UNKNOWN,IDX,ISAP.JK,847
+FOOD,PT Sentra Food Indonesia Tbk,UNKNOWN,IDX,FOOD.JK,848
+SICO,PT Sigma Energy Compressindo Tbk,UNKNOWN,IDX,SICO.JK,849
+LABA,PT Green Power Group Tbk,UNKNOWN,IDX,LABA.JK,850
+OLIV,PT Oscar Mitra Sukses Sejahtera Tbk,UNKNOWN,IDX,OLIV.JK,851
+KRYA,PT Bangun Karya Perkasa Jaya Tbk,UNKNOWN,IDX,KRYA.JK,852
+DEFI,PT Danasupra Erapacific Tbk,UNKNOWN,IDX,DEFI.JK,853
+ISEA,PT Indo American Seafoods Tbk,UNKNOWN,IDX,ISEA.JK,854
+KIOS,PT Kioson Komersial Indonesia Tbk,UNKNOWN,IDX,KIOS.JK,855
+MPOW,PT Megapower Makmur Tbk,UNKNOWN,IDX,MPOW.JK,856
+OILS,PT Indo Oil Perkasa Tbk,UNKNOWN,IDX,OILS.JK,857
+JAST,PT. Jasnita Telekomindo Tbk,UNKNOWN,IDX,JAST.JK,858
+BCIP,PT Bumi Citra Permai Tbk,UNKNOWN,IDX,BCIP.JK,859
+IBFN,PT Intan Baru Prana Tbk,UNKNOWN,IDX,IBFN.JK,860
+OPMS,PT Optima Prima Metal Sinergi Tbk,UNKNOWN,IDX,OPMS.JK,861
+AIMS,PT Artha Mahiya Investama Tbk,UNKNOWN,IDX,AIMS.JK,862
+INCF,PT Indo Komoditi Korpora Tbk,UNKNOWN,IDX,INCF.JK,863
+RCCC,PT Utama Radar Cahaya Tbk,UNKNOWN,IDX,RCCC.JK,864
+KJEN,PT Krida Jaringan Nusantara Tbk,UNKNOWN,IDX,KJEN.JK,865
+RUNS,PT Global Sukses Solusi Tbk,UNKNOWN,IDX,RUNS.JK,866
+POLY,PT Asia Pacific Fibers Tbk,UNKNOWN,IDX,POLY.JK,867
+BATA,PT Sepatu Bata Tbk.,UNKNOWN,IDX,BATA.JK,868
+HDIT,PT Hensel Davest Indonesia Tbk,UNKNOWN,IDX,HDIT.JK,869
+LUCK,PT Sentral Mitra Informatika Tbk,UNKNOWN,IDX,LUCK.JK,870
+PICO,PT Pelangi Indah Canindo Tbk,UNKNOWN,IDX,PICO.JK,871
+MENN,PT Menn Teknologi Indonesia Tbk,UNKNOWN,IDX,MENN.JK,872
+MIRA,PT Mitra International Resources Tbk,UNKNOWN,IDX,MIRA.JK,873
+TGRA,PT. Terregra Asia Energy Tbk,UNKNOWN,IDX,TGRA.JK,874
+TNCA,PT Trimuda Nuansa Citra Tbk,UNKNOWN,IDX,TNCA.JK,875
+KOIN,PT Kokoh Inti Arebama Tbk,UNKNOWN,IDX,KOIN.JK,876
+LMAX,PT Lupromax Pelumas Indonesia Tbk,UNKNOWN,IDX,LMAX.JK,877
+CSMI,PT Cipta Selera Murni Tbk,UNKNOWN,IDX,CSMI.JK,878
+IKAN,PT Era Mandiri Cemerlang Tbk,UNKNOWN,IDX,IKAN.JK,879
+TELE,PT Omni Inovasi Indonesia Tbk,UNKNOWN,IDX,TELE.JK,880
+LRNA,PT Eka Sari Lorena Transport Tbk,UNKNOWN,IDX,LRNA.JK,881
+IPPE,PT Indo Pureco Pratama Tbk,UNKNOWN,IDX,IPPE.JK,882
+IDEA,PT Idea Indonesia Akademi Tbk,UNKNOWN,IDX,IDEA.JK,883
+GRPH,PT Griptha Putra Persada Tbk,UNKNOWN,IDX,GRPH.JK,884
+SPRE,PT Soraya Berjaya Indonesia Tbk,UNKNOWN,IDX,SPRE.JK,885
+ARKA,PT Arkha Jayanti Persada Tbk,UNKNOWN,IDX,ARKA.JK,886
+BRRC,PT Raja Roti Cemerlang Tbk,UNKNOWN,IDX,BRRC.JK,887
+KICI,PT Kedaung Indah Can Tbk,UNKNOWN,IDX,KICI.JK,888
+KKES,PT Kusuma Kemindo Sentosa Tbk,UNKNOWN,IDX,KKES.JK,889
+TAYS,PT Jaya Swarasa Agung Tbk,UNKNOWN,IDX,TAYS.JK,890
+RICY,PT Ricky Putra Globalindo Tbk,UNKNOWN,IDX,RICY.JK,891
+DIGI,PT Arkadia Digital Media Tbk,UNKNOWN,IDX,DIGI.JK,892
+BIMA,"PT. Primarindo Asia Infrastructure, Tbk.",UNKNOWN,IDX,BIMA.JK,893
+SWAT,PT Sriwahana Adityakarta Tbk,UNKNOWN,IDX,SWAT.JK,894
+AEGS,PT. Anugerah Spareparts Sejahtera Tbk,UNKNOWN,IDX,AEGS.JK,895
+SOUL,PT Mitra Tirta Buwana Tbk,UNKNOWN,IDX,SOUL.JK,896
+WIDI,PT Widiant Jaya Krenindo Tbk,UNKNOWN,IDX,WIDI.JK,897
+PCAR,PT Prima Cakrawala Abadi Tbk,UNKNOWN,IDX,PCAR.JK,898
+ALTO,PT Tri Banyan Tirta Tbk,UNKNOWN,IDX,ALTO.JK,899
+INDX,PT Tanah Laut Tbk,UNKNOWN,IDX,INDX.JK,900
+PLAN,PT Planet Properindo Jaya Tbk,UNKNOWN,IDX,PLAN.JK,901
+BMBL,PT Lavender Bina Cendikia Tbk,UNKNOWN,IDX,BMBL.JK,902
+TOPS,PT Totalindo Eka Persada Tbk,UNKNOWN,IDX,TOPS.JK,903
+HADE,PT Himalaya Energi Perkasa Tbk,UNKNOWN,IDX,HADE.JK,904
+FIMP,PT Fimperkasa Utama Tbk,UNKNOWN,IDX,FIMP.JK,905
+LMSH,PT Lionmesh Prima Tbk,UNKNOWN,IDX,LMSH.JK,906
+MKNT,PT Mitra Komunikasi Nusantara Tbk,UNKNOWN,IDX,MKNT.JK,907

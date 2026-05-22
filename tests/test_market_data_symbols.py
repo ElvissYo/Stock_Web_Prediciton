@@ -22,6 +22,7 @@ def test_load_stock_symbols_normalizes_ticker_filters():
     symbols = load_stock_symbols(client, tickers=["bbca.jk"], limit=10)
 
     assert symbols == [StockSymbol(ticker="BBCA", yfinance_symbol="BBCA.JK")]
+    assert "ORDER BY coalesce(stock.universe_rank, 1000000), stock.ticker" in client.calls[0][0]
     assert client.calls[0][1]["tickers"] == ["BBCA"]
     assert client.calls[0][1]["limit"] == 10
 
@@ -31,4 +32,3 @@ def test_load_stock_symbols_rejects_empty_result():
 
     with pytest.raises(ValueError, match="No Stock nodes"):
         load_stock_symbols(client, tickers=None, limit=None)
-

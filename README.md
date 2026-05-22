@@ -69,10 +69,19 @@ Create Neo4j constraints and indexes:
 .venv\Scripts\python.exe scripts/setup_neo4j_schema.py
 ```
 
-Ingest the sample stock universe:
+Fetch the expanded IDX stock universe CSV:
 
 ```powershell
-.venv\Scripts\python.exe scripts/ingest_stock_universe.py --csv data/seeds/ihsg_stocks_sample.csv
+.venv\Scripts\python.exe scripts/fetch_idx_stock_universe.py --output data/seeds/idx_stock_universe.csv
+```
+
+This uses StockAnalysis as the current broad IDX listing source and keeps the fetcher isolated so
+an official IDX source can replace it later.
+
+Ingest the expanded stock universe:
+
+```powershell
+.venv\Scripts\python.exe scripts/ingest_stock_universe.py --csv data/seeds/idx_stock_universe.csv
 ```
 
 Install market data dependencies:
@@ -84,8 +93,11 @@ Install market data dependencies:
 Ingest recent historical prices from yfinance:
 
 ```powershell
-.venv\Scripts\python.exe scripts/ingest_historical_prices.py --period 1mo --interval 1d --skip-schema
+.venv\Scripts\python.exe scripts/ingest_historical_prices.py --period 1mo --interval 1d --limit 50 --skip-schema
 ```
+
+Use `--limit` or `--ticker BBCA --ticker TLKM` while experimenting. Pulling prices for the full IDX
+universe can hit provider rate limits and takes longer.
 
 Build stock correlation relationships:
 
@@ -142,7 +154,7 @@ model-adjusted projection band.
 Run the lightweight daily update pipeline:
 
 ```powershell
-.venv\Scripts\python.exe scripts/run_daily_update.py --price-period 1mo
+.venv\Scripts\python.exe scripts/run_daily_update.py --price-period 1mo --limit 50
 ```
 
 Retrain only when you explicitly want to refresh the model artifact:

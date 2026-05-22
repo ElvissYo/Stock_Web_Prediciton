@@ -22,6 +22,7 @@ class StockRecord:
     sector: str
     exchange: str = "IDX"
     yfinance_symbol: str | None = None
+    universe_rank: int | None = None
 
     @classmethod
     def from_csv_row(cls, row: dict[str, str], line_number: int) -> "StockRecord":
@@ -38,15 +39,17 @@ class StockRecord:
             sector=_required_value(row, "sector", line_number),
             exchange=_optional_value(row, "exchange") or "IDX",
             yfinance_symbol=yfinance_symbol.upper(),
+            universe_rank=_optional_int(row, "universe_rank", line_number),
         )
 
-    def to_neo4j(self) -> dict[str, str | None]:
+    def to_neo4j(self) -> dict[str, Any]:
         return {
             "ticker": self.ticker,
             "name": self.name,
             "sector": self.sector,
             "exchange": self.exchange,
             "yfinance_symbol": self.yfinance_symbol,
+            "universe_rank": self.universe_rank,
         }
 
 
@@ -96,6 +99,7 @@ def ingest_stocks(client: Neo4jClient, records: Iterable[StockRecord]) -> StockI
         SET stock.name = row.name,
             stock.exchange = row.exchange,
             stock.yfinance_symbol = row.yfinance_symbol,
+            stock.universe_rank = row.universe_rank,
             stock.updated_at = datetime()
         MERGE (stock)-[relationship:IN_SECTOR]->(sector)
         ON CREATE SET relationship.created_at = datetime()
@@ -151,3 +155,15 @@ def _optional_value(row: dict[str, str], column: str) -> str | None:
     stripped = value.strip()
     return stripped or None
 
+
+def _optional_int(row: dict[str, str], column: str, line_number: int) -> int | None:
+    value = _optional_value(row, column)
+    if value is None:
+        return None
+
+    try:
+        return int(value)
+    except ValueError as exc:
+        raise ValueError(
+            f"Invalid integer value for '{column}' on CSV line {line_number}: {value}"
+        ) from exc

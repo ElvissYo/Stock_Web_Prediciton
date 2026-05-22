@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class DailyUpdateConfig:
     """Configuration for local/scheduled incremental update runs."""
 
-    stock_csv: Path = Path("data/seeds/ihsg_stocks_sample.csv")
+    stock_csv: Path = Path("data/seeds/idx_stock_universe.csv")
     price_period: str = "1mo"
     price_interval: str = "1d"
     price_start: str | None = None
@@ -198,4 +198,3 @@ def run_daily_update(settings: Settings, config: DailyUpdateConfig) -> DailyUpda
         prediction_rows=prediction_rows,
         skipped_steps=skipped_steps,
     )
-

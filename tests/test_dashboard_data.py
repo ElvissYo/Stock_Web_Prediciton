@@ -3,6 +3,7 @@ import pytest
 from kag.dashboard.data import (
     build_investment_simulation,
     load_model_metrics,
+    load_stock_options,
     normalize_prediction_rows,
     prediction_label,
 )
@@ -44,6 +45,19 @@ def test_prediction_label_maps_known_values():
 
 def test_load_model_metrics_returns_empty_for_missing_file(tmp_path):
     assert load_model_metrics(tmp_path / "missing.json") == {}
+
+
+def test_load_stock_options_orders_priced_stocks_first():
+    class RecordingClient:
+        def execute_read(self, query, parameters=None):
+            assert "count(price) > 0 AS has_price" in query
+            assert "ORDER BY has_price DESC, coalesce(stock.universe_rank, 1000000), ticker" in query
+            return [
+                {"ticker": "BBCA", "has_price": True, "price_points": 20},
+                {"ticker": "AADI", "has_price": False, "price_points": 0},
+            ]
+
+    assert load_stock_options(RecordingClient())[0]["ticker"] == "BBCA"
 
 
 def test_build_investment_simulation_uses_historical_values():

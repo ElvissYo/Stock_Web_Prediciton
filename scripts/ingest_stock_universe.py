@@ -14,7 +14,7 @@ from kag.ingestion.stocks import ingest_stocks, load_stock_records
 from kag.logging import configure_logging
 
 
-DEFAULT_CSV_PATH = Path("data/seeds/ihsg_stocks_sample.csv")
+DEFAULT_CSV_PATH = Path("data/seeds/idx_stock_universe.csv")
 logger = logging.getLogger(__name__)
 
 
@@ -63,4 +63,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

@@ -79,12 +79,20 @@ def main() -> None:
 
 def render_sidebar(stock_options: list[dict]) -> str:
     st.sidebar.header("Controls")
+    priced_stock_options = [stock for stock in stock_options if stock.get("has_price")]
+    show_all_stocks = st.sidebar.checkbox("Show all IDX stocks", value=True)
+    visible_stock_options = (
+        stock_options if show_all_stocks or not priced_stock_options else priced_stock_options
+    )
     ticker_labels = {
         f"{stock['ticker']} - {stock.get('name') or stock['ticker']}": stock["ticker"]
-        for stock in stock_options
+        for stock in visible_stock_options
     }
     selected_label = st.sidebar.selectbox("Stock", options=list(ticker_labels), index=0)
-    st.sidebar.caption("Data source: Neo4j graph + yfinance historical prices")
+    st.sidebar.caption(
+        f"Data source: Neo4j graph + yfinance historical prices. "
+        f"{len(priced_stock_options)} of {len(stock_options)} stocks have price history."
+    )
     return ticker_labels[selected_label]
 
 
