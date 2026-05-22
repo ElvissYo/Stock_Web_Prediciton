@@ -128,7 +128,7 @@ def render_market_overview(
                 labels={"probability_up": "Probability Up", "ticker": "Ticker"},
             )
             fig.update_layout(height=360, margin=dict(l=8, r=8, t=24, b=8))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with chart_cols[1]:
         st.subheader("Sector Coverage")
@@ -143,7 +143,7 @@ def render_market_overview(
                 labels={"stocks": "Stocks", "sector": "Sector"},
             )
             fig.update_layout(height=360, margin=dict(l=8, r=8, t=24, b=8))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     st.subheader("Model Evaluation")
     metric_cols = st.columns(5)
@@ -211,7 +211,7 @@ def render_stock_detail(selected_stock: dict, prediction: dict | None, price_his
         yaxis2=dict(title="Volume", overlaying="y", side="right", showgrid=False),
         legend=dict(orientation="h"),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_investment_simulator(
@@ -335,7 +335,7 @@ def render_investment_simulator(
         yaxis=dict(title="Portfolio Value"),
         legend=dict(orientation="h"),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_graph_context(correlations: list[dict], sector_counts: list[dict]) -> None:
@@ -351,7 +351,7 @@ def render_graph_context(correlations: list[dict], sector_counts: list[dict]) ->
             st.dataframe(
                 correlation_frame,
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
                 column_config={
                     "peer_ticker": "Peer",
                     "peer_name": "Name",

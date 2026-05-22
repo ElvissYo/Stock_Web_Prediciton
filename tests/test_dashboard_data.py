@@ -51,7 +51,8 @@ def test_load_stock_options_orders_priced_stocks_first():
     class RecordingClient:
         def execute_read(self, query, parameters=None):
             assert "count(price) > 0 AS has_price" in query
-            assert "ORDER BY has_price DESC, coalesce(stock.universe_rank, 1000000), ticker" in query
+            assert "coalesce(stock.universe_rank, 1000000) AS universe_rank" in query
+            assert "ORDER BY has_price DESC, universe_rank, ticker" in query
             return [
                 {"ticker": "BBCA", "has_price": True, "price_points": 20},
                 {"ticker": "AADI", "has_price": False, "price_points": 0},

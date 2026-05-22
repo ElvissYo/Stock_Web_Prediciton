@@ -144,14 +144,14 @@ def load_stock_options(client: Neo4jClient) -> list[dict[str, Any]]:
         """
         MATCH (stock:Stock)
         OPTIONAL MATCH (stock)-[:IN_SECTOR]->(sector:Sector)
-        OPTIONAL MATCH (stock)-[:HAS_PRICE]->(price:PricePoint)
-        WHERE price.source = 'yfinance' AND price.interval = '1d'
+        OPTIONAL MATCH (stock)-[:HAS_PRICE]->(price:PricePoint {source: 'yfinance', interval: '1d'})
         RETURN stock.ticker AS ticker,
                stock.name AS name,
                coalesce(sector.name, 'UNKNOWN') AS sector,
+               coalesce(stock.universe_rank, 1000000) AS universe_rank,
                count(price) AS price_points,
                count(price) > 0 AS has_price
-        ORDER BY has_price DESC, coalesce(stock.universe_rank, 1000000), ticker
+        ORDER BY has_price DESC, universe_rank, ticker
         """
     )
 
