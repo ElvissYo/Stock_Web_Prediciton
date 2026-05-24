@@ -1,0 +1,672 @@
+.chart-actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.fullscreen-chart-button {
+  align-items: center;
+  background:
+    linear-gradient(180deg, rgba(114, 198, 255, 0.18), rgba(54, 229, 141, 0.08)),
+    rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(114, 198, 255, 0.35);
+  border-radius: 7px;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 760;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 12px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.fullscreen-chart-button:hover {
+  border-color: rgba(54, 229, 141, 0.62);
+  box-shadow: 0 0 24px rgba(54, 229, 141, 0.14);
+  transform: translateY(-1px);
+}
+
+.expand-icon {
+  border: 2px solid currentColor;
+  display: inline-block;
+  height: 14px;
+  position: relative;
+  width: 14px;
+}
+
+.expand-icon::before,
+.expand-icon::after {
+  background: var(--panel-strong);
+  content: "";
+  position: absolute;
+}
+
+.expand-icon::before {
+  height: 6px;
+  left: 3px;
+  top: -3px;
+  width: 4px;
+}
+
+.expand-icon::after {
+  height: 4px;
+  right: -3px;
+  top: 3px;
+  width: 6px;
+}
+
+#mainChart {
+  cursor: zoom-in;
+}
+
+body.chart-fullscreen-open {
+  overflow: hidden;
+}
+
+.chart-fullscreen-overlay {
+  animation: fullscreen-fade-in 180ms ease both;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(54, 229, 141, 0.08), transparent 28rem),
+    linear-gradient(180deg, rgba(3, 6, 7, 0.98), rgba(5, 10, 11, 0.99));
+  inset: 0;
+  padding: 10px;
+  position: fixed;
+  z-index: 100;
+}
+
+.fs-workspace {
+  animation: workspace-enter 220ms ease both;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012)),
+    #05090a;
+  border: 1px solid rgba(183, 196, 189, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.56);
+  display: grid;
+  grid-template-areas:
+    "top top top"
+    "tools chart side";
+  grid-template-columns: 54px minmax(0, 1fr) minmax(300px, 340px);
+  grid-template-rows: auto minmax(0, 1fr);
+  height: calc(100vh - 20px);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.fs-topbar {
+  align-items: center;
+  background: rgba(7, 13, 14, 0.94);
+  border-bottom: 1px solid rgba(183, 196, 189, 0.14);
+  display: grid;
+  gap: 10px;
+  grid-area: top;
+  grid-template-columns: minmax(190px, 0.8fr) auto minmax(280px, auto) minmax(360px, 1.5fr) auto;
+  min-height: 66px;
+  padding: 9px 12px;
+  position: relative;
+  z-index: 4;
+}
+
+.fs-symbol-block {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fs-symbol-block strong {
+  color: #f2faf6;
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.fs-symbol-block span {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fs-price-strip {
+  align-items: end;
+  display: grid;
+  gap: 3px;
+  justify-items: end;
+}
+
+.fs-price-strip span:first-child {
+  color: var(--text);
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 18px;
+  font-weight: 780;
+}
+
+.fs-price-strip span:last-child {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 12px;
+}
+
+.fs-range-tabs,
+.fs-chart-controls,
+.fs-persist-controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fs-range-tabs {
+  background: rgba(255, 255, 255, 0.026);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.fs-topbar button,
+.watchlist-filters button,
+.watchlist-heading button,
+.watchlist-mobile-button,
+.watchlist-collapse,
+.watchlist-slim-button {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(183, 196, 189, 0.14);
+  border-radius: 7px;
+  color: var(--muted);
+  cursor: pointer;
+  min-height: 32px;
+  padding: 6px 9px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.fs-topbar button:hover,
+.watchlist-filters button:hover,
+.watchlist-heading button:hover,
+.watchlist-mobile-button:hover,
+.watchlist-collapse:hover,
+.watchlist-slim-button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(114, 198, 255, 0.36);
+  color: var(--text);
+}
+
+.fs-topbar button.active,
+.watchlist-filters button.active {
+  background: rgba(54, 229, 141, 0.13);
+  border-color: rgba(54, 229, 141, 0.42);
+  color: var(--green);
+}
+
+.fs-close-button {
+  border-color: rgba(255, 93, 108, 0.38) !important;
+  color: #ffd8dd !important;
+}
+
+.fs-chart-panel {
+  grid-area: chart;
+  min-height: 0;
+  min-width: 0;
+  padding: 10px;
+}
+
+.fs-chart-stage {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.008)),
+    #030708;
+  border: 1px solid rgba(183, 196, 189, 0.12);
+  border-radius: 8px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.fs-chart-grid {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 80px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 64px);
+  inset: 0;
+  opacity: 0.6;
+  pointer-events: none;
+  position: absolute;
+}
+
+.fs-chart,
+.fs-drawing-layer {
+  inset: 0;
+  position: absolute;
+}
+
+.fs-chart {
+  z-index: 1;
+}
+
+.fs-drawing-layer {
+  cursor: crosshair;
+  height: 100%;
+  overflow: visible;
+  touch-action: none;
+  width: 100%;
+  z-index: 2;
+}
+
+.fs-loading,
+.fs-empty {
+  align-items: center;
+  backdrop-filter: blur(6px);
+  background: rgba(3, 7, 8, 0.74);
+  color: var(--muted);
+  display: flex;
+  gap: 12px;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: absolute;
+  text-align: center;
+  z-index: 6;
+}
+
+.fs-empty {
+  border: 1px dashed rgba(183, 196, 189, 0.18);
+}
+
+.fs-ohlc-tooltip {
+  animation: tooltip-in 120ms ease both;
+  background: rgba(4, 9, 10, 0.94);
+  border: 1px solid rgba(183, 196, 189, 0.22);
+  border-radius: 7px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+  color: #dfe9e4;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  max-width: 250px;
+  padding: 9px 10px;
+  pointer-events: none;
+  position: absolute;
+  z-index: 7;
+}
+
+.fs-watchlist-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.036), rgba(255, 255, 255, 0.012)),
+    rgba(8, 14, 15, 0.96);
+  border-left: 1px solid rgba(183, 196, 189, 0.14);
+  display: grid;
+  grid-area: side;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  transition: width 180ms ease;
+}
+
+.watchlist-expanded {
+  display: grid;
+  gap: 10px;
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
+  min-height: 0;
+  padding: 12px;
+}
+
+.watchlist-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.watchlist-heading h2 {
+  font-size: 16px;
+}
+
+.watchlist-heading button {
+  display: none;
+}
+
+.watchlist-search,
+.watchlist-sort {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(183, 196, 189, 0.14);
+  border-radius: 8px;
+  color: var(--text);
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.watchlist-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.watchlist-status {
+  color: var(--muted);
+  display: flex;
+  font-size: 12px;
+  gap: 8px;
+  justify-content: space-between;
+  min-height: 18px;
+}
+
+.watchlist-rows {
+  display: grid;
+  gap: 7px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.watchlist-row {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(183, 196, 189, 0.12);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  min-height: 62px;
+  padding: 9px;
+  text-align: left;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.watchlist-row:hover {
+  background: rgba(255, 255, 255, 0.062);
+  border-color: rgba(114, 198, 255, 0.28);
+  transform: translateX(-2px);
+}
+
+.watchlist-row.active {
+  background: rgba(54, 229, 141, 0.11);
+  border-color: rgba(54, 229, 141, 0.45);
+  box-shadow: 0 0 0 1px rgba(54, 229, 141, 0.08) inset;
+}
+
+.watchlist-main,
+.watchlist-price {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.watchlist-main small {
+  color: var(--muted);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watchlist-price {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 12px;
+  justify-items: end;
+}
+
+.watchlist-price small {
+  white-space: nowrap;
+}
+
+.prediction-badge {
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 820;
+  min-width: 46px;
+  padding: 5px 6px;
+  text-align: center;
+}
+
+.prediction-badge.up {
+  background: rgba(54, 229, 141, 0.14);
+  color: var(--green);
+}
+
+.prediction-badge.down {
+  background: rgba(255, 93, 108, 0.14);
+  color: var(--red);
+}
+
+.prediction-badge.neutral {
+  background: rgba(242, 193, 95, 0.13);
+  color: var(--amber);
+}
+
+.watchlist-skeleton {
+  animation: shimmer 1.25s linear infinite;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent),
+    rgba(255, 255, 255, 0.045);
+  background-size: 420px 100%;
+  border-radius: 8px;
+  height: 62px;
+}
+
+.fs-side-details {
+  border-top: 1px solid rgba(183, 196, 189, 0.12);
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.fs-side-details section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(183, 196, 189, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 9px;
+}
+
+.fs-side-details span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.fs-side-details strong {
+  color: #dce8e2;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.watchlist-collapse {
+  border-radius: 99px;
+  height: 28px;
+  left: -14px;
+  min-height: 0;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  width: 28px;
+  z-index: 8;
+}
+
+.watchlist-collapse::before {
+  border-bottom: 5px solid transparent;
+  border-right: 6px solid currentColor;
+  border-top: 5px solid transparent;
+  content: "";
+  display: block;
+  margin: 8px 0 0 9px;
+}
+
+.watchlist-slim-button {
+  display: none;
+}
+
+.watchlist-mobile-button {
+  bottom: 16px;
+  display: none;
+  position: absolute;
+  right: 16px;
+  z-index: 9;
+}
+
+.chart-fullscreen-overlay.watchlist-collapsed .fs-workspace {
+  grid-template-columns: 54px minmax(0, 1fr) 46px;
+}
+
+.chart-fullscreen-overlay.watchlist-collapsed .watchlist-expanded {
+  display: none;
+}
+
+.chart-fullscreen-overlay.watchlist-collapsed .watchlist-slim-button {
+  align-self: start;
+  display: block;
+  margin: 56px auto 0;
+  min-width: 34px;
+  padding: 7px 4px;
+  writing-mode: vertical-rl;
+}
+
+.chart-fullscreen-overlay.watchlist-collapsed .watchlist-collapse::before {
+  border-left: 6px solid currentColor;
+  border-right: 0;
+}
+
+@keyframes fullscreen-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes workspace-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes toolbar-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1240px) {
+  .fs-workspace {
+    grid-template-columns: 54px minmax(0, 1fr) 300px;
+  }
+
+  .fs-topbar {
+    grid-template-columns: minmax(160px, 0.8fr) auto minmax(260px, auto);
+  }
+
+  .fs-chart-controls,
+  .fs-persist-controls {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 860px) {
+  .chart-fullscreen-overlay {
+    padding: 0;
+  }
+
+  .fs-workspace,
+  .chart-fullscreen-overlay.watchlist-collapsed .fs-workspace {
+    border-radius: 0;
+    grid-template-areas:
+      "top"
+      "chart"
+      "tools";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) 58px;
+    height: 100vh;
+  }
+
+  .fs-topbar {
+    grid-template-columns: 1fr auto;
+    max-height: 190px;
+    overflow-y: auto;
+  }
+
+  .fs-price-strip,
+  .fs-range-tabs,
+  .fs-chart-controls,
+  .fs-persist-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .fs-left-toolbar {
+    border-right: 0;
+    border-top: 1px solid rgba(183, 196, 189, 0.14);
+  }
+
+  .fs-chart-panel {
+    padding: 8px;
+  }
+
+  .fs-watchlist-sidebar {
+    bottom: 0;
+    box-shadow: 0 -28px 70px rgba(0, 0, 0, 0.5);
+    display: none;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: auto;
+    z-index: 12;
+  }
+
+  .chart-fullscreen-overlay.watchlist-mobile-open .fs-watchlist-sidebar {
+    display: grid;
+    max-height: 78vh;
+  }
+
+  .chart-fullscreen-overlay.watchlist-collapsed .watchlist-expanded,
+  .watchlist-expanded {
+    display: grid;
+  }
+
+  .watchlist-heading button,
+  .watchlist-mobile-button {
+    display: inline-flex;
+  }
+
+  .watchlist-collapse,
+  .watchlist-slim-button {
+    display: none !important;
+  }
+}

@@ -1,0 +1,16 @@
+.git
+.github
+.pytest_cache
+.ruff_cache
+.venv
+venv
+__pycache__
+*.py[cod]
+*.egg-info
+.env
+*.log
+streamlit-dashboard.*
+web-dashboard.*
+data/raw
+data/processed/*.tmp
+reports/dashboard-verify.png

@@ -1,0 +1,11 @@
+ticker,yfinance_symbol,name,sector,market_cap_rank,beta
+BBCA,BBCA.JK,PT Bank Central Asia Tbk,Financials,1,
+DCII,DCII.JK,PT DCI Indonesia Tbk,Technology,2,
+BBRI,BBRI.JK,PT Bank Rakyat Indonesia (Persero) Tbk,Financials,3,
+BMRI,BMRI.JK,PT Bank Mandiri (Persero) Tbk,Financials,4,
+BYAN,BYAN.JK,PT Bayan Resources Tbk,Energy,5,
+BREN,BREN.JK,PT Barito Renewables Energy Tbk,Energy,6,
+TLKM,TLKM.JK,PT Telekomunikasi Indonesia (Persero) Tbk,Communication Services,7,
+ASII,ASII.JK,PT Astra International Tbk,Industrials,8,
+AMMN,AMMN.JK,PT Amman Mineral Internasional Tbk,Basic Materials,9,
+TPIA,TPIA.JK,PT Chandra Asri Pacific Tbk,Basic Materials,10,

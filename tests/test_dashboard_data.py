@@ -2,6 +2,7 @@ import pytest
 
 from kag.dashboard.data import (
     build_investment_simulation,
+    load_local_price_ohlcv,
     load_model_metrics,
     load_stock_options,
     normalize_prediction_rows,
@@ -45,6 +46,54 @@ def test_prediction_label_maps_known_values():
 
 def test_load_model_metrics_returns_empty_for_missing_file(tmp_path):
     assert load_model_metrics(tmp_path / "missing.json") == {}
+
+
+def test_load_local_price_ohlcv_filters_period_and_symbol(tmp_path):
+    pd = pytest.importorskip("pandas")
+    pytest.importorskip("pyarrow")
+    path = tmp_path / "prices.parquet"
+    frame = pd.DataFrame(
+        [
+            {
+                "ticker": "BBCA",
+                "yfinance_symbol": "BBCA.JK",
+                "date": "2026-01-01",
+                "open": 100,
+                "high": 110,
+                "low": 90,
+                "close": 105,
+                "volume": 1000,
+            },
+            {
+                "ticker": "BBCA",
+                "yfinance_symbol": "BBCA.JK",
+                "date": "2026-05-23",
+                "open": 120,
+                "high": 130,
+                "low": 118,
+                "close": 128,
+                "volume": 2000,
+            },
+            {
+                "ticker": "BBRI",
+                "yfinance_symbol": "BBRI.JK",
+                "date": "2026-05-23",
+                "open": 90,
+                "high": 95,
+                "low": 88,
+                "close": 94,
+                "volume": 900,
+            },
+        ]
+    )
+    frame.to_parquet(path, index=False)
+
+    rows = load_local_price_ohlcv("BBCA.JK", period="1mo", interval="1d", path=path)
+
+    assert len(rows) == 1
+    assert rows[0]["date"] == "2026-05-23"
+    assert rows[0]["close"] == 128
+    assert rows[0]["source"] == str(path)
 
 
 def test_load_stock_options_orders_priced_stocks_first():

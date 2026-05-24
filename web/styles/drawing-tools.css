@@ -1,0 +1,307 @@
+.fs-left-toolbar {
+  animation: toolbar-slide-in 220ms ease both;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+    rgba(8, 14, 15, 0.96);
+  border-right: 1px solid rgba(183, 196, 189, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  grid-area: tools;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 6px;
+  z-index: 5;
+}
+
+.drawing-tool-group {
+  border-bottom: 1px solid rgba(183, 196, 189, 0.12);
+  display: grid;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+
+.drawing-tool-group:last-child {
+  border-bottom: 0;
+}
+
+.drawing-tool-button {
+  align-items: center;
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(183, 196, 189, 0.12);
+  border-radius: 7px;
+  color: #9fb0aa;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  position: relative;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.drawing-tool-button svg {
+  fill: none;
+  height: 21px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 21px;
+}
+
+.drawing-tool-button:hover {
+  background: rgba(114, 198, 255, 0.1);
+  border-color: rgba(114, 198, 255, 0.38);
+  color: var(--text);
+  transform: translateX(1px);
+}
+
+.drawing-tool-button.active {
+  background:
+    linear-gradient(180deg, rgba(54, 229, 141, 0.18), rgba(114, 198, 255, 0.08)),
+    rgba(54, 229, 141, 0.08);
+  border-color: rgba(54, 229, 141, 0.48);
+  box-shadow: 0 0 18px rgba(54, 229, 141, 0.12);
+  color: var(--green);
+}
+
+.drawing-tool-button::after {
+  background: rgba(4, 9, 10, 0.96);
+  border: 1px solid rgba(183, 196, 189, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+  color: var(--text);
+  content: attr(title);
+  font-size: 12px;
+  left: calc(100% + 8px);
+  line-height: 1;
+  opacity: 0;
+  padding: 8px 9px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.drawing-tool-button:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.fs-drawing-layer.drawing-passive {
+  pointer-events: none;
+}
+
+.drawing-object {
+  pointer-events: visiblePainted;
+}
+
+.drawing-object line,
+.drawing-object path,
+.drawing-object rect,
+.drawing-object polygon {
+  vector-effect: non-scaling-stroke;
+}
+
+.drawing-hit {
+  fill: none;
+  opacity: 0;
+  pointer-events: stroke;
+  stroke: transparent;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 14;
+}
+
+rect.drawing-hit {
+  fill: transparent;
+  pointer-events: all;
+  stroke-width: 0;
+}
+
+.drawing-object:not(.is-preview) {
+  transition: opacity 120ms ease;
+}
+
+.drawing-object.is-preview {
+  opacity: 0.74;
+  pointer-events: none;
+}
+
+.drawing-object.is-selected line:not(.drawing-hit),
+.drawing-object.is-selected path:not(.drawing-hit),
+.drawing-object.is-selected rect:not(.drawing-hit),
+.drawing-object.is-selected polygon {
+  filter: drop-shadow(0 0 7px rgba(34, 211, 238, 0.45));
+}
+
+.drawing-object.is-locked {
+  opacity: 0.72;
+}
+
+.drawing-handle {
+  fill: #061012;
+  pointer-events: none;
+  stroke: #f2faf6;
+  stroke-width: 1.5;
+}
+
+.drawing-label,
+.drawing-text {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 12px;
+  font-weight: 720;
+  paint-order: stroke;
+  stroke: rgba(3, 7, 8, 0.9);
+  stroke-width: 3px;
+}
+
+.drawing-label {
+  pointer-events: none;
+}
+
+.drawing-text {
+  font-size: 14px;
+  pointer-events: painted;
+}
+
+.drawing-tool-status {
+  animation: tooltip-in 140ms ease both;
+  background: rgba(4, 9, 10, 0.88);
+  border: 1px solid rgba(183, 196, 189, 0.18);
+  border-radius: 8px;
+  color: #dbe7e1;
+  font-size: 12px;
+  left: 12px;
+  max-width: min(520px, calc(100% - 24px));
+  padding: 8px 10px;
+  pointer-events: none;
+  position: absolute;
+  top: 12px;
+  z-index: 8;
+}
+
+.drawing-text-editor {
+  background: rgba(4, 9, 10, 0.96);
+  border: 1px solid rgba(34, 211, 238, 0.58);
+  border-radius: 7px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+  color: var(--text);
+  font: 13px "JetBrains Mono", Consolas, monospace;
+  min-height: 34px;
+  min-width: 220px;
+  padding: 7px 9px;
+  position: absolute;
+  z-index: 10;
+}
+
+.drawing-text-editor:focus {
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.36),
+    0 0 0 3px rgba(34, 211, 238, 0.14);
+  outline: none;
+}
+
+.drawing-settings-panel {
+  animation: tooltip-in 120ms ease both;
+  background: rgba(4, 9, 10, 0.96);
+  border: 1px solid rgba(183, 196, 189, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+  color: var(--text);
+  display: grid;
+  gap: 8px;
+  min-width: 214px;
+  padding: 10px;
+  position: absolute;
+  z-index: 9;
+}
+
+.drawing-settings-panel label {
+  align-items: center;
+  color: var(--muted);
+  display: grid;
+  font-size: 11px;
+  font-weight: 780;
+  gap: 5px;
+  text-transform: uppercase;
+}
+
+.drawing-settings-panel input,
+.drawing-settings-panel select {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(183, 196, 189, 0.16);
+  border-radius: 6px;
+  color: var(--text);
+  min-height: 32px;
+  padding: 5px 7px;
+}
+
+.drawing-settings-panel input[type="color"] {
+  padding: 2px;
+}
+
+.drawing-settings-actions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.drawing-settings-actions button {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(183, 196, 189, 0.14);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 11px;
+  min-height: 30px;
+  padding: 5px 6px;
+}
+
+.drawing-settings-actions button:hover {
+  border-color: rgba(114, 198, 255, 0.38);
+}
+
+@media (max-width: 860px) {
+  .fs-left-toolbar {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 7px 8px;
+  }
+
+  .drawing-tool-group {
+    border-bottom: 0;
+    border-right: 1px solid rgba(183, 196, 189, 0.12);
+    display: flex;
+    flex: 0 0 auto;
+    padding-bottom: 0;
+    padding-right: 8px;
+  }
+
+  .drawing-tool-button {
+    height: 42px;
+    width: 42px;
+  }
+
+  .drawing-tool-button::after {
+    display: none;
+  }
+
+  .drawing-settings-panel {
+    bottom: 70px;
+    left: 10px !important;
+    top: auto !important;
+  }
+}

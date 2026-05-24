@@ -17,21 +17,20 @@ dependencies = [
 data = [
     "numpy>=1.26,<3",
     "pandas>=2.2,<3",
+    "pyarrow>=16,<22",
     "yfinance>=0.2,<1",
 ]
 ml = [
     "joblib>=1.4,<2",
     "lightgbm>=4.5,<5",
+    "matplotlib>=3.8,<4",
     "scikit-learn>=1.5,<2",
 ]
 nlp = [
+    "feedparser>=6.0,<7",
     "sentence-transformers>=3.0,<4",
     "spacy>=3.7,<4",
     "transformers>=4.44,<5",
-]
-dashboard = [
-    "plotly>=5.24,<6",
-    "streamlit>=1.38,<2",
 ]
 dev = [
     "pytest>=8.0,<9",

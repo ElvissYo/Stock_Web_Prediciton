@@ -1,0 +1,2 @@
+"""Custom web dashboard package."""
+
