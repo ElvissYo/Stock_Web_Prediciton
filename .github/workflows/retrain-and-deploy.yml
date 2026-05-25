@@ -11,13 +11,14 @@ jobs:
     timeout-minutes: 360
 
     env:
-      RETRAIN_MODE: lite
-      MAX_TICKERS: 30
-      NEWS_LIMIT: 1000
-      HF_USERNAME: ${{ secrets.HF_USERNAME }}
-      HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
-      HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
+  	RETRAIN_MODE: lite
+  	MAX_TICKERS: 30
+  	NEWS_LIMIT: 1000
+  	PYTHONPATH: ${{ github.workspace }}
+  	HF_USERNAME: ${{ secrets.HF_USERNAME }}
+  	HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+  	HF_TOKEN: ${{ secrets.HF_TOKEN }}
+  	NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -45,6 +46,10 @@ jobs:
         run: |
           python -m py_compile scripts/run_web_dashboard.py
           python -m py_compile kag/web/api.py
+
+      - name: Import check
+        run: |
+          python -c "import kag; print('kag import OK')"
 
       - name: Run retraining pipeline
         run: |
