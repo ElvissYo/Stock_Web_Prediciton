@@ -129,16 +129,15 @@ def api_response(path: str, query: dict[str, list[str]]) -> tuple[HTTPStatus, di
             return HTTPStatus.BAD_REQUEST, {"status": "error", "message": "Unsupported period"}
         if interval not in ALLOWED_INTERVALS:
             return HTTPStatus.BAD_REQUEST, {"status": "error", "message": "Unsupported interval"}
-        candles = load_local_price_ohlcv(symbol, period=period, interval=interval)
-        if not candles:
+        if interval == "1d":
             try:
-                candles = load_yfinance_ohlcv(symbol, period=period, interval=interval)
+                candles = load_local_price_ohlcv(symbol, period=period, interval=interval)
             except Exception:
-                if interval == "1d":
-                    raise
-                candles = load_local_price_ohlcv(symbol, period=period, interval="1d")
-        if not candles and interval != "1d":
-            candles = load_local_price_ohlcv(symbol, period=period, interval="1d")
+                candles = []
+            if not candles:
+                candles = load_yfinance_ohlcv(symbol, period=period, interval=interval)
+        else:
+            candles = load_yfinance_ohlcv(symbol, period=period, interval=interval)
         return HTTPStatus.OK, {
             "status": "ok",
             "symbol": symbol,

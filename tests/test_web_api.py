@@ -70,12 +70,16 @@ def test_api_unknown_route_returns_not_found():
 def test_api_candles_route_supports_intraday_period(monkeypatch):
     calls = {}
 
+    def fake_load_local_price_ohlcv(symbol, *, period, interval):
+        raise AssertionError("intraday candles should not read local daily artifacts")
+
     def fake_load_yfinance_ohlcv(symbol, *, period, interval):
         calls["symbol"] = symbol
         calls["period"] = period
         calls["interval"] = interval
         return []
 
+    monkeypatch.setattr(web_api, "load_local_price_ohlcv", fake_load_local_price_ohlcv)
     monkeypatch.setattr(web_api, "load_yfinance_ohlcv", fake_load_yfinance_ohlcv)
 
     status, payload = api_response(
@@ -87,6 +91,36 @@ def test_api_candles_route_supports_intraday_period(monkeypatch):
     assert payload["period"] == "1d"
     assert payload["interval"] == "5m"
     assert calls == {"symbol": "^JKSE", "period": "1d", "interval": "5m"}
+
+
+def test_api_candles_route_falls_back_when_local_daily_fails(monkeypatch):
+    calls = {}
+
+    def fake_load_local_price_ohlcv(symbol, *, period, interval):
+        assert symbol == "^JKSE"
+        assert period == "1d"
+        assert interval == "1d"
+        raise RuntimeError("bad local parquet")
+
+    def fake_load_yfinance_ohlcv(symbol, *, period, interval):
+        calls["symbol"] = symbol
+        calls["period"] = period
+        calls["interval"] = interval
+        return [{"date": "2026-05-25", "close": 7300.0, "source": "Yahoo Finance / yfinance"}]
+
+    monkeypatch.setattr(web_api, "load_local_price_ohlcv", fake_load_local_price_ohlcv)
+    monkeypatch.setattr(web_api, "load_yfinance_ohlcv", fake_load_yfinance_ohlcv)
+
+    status, payload = api_response(
+        "/api/market/candles",
+        {"symbol": ["^JKSE"], "period": ["1d"], "interval": ["1d"]},
+    )
+
+    assert status == HTTPStatus.OK
+    assert payload["period"] == "1d"
+    assert payload["interval"] == "1d"
+    assert payload["candles"]
+    assert calls == {"symbol": "^JKSE", "period": "1d", "interval": "1d"}
 
 
 def test_api_candles_route_rejects_bad_interval():
