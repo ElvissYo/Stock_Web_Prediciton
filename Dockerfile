@@ -10,17 +10,12 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml README.md ./
-COPY kag ./kag
-COPY scripts ./scripts
-COPY web ./web
-COPY data ./data
-COPY models ./models
-COPY reports ./reports
-
+COPY requirements.txt ./
 RUN python -m pip install --no-cache-dir --upgrade pip \
-    && python -m pip install --no-cache-dir -e ".[data,ml]"
+    && python -m pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 EXPOSE 7860
 
-CMD ["python", "scripts/run_web_dashboard.py", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["python", "scripts/run_web_dashboard.py"]

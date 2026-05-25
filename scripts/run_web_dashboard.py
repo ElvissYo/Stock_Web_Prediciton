@@ -17,11 +17,11 @@ logger = logging.getLogger(__name__)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", default=os.environ.get("DASHBOARD_HOST", "127.0.0.1"))
+    parser.add_argument("--host", default=os.environ.get("DASHBOARD_HOST", "0.0.0.0"))
     parser.add_argument(
         "--port",
         type=int,
-        default=int(os.environ.get("PORT", os.environ.get("DASHBOARD_PORT", "8000"))),
+        default=int(os.environ.get("PORT", os.environ.get("DASHBOARD_PORT", "7860"))),
     )
     parser.add_argument("--static-dir", type=Path, default=Path("web"))
     return parser.parse_args()
