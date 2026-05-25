@@ -38,6 +38,8 @@ def validate_metrics(path_str: str) -> None:
 
     if not isinstance(data, dict):
         raise ValueError("reports/metrics.json must contain a JSON object")
+    if "comparison" not in data or "nlp_model" not in data:
+        raise ValueError("reports/metrics.json must contain comparison and nlp_model sections")
 
 
 def main() -> None:

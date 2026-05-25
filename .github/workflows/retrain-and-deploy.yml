@@ -2,6 +2,19 @@ name: Retrain and Deploy to Hugging Face Space
 
 on:
   workflow_dispatch:
+    inputs:
+      max_tickers:
+        description: "Maximum stock universe size for the scheduled retrain"
+        required: false
+        default: "30"
+      news_provider:
+        description: "News provider: rss, gdelt, or newsapi"
+        required: false
+        default: "rss"
+      news_limit:
+        description: "Maximum ticker-article rows to collect"
+        required: false
+        default: "1000"
   schedule:
     - cron: "0 23 * * *"
 
@@ -11,14 +24,18 @@ jobs:
     timeout-minutes: 360
 
     env:
-  	RETRAIN_MODE: lite
-  	MAX_TICKERS: 30
-  	NEWS_LIMIT: 1000
-  	PYTHONPATH: ${{ github.workspace }}
-  	HF_USERNAME: ${{ secrets.HF_USERNAME }}
-  	HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
-  	HF_TOKEN: ${{ secrets.HF_TOKEN }}
-  	NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
+      RETRAIN_MODE: lite
+      MAX_TICKERS: ${{ github.event.inputs.max_tickers || '30' }}
+      NEWS_PROVIDER: ${{ github.event.inputs.news_provider || 'rss' }}
+      NEWS_LIMIT: ${{ github.event.inputs.news_limit || '1000' }}
+      NEWS_MAX_PER_TICKER: "10"
+      NEWS_REQUEST_DELAY: "8"
+      N_SPLITS: "3"
+      PYTHONPATH: ${{ github.workspace }}
+      HF_USERNAME: ${{ secrets.HF_USERNAME }}
+      HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -40,12 +57,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install -e .
 
       - name: Compile check
         run: |
           python -m py_compile scripts/run_web_dashboard.py
           python -m py_compile kag/web/api.py
+          python -m py_compile scripts/validate_runtime_artifacts.py
 
       - name: Import check
         run: |
@@ -53,13 +72,18 @@ jobs:
 
       - name: Run retraining pipeline
         run: |
-          python scripts/collect_prices.py
-          python scripts/collect_news.py --provider gdelt --limit "$NEWS_LIMIT"
+          python scripts/collect_prices.py --limit "$MAX_TICKERS"
+          python scripts/collect_news.py \
+            --provider "$NEWS_PROVIDER" \
+            --limit "$NEWS_LIMIT" \
+            --max-per-ticker "$NEWS_MAX_PER_TICKER" \
+            --request-delay "$NEWS_REQUEST_DELAY" || \
+            (echo "::warning::News collection failed; using existing data/news_raw.parquet artifact" && test -s data/news_raw.parquet)
           python scripts/build_price_features.py
           python scripts/build_nlp_features.py --sentiment-backend lexicon --embedding-backend hashing
-          python scripts/build_final_dataset.py
-          python scripts/train_baseline.py
-          python scripts/train_global_model.py
+          python scripts/build_final_dataset.py --metadata data/seeds/idx_stock_universe.csv
+          python scripts/train_baseline.py --n-splits "$N_SPLITS"
+          python scripts/train_global_model.py --n-splits "$N_SPLITS"
           python scripts/evaluate_models.py
 
       - name: Validate runtime artifacts
@@ -73,6 +97,11 @@ jobs:
 
       - name: Deploy updated project to Hugging Face Space
         run: |
+          if [ -z "$HF_USERNAME" ] || [ -z "$HF_SPACE_NAME" ] || [ -z "$HF_TOKEN" ]; then
+            echo "HF_USERNAME, HF_SPACE_NAME, and HF_TOKEN secrets are required."
+            exit 1
+          fi
+
           rm -rf /tmp/hf-space
           git clone https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME} /tmp/hf-space
 
@@ -89,7 +118,16 @@ jobs:
           git lfs install
           git lfs track "*.parquet" "*.joblib" "*.pkl" "*.png" "models/*.txt"
           git add .gitattributes
-          git add .
+          git add -A
+          git add -f \
+            data/prices_full_top100.parquet \
+            data/final_dataset.parquet \
+            data/processed/price_features.parquet \
+            data/processed/global_model_predictions.parquet \
+            data/news_raw.parquet \
+            data/nlp_features.parquet \
+            models/global_model_with_nlp.joblib \
+            reports/metrics.json
 
           if git diff --cached --quiet; then
             echo "No changes to deploy."
