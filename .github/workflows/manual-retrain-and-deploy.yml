@@ -125,29 +125,43 @@ jobs:
             exit 1
           fi
 
-          rm -rf /tmp/hf-space
-          HF_AUTH="$(printf "%s:%s" "$HF_USERNAME" "$HF_TOKEN" | base64 -w0)"
-          git -c http.extraheader="Authorization: Basic ${HF_AUTH}" \
-            clone "https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}" /tmp/hf-space
+          for attempt in 1 2 3; do
+            echo "Uploading project folder to Hugging Face Space; attempt=${attempt}"
+            if python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
 
-          rsync -av \
-            --exclude ".git" \
-            --exclude "__pycache__" \
-            --exclude ".pytest_cache" \
-            --exclude ".venv" \
-            --exclude "venv" \
-            --exclude "node_modules" \
-            ./ /tmp/hf-space/
+          token = os.environ["HF_TOKEN"]
+          username = os.environ["HF_USERNAME"]
+          space_name = os.environ["HF_SPACE_NAME"]
+          repo_id = f"{username}/{space_name}"
 
-          cd /tmp/hf-space
-          git lfs install
-          git lfs track "*.parquet" "*.joblib" "*.pkl" "*.png" "models/*.txt"
-          git add .gitattributes
-          git add -A
+          api = HfApi(token=token)
+          api.upload_folder(
+              folder_path=".",
+              repo_id=repo_id,
+              repo_type="space",
+              commit_message="Manual retrain artifact update",
+              ignore_patterns=[
+                  ".git/*",
+                  ".venv/*",
+                  "venv/*",
+                  "__pycache__/*",
+                  ".pytest_cache/*",
+                  "node_modules/*",
+              ],
+          )
+          print("Uploaded project folder to Hugging Face Space:", repo_id)
+          PY
+            then
+              exit 0
+            fi
 
-          if git diff --cached --quiet; then
-            echo "No changes to deploy."
-          else
-            git commit -m "Manual retrain artifact update"
-            git -c http.extraheader="Authorization: Basic ${HF_AUTH}" push
-          fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "::warning::Hugging Face upload failed; retrying in 30 seconds"
+              sleep 30
+            fi
+          done
+
+          echo "::error::Hugging Face upload failed after 3 attempts"
+          exit 1
