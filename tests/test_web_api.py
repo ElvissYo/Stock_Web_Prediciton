@@ -146,6 +146,43 @@ def test_api_candles_route_rejects_bad_interval():
     assert payload["status"] == "error"
 
 
+def test_api_prediction_route_allows_technical_snapshot(monkeypatch):
+    monkeypatch.setattr(
+        web_api,
+        "generate_latest_global_prediction",
+        lambda ticker: {
+            "status": "technical_snapshot",
+            "ticker": ticker,
+            "technical_snapshot": {"trend": "Mixed trend"},
+        },
+    )
+
+    status, payload = api_response("/api/prediction", {"ticker": ["GOTO"]})
+
+    assert status == HTTPStatus.OK
+    assert payload["status"] == "technical_snapshot"
+
+
+def test_api_top_predictions_route(monkeypatch):
+    def fake_load_top_prediction_rankings(*, limit):
+        assert limit == 10
+        return {
+            "status": "ok",
+            "message": "Showing latest available model predictions.",
+            "up": [{"ticker": "BBCA", "predicted_return": 0.02}],
+            "down": [{"ticker": "GOTO", "predicted_return": -0.01}],
+        }
+
+    monkeypatch.setattr(web_api, "load_top_prediction_rankings", fake_load_top_prediction_rankings)
+
+    status, payload = api_response("/api/predictions/top", {"limit": ["10"]})
+
+    assert status == HTTPStatus.OK
+    assert payload["status"] == "ok"
+    assert payload["up"][0]["ticker"] == "BBCA"
+    assert payload["down"][0]["ticker"] == "GOTO"
+
+
 def test_api_projection_route_builds_projection(monkeypatch):
     def fake_load_local_price_ohlcv(symbol, *, period, interval):
         assert symbol == "BBCA.JK"
@@ -181,6 +218,34 @@ def test_api_projection_route_builds_projection(monkeypatch):
     assert payload["projection"]["exit_value"] == 1_020_000
 
 
+def test_api_projection_route_accepts_small_positive_amount(monkeypatch):
+    def fake_load_local_price_ohlcv(symbol, *, period, interval):
+        return [
+            {"date": "2026-01-01", "close": 100.0},
+            {"date": "2026-01-05", "close": 105.0},
+        ]
+
+    monkeypatch.setattr(web_api, "load_local_price_ohlcv", fake_load_local_price_ohlcv)
+    monkeypatch.setattr(
+        web_api,
+        "generate_latest_global_prediction",
+        lambda ticker: {"status": "technical_snapshot", "ticker": ticker},
+    )
+
+    status, payload = api_response(
+        "/api/projection",
+        {
+            "ticker": ["BBCA"],
+            "amount": ["1000"],
+            "entry_date": ["2026-01-01"],
+            "exit_date": ["2026-01-05"],
+        },
+    )
+
+    assert status == HTTPStatus.OK
+    assert payload["projection"]["initial_amount"] == 1000
+
+
 def test_api_projection_route_validates_amount():
     status, payload = api_response(
         "/api/projection",
@@ -194,6 +259,21 @@ def test_api_projection_route_validates_amount():
 
     assert status == HTTPStatus.BAD_REQUEST
     assert payload["status"] == "error"
+
+
+def test_api_news_route_describes_market_fallback(monkeypatch):
+    def fake_load_recent_news_rows(ticker, *, limit):
+        assert ticker == "GOTO"
+        assert limit == 6
+        return [{"title": "Market update", "scope": "market"}]
+
+    monkeypatch.setattr(web_api, "load_recent_news_rows", fake_load_recent_news_rows)
+
+    status, payload = api_response("/api/news", {"ticker": ["GOTO"], "limit": ["6"]})
+
+    assert status == HTTPStatus.OK
+    assert payload["context_message"] == "Showing recent market news when ticker-specific news is limited"
+    assert payload["news"][0]["scope"] == "market"
 
 
 def test_artifact_status_reports_real_paths():

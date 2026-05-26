@@ -58,6 +58,10 @@ export async function loadPredictions() {
   return api("/api/predictions");
 }
 
+export async function loadTopPredictions(limit = 10) {
+  return api(`/api/predictions/top?limit=${encodeURIComponent(String(limit))}`);
+}
+
 export async function loadPrediction(ticker) {
   return api(`/api/prediction?ticker=${encodeURIComponent(ticker)}`);
 }

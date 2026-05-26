@@ -27,6 +27,7 @@ from kag.dashboard.data import (
     load_price_feature_history,
     load_prediction_drivers,
     load_recent_news_rows,
+    load_top_prediction_rankings,
     load_yfinance_ohlcv,
 )
 
@@ -177,10 +178,18 @@ def api_response(path: str, query: dict[str, list[str]]) -> tuple[HTTPStatus, di
             "predictions": rows,
         }
 
+    if path == "/api/predictions/top":
+        limit = _query_int(query, "limit", 10)
+        return HTTPStatus.OK, load_top_prediction_rankings(limit=limit)
+
     if path == "/api/prediction":
         ticker = _query_value(query, "ticker", "BBCA").upper()
         payload = generate_latest_global_prediction(ticker)
-        status = HTTPStatus.OK if payload.get("status") == "ok" else HTTPStatus.NOT_FOUND
+        status = (
+            HTTPStatus.OK
+            if payload.get("status") in {"ok", "technical_snapshot"}
+            else HTTPStatus.NOT_FOUND
+        )
         return status, payload
 
     if path == "/api/prediction-drivers":
@@ -245,11 +254,13 @@ def api_response(path: str, query: dict[str, list[str]]) -> tuple[HTTPStatus, di
     if path == "/api/news":
         ticker = _optional_query_value(query, "ticker")
         limit = _query_int(query, "limit", 12)
+        news = load_recent_news_rows(ticker.upper() if ticker else None, limit=limit)
         return HTTPStatus.OK, {
             "status": "ok",
             "source": "data/news_raw.parquet",
             "sentiment_source": "data/nlp_features.parquet",
-            "news": load_recent_news_rows(ticker.upper() if ticker else None, limit=limit),
+            "context_message": _news_context_message(ticker.upper() if ticker else None, news),
+            "news": news,
         }
 
     if path == "/api/nlp-summary":
@@ -363,6 +374,16 @@ def _probability_up_from_prediction(prediction: dict[str, Any]) -> float | None:
     if prediction.get("predicted_direction") == 0:
         return 0.5 - confidence * 0.5
     return None
+
+
+def _news_context_message(ticker: str | None, rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "Using latest available market news"
+    if ticker and any(row.get("scope") == "market" for row in rows):
+        return "Showing recent market news when ticker-specific news is limited"
+    if ticker:
+        return "Using latest available market news"
+    return "Using latest available market news"
 
 
 def _bounded_float(value: Any) -> float | None:

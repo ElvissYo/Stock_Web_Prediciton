@@ -19,10 +19,11 @@
       <nav aria-label="Dashboard sections">
         <a href="#home" class="nav-link active">Overview</a>
         <a href="#chart" class="nav-link">Chart</a>
-        <a href="#news" class="nav-link">News</a>
-        <a href="#prediction" class="nav-link">Predictions</a>
+        <a href="#stock-chart" class="nav-link">Stock</a>
+        <a href="#rankings" class="nav-link">Rankings</a>
+        <a href="#projection" class="nav-link">Projection</a>
         <a href="#model" class="nav-link">Model</a>
-        <a href="#about" class="nav-link">About</a>
+        <a href="#news" class="nav-link">News</a>
       </nav>
       <div class="nav-status">
         <span class="status-dot"></span>
@@ -45,24 +46,6 @@
           </p>
           <p class="hero-updated" id="heroLastUpdated">Last updated: loading latest artifact timestamp...</p>
           <p class="hero-tagline">Powered by LSTM + Knowledge-Augmented Generation (KAG)</p>
-          <div class="guide-grid" aria-label="Dashboard guide">
-            <article>
-              <strong>Market Overview</strong>
-              <span>Read the latest IHSG direction, movers, and sentiment.</span>
-            </article>
-            <article>
-              <strong>Technical Chart</strong>
-              <span>Inspect candles, volume, and moving averages.</span>
-            </article>
-            <article>
-              <strong>Prediction</strong>
-              <span>View return, direction, confidence, and drivers.</span>
-            </article>
-            <article>
-              <strong>News Sentiment</strong>
-              <span>Track headlines and NLP sentiment from artifacts.</span>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -112,10 +95,10 @@
       <section id="chart" class="panel chart-section section">
         <div class="panel-heading">
           <div class="company-heading">
-            <div class="company-logo fallback">IDX</div>
-            <div>
-              <p class="eyebrow">IHSG Market Index</p>
-              <h2 id="indexChartTitle">IHSG</h2>
+              <div class="company-logo fallback">IDX</div>
+              <div>
+              <p class="eyebrow">IHSG Market Chart</p>
+              <h2 id="indexChartTitle">IHSG Latest Chart</h2>
               <p class="source-note">Index chart source: Yahoo Finance / yfinance</p>
               <p class="source-note data-coverage" id="indexDataCoverage">Loading available IHSG history...</p>
             </div>
@@ -150,23 +133,20 @@
         </div>
       </section>
 
-      <section class="panel chart-section section">
+      <section id="stock-chart" class="panel chart-section section">
         <div class="panel-heading">
           <div class="company-heading">
             <div class="company-logo fallback" id="stockLogo">BBCA</div>
             <div>
-              <p class="eyebrow">Interactive Stock Chart</p>
+              <p class="eyebrow">Selected Stock Chart</p>
               <h2 id="chartTitle">BBCA</h2>
-              <p class="source-note" id="stockCompanyName">Choose one of the top 100 IDX companies or type a ticker manually.</p>
+              <p class="source-note" id="stockCompanyName">Choose one of the top 100 IDX companies.</p>
               <p class="source-note data-coverage" id="stockDataCoverage">Loading available stock history...</p>
             </div>
           </div>
           <form class="symbol-form" id="stockForm">
-            <label for="symbolInput">Stock ticker</label>
-            <div class="selector-control">
-              <input id="symbolInput" list="symbolOptions" value="BBCA" placeholder="Type BBCA, BMRI, TLKM..." autocomplete="off" />
-              <button id="symbolApply" type="submit">Show Chart</button>
-            </div>
+            <label for="symbolSelect">Stock ticker</label>
+            <input id="symbolInput" type="hidden" value="BBCA" autocomplete="off" />
             <select id="symbolSelect" aria-label="Choose stock from top 100 IDX universe"></select>
             <datalist id="symbolOptions"></datalist>
             <small id="stockUniverseCount">Loading top 100 IDX companies...</small>
@@ -239,124 +219,98 @@
         </div>
       </section>
 
-      <section id="prediction" class="prediction-layout section">
+      <section id="rankings" class="movers-layout section" aria-label="Top model prediction rankings">
         <div class="panel">
-          <div class="panel-heading">
-            <div class="company-heading">
-              <div class="company-logo fallback small-logo" id="predictionLogo">BBCA</div>
-              <div>
-                <p class="eyebrow">Prediction & Model Performance</p>
-                <h2 id="predictionTitle">Prediction</h2>
-                <p class="source-note" id="predictionCompanyName">Prediction source: trained global model artifact</p>
-              </div>
-            </div>
-            <form class="symbol-form" id="predictionForm">
-              <label for="predictionInput">Prediction ticker</label>
-              <div class="selector-control">
-                <input id="predictionInput" list="predictionOptions" value="BBCA" placeholder="Type BBCA, BMRI, TLKM..." autocomplete="off" />
-                <button id="predictionApply" type="submit">Predict</button>
-              </div>
-              <select id="predictionSelect" aria-label="Choose prediction stock"></select>
-              <datalist id="predictionOptions"></datalist>
-            </form>
-          </div>
-
-          <div class="prediction-grid" id="predictionMetrics">
-            <div class="skeleton metric"></div>
-            <div class="skeleton metric"></div>
-            <div class="skeleton metric"></div>
-            <div class="skeleton metric"></div>
-          </div>
-          <div id="predictionEmpty" class="empty-state hidden"></div>
-
-          <div class="prediction-explainer">
-            <p>
-              Prediction is generated using historical price features, technical indicators, and
-              NLP-based news sentiment where available.
-            </p>
-            <small>Educational portfolio output only, not financial advice.</small>
-          </div>
-
-          <div class="prediction-chart-wrap">
-            <div id="predictionChart" class="prediction-chart"></div>
-            <div id="predictionChartEmpty" class="empty-state hidden"></div>
-          </div>
-
-          <div class="sentiment-strip" id="sentimentSummary"></div>
-        </div>
-
-        <div class="panel prediction-depth-panel">
-          <div class="drivers-panel">
-            <div class="projection-heading">
-              <p class="eyebrow">Prediction Drivers</p>
-              <h3>Faktor yang Paling Mempengaruhi Prediksi</h3>
-            </div>
-            <p class="driver-summary" id="driverSummary">Loading prediction drivers...</p>
-            <div class="driver-grid" id="predictionDrivers">
-              <div class="skeleton metric"></div>
-              <div class="skeleton metric"></div>
-              <div class="skeleton metric"></div>
-            </div>
-            <div id="driversEmpty" class="empty-state hidden"></div>
-          </div>
-
-          <div class="projection-panel">
-            <div class="projection-heading">
-              <p class="eyebrow">Projection Form</p>
-              <h3>Investment Projection</h3>
-            </div>
-            <form class="projection-form" id="projectionForm">
-              <div class="form-field">
-                <label for="projectionTicker">Saham</label>
-                <input id="projectionTicker" list="symbolOptions" value="BBCA" autocomplete="off" />
-              </div>
-              <div class="form-field">
-                <label for="projectionAmount">Nominal</label>
-                <input id="projectionAmount" type="number" min="1" step="100000" value="10000000" inputmode="numeric" />
-              </div>
-              <div class="form-field">
-                <label for="projectionEntryDate">Tanggal Beli</label>
-                <input id="projectionEntryDate" type="date" />
-              </div>
-              <div class="form-field">
-                <label for="projectionExitDate">Sampai Tanggal</label>
-                <input id="projectionExitDate" type="date" />
-              </div>
-              <button id="projectionApply" type="submit">Hitung Proyeksi</button>
-            </form>
-            <div class="projection-grid" id="projectionResult"></div>
-            <div id="projectionEmpty" class="empty-state hidden"></div>
-            <div class="projection-chart-wrap">
-              <div id="projectionChart" class="projection-chart"></div>
-              <div id="projectionChartEmpty" class="empty-state hidden"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" id="model">
-          <div class="panel-heading">
+          <div class="panel-heading compact-heading">
             <div>
-              <p class="eyebrow">A/B Evaluation</p>
-              <h2>Model Health</h2>
-              <p class="source-note">Readable summary from the latest model evaluation and dataset artifacts.</p>
+              <p class="eyebrow">Top 10 Predicted Up</p>
+              <h2>Highest Model Signals</h2>
+            </div>
+            <p class="source-note" id="predictionRankingsSource">Loading prediction rankings...</p>
+          </div>
+          <div class="prediction-ranking-list predicted-up" id="topPredictedUp">
+            <div class="skeleton block"></div>
+            <div class="skeleton block"></div>
+            <div class="skeleton block"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <p class="eyebrow">Top 10 Predicted Down</p>
+              <h2>Lowest Model Signals</h2>
             </div>
           </div>
-          <div class="model-grid" id="modelMetrics">
-            <div class="skeleton metric"></div>
-            <div class="skeleton metric"></div>
-            <div class="skeleton metric"></div>
+          <div class="prediction-ranking-list predicted-down" id="topPredictedDown">
+            <div class="skeleton block"></div>
+            <div class="skeleton block"></div>
+            <div class="skeleton block"></div>
           </div>
-          <div id="metricsEmpty" class="empty-state hidden"></div>
-          <div class="model-summary" id="modelSummary"></div>
+          <div id="predictionRankingsEmpty" class="empty-state hidden"></div>
         </div>
+      </section>
+
+      <section id="projection" class="panel section projection-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Investment Projection</p>
+            <h2>Portfolio Scenario</h2>
+            <p class="source-note">Uses the selected stock ticker and latest available price history.</p>
+          </div>
+        </div>
+        <form class="projection-form" id="projectionForm" novalidate>
+          <div class="form-field">
+            <label for="projectionTicker">Saham</label>
+            <input id="projectionTicker" type="hidden" value="BBCA" autocomplete="off" />
+            <div class="selected-ticker-pill" id="projectionTickerDisplay" aria-live="polite">BBCA</div>
+          </div>
+          <div class="form-field">
+            <label for="projectionAmount">Nominal</label>
+            <input id="projectionAmount" type="number" min="1" step="any" value="10000000" inputmode="decimal" />
+          </div>
+          <div class="form-field">
+            <label for="projectionEntryDate">Tanggal Beli</label>
+            <input id="projectionEntryDate" type="date" />
+          </div>
+          <div class="form-field">
+            <label for="projectionExitDate">Sampai Tanggal</label>
+            <input id="projectionExitDate" type="date" />
+          </div>
+          <button id="projectionApply" type="submit">Hitung Proyeksi</button>
+        </form>
+        <div class="projection-grid" id="projectionResult"></div>
+        <div id="projectionEmpty" class="empty-state hidden"></div>
+        <div class="projection-chart-wrap compact-chart-wrap">
+          <div id="projectionChart" class="projection-chart"></div>
+          <div id="projectionChartEmpty" class="empty-state hidden"></div>
+        </div>
+      </section>
+
+      <section class="panel section compact-model-panel" id="model">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Model Performance</p>
+            <h2>Model Health</h2>
+            <p class="source-note">Readable summary from the latest model evaluation and dataset artifacts.</p>
+          </div>
+        </div>
+        <div class="model-grid compact-model-grid" id="modelMetrics">
+          <div class="skeleton metric"></div>
+          <div class="skeleton metric"></div>
+          <div class="skeleton metric"></div>
+        </div>
+        <div id="metricsEmpty" class="empty-state hidden"></div>
+        <div class="model-summary" id="modelSummary"></div>
       </section>
 
       <section id="news" class="panel news-section section">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">News Sentiment</p>
+            <p class="eyebrow">Latest Market News</p>
             <h2>Latest Market News</h2>
             <p class="source-note">News source: local news artifact; sentiment source: NLP sentiment artifact.</p>
+            <p class="source-note news-context-label" id="newsContextLabel">Using latest available market news</p>
           </div>
           <div class="news-controls">
             <div class="news-filter-bar" id="newsFilterBar" aria-label="Filter news by sentiment">
@@ -369,15 +323,9 @@
             <button id="newsNext" type="button" aria-label="Next news">Next</button>
           </div>
         </div>
-        <div class="news-marquee" aria-label="Running market headlines">
+        <div class="news-marquee" aria-label="Recent market news carousel">
           <div class="news-marquee-track" id="newsMarqueeTrack"></div>
         </div>
-        <div class="news-grid" id="newsList">
-          <div class="skeleton news"></div>
-          <div class="skeleton news"></div>
-          <div class="skeleton news"></div>
-        </div>
-        <button id="newsLoadMore" class="load-more-button hidden" type="button">Load more</button>
         <div id="newsEmpty" class="empty-state hidden"></div>
       </section>
     </main>

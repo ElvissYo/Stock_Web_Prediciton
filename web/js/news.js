@@ -1,94 +1,93 @@
 import { formatNumber, hideEmpty, isFiniteNumber, showEmpty, signedClass } from "./ui.js";
 
-const INITIAL_NEWS_LIMIT = 6;
+const INITIAL_NEWS_LIMIT = 8;
 let activeFilter = "all";
-let visibleLimit = INITIAL_NEWS_LIMIT;
 let currentRows = [];
-let currentContainer = null;
+let currentCarouselNode = null;
 let currentEmptyNode = null;
-let currentLoadMoreButton = null;
 
-export function bindNewsControls(filterBar, loadMoreButton) {
-  currentLoadMoreButton = loadMoreButton;
+export function bindNewsControls(filterBar) {
   filterBar?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-news-filter]");
     if (!button) return;
     activeFilter = button.dataset.newsFilter || "all";
-    visibleLimit = INITIAL_NEWS_LIMIT;
     filterBar.querySelectorAll("[data-news-filter]").forEach((node) => {
       node.classList.toggle("active", node === button);
     });
-    renderCurrentNewsCards();
-  });
-  loadMoreButton?.addEventListener("click", () => {
-    visibleLimit = Number.POSITIVE_INFINITY;
-    renderCurrentNewsCards();
+    renderCurrentCarousel({ transition: true });
   });
 }
 
-export function renderNews(container, emptyNode, rows, marqueeNode = null) {
-  container.innerHTML = "";
-  currentContainer = container;
+export function renderNews(carouselNode, emptyNode, rows) {
+  currentCarouselNode = carouselNode;
   currentEmptyNode = emptyNode;
   currentRows = rows || [];
-  visibleLimit = INITIAL_NEWS_LIMIT;
-  if (marqueeNode) marqueeNode.innerHTML = "";
-  if (!currentRows.length) {
-    showEmpty(emptyNode, "Data unavailable: news artifact belum tersedia. Jalankan pipeline collect_news.py terlebih dahulu.");
-    if (marqueeNode) {
-      const item = document.createElement("span");
-      item.className = "headline-chip neutral";
-      item.textContent = "Data unavailable: news artifact belum tersedia.";
-      marqueeNode.appendChild(item);
+  renderCurrentCarousel({ transition: false });
+}
+
+export function renderNewsLoading(carouselNode, emptyNode) {
+  hideEmpty(emptyNode);
+  carouselNode.innerHTML = "";
+  for (let index = 0; index < 4; index += 1) {
+    const skeleton = document.createElement("article");
+    skeleton.className = "news-card news-carousel-card skeleton news";
+    carouselNode.appendChild(skeleton);
+  }
+}
+
+function renderCurrentCarousel({ transition }) {
+  if (!currentCarouselNode || !currentEmptyNode) return;
+  const render = () => {
+    currentCarouselNode.innerHTML = "";
+    const selectedRows = filteredRows();
+    if (!selectedRows.length) {
+      showEmpty(currentEmptyNode, "Using latest available market news. No article rows are available in the current artifact.");
+      currentCarouselNode.appendChild(placeholderCard("Using latest available market news"));
+      return;
     }
+
+    const fallbackUsed = activeFilter !== "all" && !currentRows.some((row) => sentimentBucket(row) === activeFilter);
+    if (fallbackUsed) {
+      showEmpty(currentEmptyNode, `No recent ${activeFilter} news found. Showing latest available market news.`);
+    } else {
+      hideEmpty(currentEmptyNode);
+    }
+
+    renderNewsCarousel(currentCarouselNode, selectedRows.slice(0, INITIAL_NEWS_LIMIT));
+  };
+
+  if (!transition) {
+    render();
     return;
   }
 
-  hideEmpty(emptyNode);
-  if (marqueeNode) renderNewsMarquee(marqueeNode, currentRows);
-  renderCurrentNewsCards();
+  currentCarouselNode.classList.add("is-transitioning");
+  window.setTimeout(() => {
+    render();
+    window.requestAnimationFrame(() => {
+      currentCarouselNode.classList.remove("is-transitioning");
+    });
+  }, 180);
 }
 
-export function renderNewsLoading(container, emptyNode) {
-  hideEmpty(emptyNode);
-  currentLoadMoreButton?.classList.add("hidden");
-  container.innerHTML = "";
-  for (let index = 0; index < 3; index += 1) {
-    const skeleton = document.createElement("div");
-    skeleton.className = "skeleton news";
-    container.appendChild(skeleton);
-  }
+function filteredRows() {
+  if (activeFilter === "all") return currentRows;
+  const exactRows = currentRows.filter((row) => sentimentBucket(row) === activeFilter);
+  return exactRows.length ? exactRows : currentRows;
 }
 
-function renderCurrentNewsCards() {
-  if (!currentContainer || !currentEmptyNode) return;
-  currentContainer.innerHTML = "";
-  const filteredRows = currentRows.filter((row) => activeFilter === "all" || sentimentBucket(row) === activeFilter);
-  if (!filteredRows.length) {
-    showEmpty(currentEmptyNode, "Data unavailable: tidak ada berita untuk filter sentimen ini.");
-    currentLoadMoreButton?.classList.add("hidden");
+function renderNewsCarousel(container, rows) {
+  const visibleRows = rows.filter((row) => row.title).slice(0, INITIAL_NEWS_LIMIT);
+  if (!visibleRows.length) {
+    container.appendChild(placeholderCard("Using latest available market news"));
     return;
   }
 
-  hideEmpty(currentEmptyNode);
-  filteredRows.slice(0, visibleLimit).forEach((row) => currentContainer.appendChild(newsCard(row)));
-  if (currentLoadMoreButton) {
-    const hasMore = Number.isFinite(visibleLimit) && filteredRows.length > visibleLimit;
-    currentLoadMoreButton.classList.toggle("hidden", !hasMore);
-    currentLoadMoreButton.textContent = `Load more (${filteredRows.length - visibleLimit} more)`;
-  }
-}
-
-function renderNewsMarquee(container, rows) {
-  const visibleRows = rows.filter((row) => row.title);
-  const loopRows = [...visibleRows, ...visibleRows];
+  const loopRows = visibleRows.length > 1 ? [...visibleRows, ...visibleRows] : visibleRows;
   loopRows.forEach((row) => {
-    const chip = safeArticleLink(row);
-    chip.className = `headline-chip ${signedClass(row.sentiment_score) || "neutral"}`;
-    chip.innerHTML = '<strong></strong><span></span>';
-    chip.querySelector("strong").textContent = row.ticker || "IDX";
-    chip.querySelector("span").textContent = row.title || "Untitled article";
-    container.appendChild(chip);
+    const card = newsCard(row);
+    card.classList.add("news-carousel-card");
+    container.appendChild(card);
   });
 }
 
@@ -149,6 +148,13 @@ function renderImageFallback(holder) {
   fallback.className = "news-fallback";
   fallback.textContent = "No source image";
   holder.appendChild(fallback);
+}
+
+function placeholderCard(text) {
+  const item = document.createElement("article");
+  item.className = "news-card news-carousel-card news-placeholder-card";
+  item.textContent = text;
+  return item;
 }
 
 function safeArticleLink(row) {

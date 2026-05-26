@@ -159,7 +159,7 @@ export function updateIndexChart(candles, emptyNode, range = "ALL") {
     indexVolumeSeries.setData([]);
     indexSma20Series.setData([]);
     indexSma50Series.setData([]);
-    showEmpty(emptyNode, "Data unavailable: IHSG belum tersedia. Cek koneksi yfinance atau jalankan pipeline harga.");
+    showEmpty(emptyNode, "IHSG chart is not available from the latest data artifact yet.");
     return;
   }
   hideEmpty(emptyNode);
@@ -181,7 +181,7 @@ export function updateMainChart(candles, emptyNode, range = "ALL") {
     volumeSeries.setData([]);
     sma20Series.setData([]);
     sma50Series.setData([]);
-    showEmpty(emptyNode, "Data unavailable: chart belum tersedia. Jalankan pipeline atau cek koneksi yfinance.");
+    showEmpty(emptyNode, "Price chart is not available for this ticker yet.");
     return;
   }
   hideEmpty(emptyNode);
@@ -221,22 +221,31 @@ export function updatePredictionChart(rows, prediction, emptyNode) {
   if (!predictionChart) return;
 
   const normalizedRows = normalizeCandles(rows).filter((row) => isFiniteNumber(row.close));
-  if (!normalizedRows.length || !prediction || prediction.status !== "ok") {
+  if (!normalizedRows.length) {
     predictionCloseSeries.setData([]);
     predictionForecastSeries.setData([]);
     predictionForecastSeries.setMarkers([]);
-    showEmpty(emptyNode, "Data unavailable: prediction chart belum tersedia. Jalankan pipeline model dan price features terlebih dahulu.");
+    showEmpty(emptyNode, "Latest price features are unavailable, so the prediction chart cannot be drawn yet.");
     return;
   }
 
   const history = normalizedRows.slice(-120);
   const latest = history[history.length - 1];
+  predictionCloseSeries.setData(history.map((row) => ({ time: row.time, value: row.close })));
+
+  if (!prediction || prediction.status !== "ok") {
+    predictionForecastSeries.setData([]);
+    predictionForecastSeries.setMarkers([]);
+    hideEmpty(emptyNode);
+    predictionChart.timeScale().fitContent();
+    return;
+  }
+
   const latestClose = isFiniteNumber(prediction.close) ? Number(prediction.close) : latest.close;
   const predictedClose = latestClose * (1 + Number(prediction.predicted_return || 0));
   const nextTime = nextTradingTime(latest.time);
 
   hideEmpty(emptyNode);
-  predictionCloseSeries.setData(history.map((row) => ({ time: row.time, value: row.close })));
   predictionForecastSeries.applyOptions({
     color: predictedClose >= latestClose ? "#2fd47a" : "#ef5965",
   });
@@ -275,7 +284,7 @@ export function updateProjectionChart(projection, emptyNode) {
     projectionValueSeries.setData([]);
     projectionLowerSeries.setData([]);
     projectionUpperSeries.setData([]);
-    showEmpty(emptyNode, "Data unavailable: projection belum tersedia untuk input ini.");
+    showEmpty(emptyNode, "Projection chart is not available for this input yet.");
     return;
   }
 

@@ -42,6 +42,23 @@ USER_FACING_DRIVER_LABELS = {
     "volatility": "Volatility",
     "model": "Model confidence",
 }
+NEUTRAL_NLP_FEATURE_DEFAULTS = {
+    "sentiment_mean": 0.0,
+    "sentiment_std": 0.0,
+    "news_count": 0.0,
+    "sentiment_momentum": 0.0,
+    "sentiment_min": 0.0,
+    "sentiment_max": 0.0,
+    "sentiment_abs_mean": 0.0,
+    "positive_news_count": 0.0,
+    "neutral_news_count": 0.0,
+    "negative_news_count": 0.0,
+    "source_count": 0.0,
+    "provider_count": 0.0,
+    "source_diversity": 0.0,
+}
+NLP_EMBEDDING_PREFIX = "embedding_dim_"
+MIN_NEWS_CARDS = 6
 
 
 def load_prediction_rows(path: str | Path = DEFAULT_PREDICTIONS_PATH) -> list[dict[str, Any]]:
@@ -112,6 +129,49 @@ def load_global_prediction_rows(
             }
         )
     return rows
+
+
+def load_top_prediction_rankings(limit: int = 10) -> dict[str, Any]:
+    """Return top up/down model prediction rankings from the latest prediction artifact."""
+
+    rows = load_global_prediction_rows()
+    metadata = {row["ticker"]: row for row in load_market_symbols(limit=1000)}
+    ranked_rows = []
+    for row in rows:
+        score = _prediction_rank_score(row)
+        if score is None:
+            continue
+        ticker = str(row.get("ticker") or "").upper()
+        meta = metadata.get(ticker, {})
+        ranked_rows.append(
+            {
+                "ticker": ticker,
+                "company_name": meta.get("name") or ticker,
+                "symbol": meta.get("symbol") or f"{ticker}.JK",
+                "logo_url": meta.get("logo_url"),
+                "domain": meta.get("domain"),
+                "sector": row.get("sector") or meta.get("sector") or "UNKNOWN",
+                "predicted_return": _float_or_none(row.get("predicted_return")),
+                "direction": _prediction_return_direction(row),
+                "confidence": _float_or_none(row.get("confidence")),
+                "probability_up": _float_or_none(row.get("probability_up")),
+                "latest_close": _float_or_none(row.get("close")),
+                "prediction_date": row.get("date"),
+                "ranking_score": score,
+            }
+        )
+
+    up_rows = sorted(ranked_rows, key=lambda item: item["ranking_score"], reverse=True)[:limit]
+    down_rows = sorted(ranked_rows, key=lambda item: item["ranking_score"])[:limit]
+    return {
+        "status": "ok" if ranked_rows else "empty",
+        "source": str(DEFAULT_GLOBAL_PREDICTIONS_PATH),
+        "message": "Showing latest available model predictions.",
+        "available_predictions": len(ranked_rows),
+        "ranking_method": "predicted_return when available; probability/direction score fallback otherwise",
+        "up": up_rows,
+        "down": down_rows,
+    }
 
 
 def load_model_comparison(path: str | Path = DEFAULT_MODEL_COMPARISON_PATH) -> dict[str, Any]:
@@ -263,7 +323,7 @@ def load_model_performance_summary() -> dict[str, Any]:
         "news_articles": news_stats["rows"],
         "latest_news_date": news_stats["latest_date"],
         "model_type": nlp_model.get("model_type") or baseline.get("model_type") or "unknown",
-        "narrative": _model_narrative(comparison),
+        "narrative": _model_narrative(comparison, news_stats),
     }
 
 
@@ -669,19 +729,24 @@ def generate_latest_global_prediction(
 ) -> dict[str, Any]:
     """Generate a real latest prediction from the trained global model artifact."""
 
+    cleaned = ticker.upper().replace(".JK", "").strip()
     model_file = Path(model_path)
     if not model_file.exists():
-        return {
-            "status": "missing_model",
-            "message": "Model file not found. Please train the model first.",
-        }
+        return _technical_snapshot_prediction(
+            cleaned,
+            "Model artifact is not available yet. Showing latest technical market features instead.",
+            missing_status="missing_model",
+            missing_message="Model file not found and price features are not available yet.",
+        )
 
     dataset_file = Path(dataset_path)
     if not dataset_file.exists():
-        return {
-            "status": "missing_dataset",
-            "message": "Final dataset not found. Please run build_final_dataset.py.",
-        }
+        return _technical_snapshot_prediction(
+            cleaned,
+            "Final model dataset is not available yet. Showing latest technical market features instead.",
+            missing_status="missing_dataset",
+            missing_message="Final dataset and price features are not available yet.",
+        )
 
     try:
         import joblib
@@ -696,28 +761,55 @@ def generate_latest_global_prediction(
     direction_model = artifact.get("direction_model")
     feature_columns = artifact.get("feature_columns") or []
     if model is None or not feature_columns:
-        return {"status": "invalid_model", "message": f"Invalid model artifact: {model_file}"}
+        return _technical_snapshot_prediction(
+            cleaned,
+            "Model artifact is incomplete. Showing latest technical market features instead.",
+            missing_status="invalid_model",
+            missing_message=f"Invalid model artifact and price features are not available: {model_file}",
+        )
 
     frame = pd.read_parquet(dataset_file)
-    ticker_frame = frame[frame["ticker"].astype(str).str.upper() == ticker.upper()].copy()
+    ticker_frame = frame[frame["ticker"].astype(str).str.upper() == cleaned].copy()
     if ticker_frame.empty:
-        return {
-            "status": "missing_ticker",
-            "message": f"No real feature rows found for {ticker}. Run the feature pipeline first.",
-        }
+        return _technical_snapshot_prediction(
+            cleaned,
+            "Model prediction is not available for this ticker in the current training universe. Technical signals are shown from latest price features.",
+            missing_status="missing_ticker",
+            missing_message=(
+                f"Model prediction and price features are not available for {cleaned}. "
+                "Run the feature pipeline first."
+            ),
+        )
 
     ticker_frame["date"] = pd.to_datetime(ticker_frame["date"], errors="coerce")
     latest = ticker_frame.sort_values("date").iloc[-1:].copy()
+    neutralized_nlp_features: list[str] = []
     for column in feature_columns:
         if column not in latest.columns:
-            return {"status": "missing_feature", "message": f"Missing model feature column: {column}"}
+            default_value = _neutral_nlp_feature_value(column)
+            if default_value is None:
+                return _technical_snapshot_prediction(
+                    cleaned,
+                    f"Model feature column {column} is missing. Technical signals are shown from latest price features.",
+                    missing_status="missing_feature",
+                    missing_message=f"Missing model feature column and price features are not available: {column}",
+                )
+            latest[column] = default_value
+            neutralized_nlp_features.append(column)
+
+    latest_features = latest[feature_columns].copy()
+    for column in feature_columns:
+        default_value = _neutral_nlp_feature_value(column)
+        if default_value is not None and latest_features[column].isna().any():
+            latest_features[column] = latest_features[column].fillna(default_value)
+            neutralized_nlp_features.append(column)
 
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", message="X does not have valid feature names")
-        predicted_return = float(model.predict(latest[feature_columns])[0])
+        predicted_return = float(model.predict(latest_features)[0])
         if direction_model is not None:
-            probability_up = float(direction_model.predict_proba(latest[feature_columns])[0][1])
-            predicted_direction = int(direction_model.predict(latest[feature_columns])[0])
+            probability_up = float(direction_model.predict_proba(latest_features)[0][1])
+            predicted_direction = int(direction_model.predict(latest_features)[0])
         else:
             probability_up = None
             predicted_direction = 1 if predicted_return > 0 else 0
@@ -728,9 +820,13 @@ def generate_latest_global_prediction(
         if probability_up is not None
         else _prediction_confidence(predicted_return, volatility)
     )
+    news_count = _float_or_none(latest.iloc[0].get("news_count"))
+    sentiment_score = _float_or_none(latest.iloc[0].get("sentiment_mean"))
+    nlp_available = bool(news_count and news_count > 0)
+    prediction_mode = "full" if nlp_available and not neutralized_nlp_features else "technical_only"
     return {
         "status": "ok",
-        "ticker": ticker.upper(),
+        "ticker": cleaned,
         "date": _date_text(latest.iloc[0].get("date")),
         "sector": latest.iloc[0].get("sector") or "UNKNOWN",
         "close": close,
@@ -738,12 +834,70 @@ def generate_latest_global_prediction(
         "predicted_direction": predicted_direction,
         "probability_up": probability_up,
         "confidence": confidence,
+        "prediction_mode": prediction_mode,
+        "prediction_mode_label": "Technical-only mode"
+        if prediction_mode == "technical_only"
+        else "Full model signal",
+        "nlp_available": nlp_available,
+        "news_count": int(news_count or 0),
+        "sentiment_score": sentiment_score if sentiment_score is not None else 0.0,
+        "overall_sentiment": sentiment_label(sentiment_score if nlp_available else 0.0),
+        "message": (
+            "Prediction is based on technical market features. News sentiment is not available for this ticker yet."
+            if prediction_mode == "technical_only"
+            else "Prediction uses the latest available technical and NLP market features."
+        ),
+        "confidence_note": (
+            "Limited confidence because recent NLP/news signal is unavailable."
+            if prediction_mode == "technical_only"
+            else None
+        ),
         "model_name": artifact.get("model_name") or "global_model_with_nlp",
         "model_type": artifact.get("model_type") or "unknown",
         "direction_model_type": artifact.get("direction_model_type"),
         "source": "Generated by trained LightGBM model"
         if artifact.get("model_type") == "lightgbm"
         else "Generated by trained model artifact",
+    }
+
+
+def _technical_snapshot_prediction(
+    ticker: str,
+    message: str,
+    *,
+    missing_status: str,
+    missing_message: str,
+) -> dict[str, Any]:
+    history = load_price_feature_history(ticker, limit=260)
+    if not history:
+        return {
+            "status": missing_status,
+            "ticker": ticker,
+            "message": missing_message,
+        }
+
+    snapshot = _technical_snapshot_from_history(history)
+    profile = load_company_profile(ticker, fetch_remote=False)
+    return {
+        "status": "technical_snapshot",
+        "ticker": ticker,
+        "date": snapshot.get("date"),
+        "sector": profile.get("sector") or "UNKNOWN",
+        "close": snapshot.get("close"),
+        "predicted_return": None,
+        "predicted_direction": None,
+        "probability_up": None,
+        "confidence": None,
+        "prediction_mode": "technical_snapshot",
+        "prediction_mode_label": "Technical snapshot",
+        "nlp_available": False,
+        "news_count": 0,
+        "sentiment_score": 0.0,
+        "overall_sentiment": "Neutral",
+        "message": message,
+        "confidence_note": "Limited confidence because the trained model signal is unavailable for this ticker.",
+        "source": "Latest available technical price features",
+        "technical_snapshot": snapshot,
     }
 
 
@@ -757,9 +911,10 @@ def load_prediction_drivers(ticker: str) -> dict[str, Any]:
     profile = load_company_profile(cleaned, fetch_remote=False)
     drivers = []
 
+    snapshot = _technical_snapshot_from_history(history)
     latest = history[-1] if history else {}
     previous_5 = history[-6] if len(history) >= 6 else None
-    close = _float_or_none(latest.get("close"))
+    close = _float_or_none(snapshot.get("close") or latest.get("close"))
     sma20 = _float_or_none(latest.get("SMA_20"))
     sma50 = _float_or_none(latest.get("SMA_50"))
     volume = _float_or_none(latest.get("volume"))
@@ -778,7 +933,9 @@ def load_prediction_drivers(ticker: str) -> dict[str, Any]:
     )
 
     momentum_return = None
-    if close is not None and previous_5 and _float_or_none(previous_5.get("close")):
+    if _float_or_none(latest.get("return_5d")) is not None:
+        momentum_return = _float_or_none(latest.get("return_5d"))
+    elif close is not None and previous_5 and _float_or_none(previous_5.get("close")):
         momentum_return = (close / float(previous_5["close"])) - 1
     momentum_score = _bounded_score(momentum_return)
     drivers.append(
@@ -793,7 +950,9 @@ def load_prediction_drivers(ticker: str) -> dict[str, Any]:
         }
     )
 
-    volume_ratio = volume / average_volume if volume is not None and average_volume else None
+    volume_ratio = _float_or_none(latest.get("volume_ratio_20"))
+    if volume_ratio is None:
+        volume_ratio = volume / average_volume if volume is not None and average_volume else None
     volume_score = _bounded_score((volume_ratio - 1) / 2 if volume_ratio is not None else None)
     drivers.append(
         {
@@ -807,20 +966,27 @@ def load_prediction_drivers(ticker: str) -> dict[str, Any]:
         }
     )
 
-    sentiment_score = _float_or_none(nlp_summary.get("sentiment_mean"))
+    news_count = _int_or_none(nlp_summary.get("news_count")) or 0
+    sentiment_score = _float_or_none(nlp_summary.get("sentiment_mean")) if news_count > 0 else None
     drivers.append(
         {
             "key": "sentiment",
             "label": USER_FACING_DRIVER_LABELS["sentiment"],
-            "value": sentiment_label(sentiment_score),
+            "value": sentiment_label(sentiment_score) if news_count > 0 else "News sentiment unavailable",
             "status": signed_status(sentiment_score),
             "score": abs(_bounded_score(sentiment_score)),
             "raw_value": sentiment_score,
-            "detail": "Aggregated NLP sentiment from matched news rows.",
+            "detail": (
+                "Aggregated NLP sentiment from matched news rows."
+                if news_count > 0
+                else "Prediction is based on technical market features. News sentiment is not available for this ticker yet."
+            ),
         }
     )
 
-    volatility = _return_volatility(history[-21:])
+    volatility = _float_or_none(latest.get("volatility_20d"))
+    if volatility is None:
+        volatility = _return_volatility(history[-21:])
     volatility_score = min((volatility or 0) / 0.08, 1.0)
     drivers.append(
         {
@@ -848,12 +1014,13 @@ def load_prediction_drivers(ticker: str) -> dict[str, Any]:
     )
 
     return {
-        "status": "ok" if history or prediction.get("status") == "ok" else "empty",
+        "status": "ok",
         "ticker": cleaned,
-        "date": prediction.get("date") or _date_text(latest.get("date")),
+        "date": prediction.get("date") or _date_text(snapshot.get("date") or latest.get("date")),
         "sector": prediction.get("sector") or profile.get("sector") or "UNKNOWN",
-        "prediction": prediction if prediction.get("status") == "ok" else None,
+        "prediction": prediction if prediction.get("status") in {"ok", "technical_snapshot"} else None,
         "drivers": drivers,
+        "technical_snapshot": snapshot,
         "summary": _driver_summary(cleaned, prediction, nlp_summary, drivers),
     }
 
@@ -883,6 +1050,8 @@ def load_price_feature_history(
         "low",
         "close",
         "volume",
+        "return_5d",
+        "volatility_20d",
         "SMA_20",
         "SMA_50",
         "SMA_200",
@@ -890,6 +1059,10 @@ def load_price_feature_history(
         "MACD",
         "BB_upper",
         "BB_lower",
+        "volume_sma_20",
+        "volume_ratio_20",
+        "close_to_sma_20",
+        "close_to_sma_50",
     ]
     existing_columns = [column for column in wanted_columns if column in frame.columns]
     return [
@@ -906,6 +1079,7 @@ def load_recent_news_rows(
     path: str | Path = DEFAULT_NEWS_PATH,
     *,
     limit: int = 5,
+    include_market_fallback: bool = True,
 ) -> list[dict[str, Any]]:
     """Load recent ticker-matched news rows with NLP sentiment when available."""
 
@@ -920,25 +1094,58 @@ def load_recent_news_rows(
     if "sentiment_score" not in frame.columns:
         frame["sentiment_score"] = None
     frame = _merge_news_sentiment(frame)
-    if ticker:
-        frame = frame[frame["ticker"].astype(str).str.upper() == ticker.upper()].copy()
     if frame.empty:
         return []
-    frame = frame.sort_values("date", ascending=False).head(limit)
-    return [
-        {
-            "date": _date_text(row.get("date")),
-            "title": row.get("title") or "",
-            "summary": row.get("summary") or "",
-            "url": row.get("url") or "",
-            "source": row.get("source") or "",
-            "ticker": row.get("ticker") or ticker or "",
-            "sentiment_score": _news_sentiment_score(row),
-            "sentiment_label": sentiment_label(_news_sentiment_score(row)),
-            "image_url": row.get("image_url") or None,
-        }
-        for row in frame.to_dict("records")
-    ]
+
+    if not ticker:
+        return _news_rows_from_frame(frame, limit=limit, scope="market")
+
+    ticker_upper = ticker.upper()
+    ticker_frame = frame[frame["ticker"].astype(str).str.upper() == ticker_upper].copy()
+    rows = _news_rows_from_frame(ticker_frame, limit=limit, scope="ticker")
+    if not include_market_fallback or len(rows) >= min(limit, MIN_NEWS_CARDS):
+        return rows[:limit]
+
+    market_rows = _news_rows_from_frame(frame, limit=limit, scope="market")
+    seen = {_news_identity(row) for row in rows}
+    for row in market_rows:
+        identity = _news_identity(row)
+        if identity in seen:
+            continue
+        rows.append(row)
+        seen.add(identity)
+        if len(rows) >= limit:
+            break
+    return rows[:limit]
+
+
+def _news_rows_from_frame(frame: Any, *, limit: int, scope: str) -> list[dict[str, Any]]:
+    if frame.empty:
+        return []
+
+    sorted_frame = frame.sort_values("date", ascending=False).head(limit)
+    rows = []
+    for row in sorted_frame.to_dict("records"):
+        sentiment_score = _news_sentiment_score(row)
+        rows.append(
+            {
+                "date": _date_text(row.get("date")),
+                "title": row.get("title") or "",
+                "summary": row.get("summary") or "",
+                "url": row.get("url") or "",
+                "source": row.get("source") or "",
+                "ticker": row.get("ticker") or "",
+                "sentiment_score": sentiment_score,
+                "sentiment_label": sentiment_label(sentiment_score),
+                "image_url": row.get("image_url") or None,
+                "scope": scope,
+            }
+        )
+    return rows
+
+
+def _news_identity(row: dict[str, Any]) -> str:
+    return str(row.get("url") or row.get("title") or row.get("date") or "").strip().lower()
 
 
 def load_latest_nlp_summary(
@@ -949,14 +1156,14 @@ def load_latest_nlp_summary(
 
     data_path = Path(path)
     if not data_path.exists():
-        return {}
+        return _neutral_nlp_summary(ticker)
 
     frame = _read_tabular_file(data_path)
     frame = frame[frame["ticker"].astype(str).str.upper() == ticker.upper()].copy()
     if frame.empty:
-        return {}
+        return _neutral_nlp_summary(ticker)
     row = frame.sort_values("date").iloc[-1].to_dict()
-    news_rows = load_recent_news_rows(ticker, limit=50)
+    news_rows = load_recent_news_rows(ticker, limit=50, include_market_fallback=False)
     sentiment_score = _float_or_none(row.get("sentiment_mean"))
     return {
         "date": _date_text(row.get("date")),
@@ -970,6 +1177,27 @@ def load_latest_nlp_summary(
         "top_negative_headline": _top_headline(news_rows, positive=False),
         "main_theme": _main_news_theme(news_rows),
         "summary_text": _sentiment_summary_text(ticker, sentiment_score, news_rows),
+    }
+
+
+def _neutral_nlp_summary(ticker: str) -> dict[str, Any]:
+    return {
+        "date": None,
+        "sentiment_mean": 0.0,
+        "sentiment_std": 0.0,
+        "news_count": 0,
+        "sentiment_momentum": 0.0,
+        "overall_sentiment": "Neutral",
+        "latest_news_timestamp": None,
+        "top_positive_headline": None,
+        "top_negative_headline": None,
+        "main_theme": "News sentiment unavailable",
+        "summary_text": (
+            "Prediction is based on technical market features. "
+            "News sentiment is not available for this ticker yet."
+        ),
+        "fallback": "neutral_nlp",
+        "ticker": ticker.upper().replace(".JK", "").strip(),
     }
 
 
@@ -1019,6 +1247,31 @@ def _watchlist_prediction_direction(prediction: dict[str, Any]) -> str:
     return "NEUTRAL"
 
 
+def _prediction_rank_score(row: dict[str, Any]) -> float | None:
+    predicted_return = _float_or_none(row.get("predicted_return"))
+    if predicted_return is not None:
+        return predicted_return
+    probability_up = _float_or_none(row.get("probability_up"))
+    if probability_up is not None:
+        return probability_up - 0.5
+    confidence = _float_or_none(row.get("confidence"))
+    direction = _int_or_none(row.get("predicted_direction"))
+    if confidence is not None and direction in {0, 1}:
+        return confidence if direction == 1 else -confidence
+    return None
+
+
+def _prediction_return_direction(row: dict[str, Any]) -> str:
+    predicted_return = _float_or_none(row.get("predicted_return"))
+    if predicted_return is not None:
+        if predicted_return > 0.001:
+            return "UP"
+        if predicted_return < -0.001:
+            return "DOWN"
+        return "NEUTRAL"
+    return _watchlist_prediction_direction(row)
+
+
 def _market_bias(bullish_count: int, prediction_count: int) -> str:
     if not prediction_count:
         return "neutral"
@@ -1030,14 +1283,21 @@ def _market_bias(bullish_count: int, prediction_count: int) -> str:
     return "neutral"
 
 
-def _model_narrative(comparison: dict[str, Any]) -> str:
+def _model_narrative(comparison: dict[str, Any], news_stats: dict[str, Any] | None = None) -> str:
     accuracy = _float_or_none(comparison.get("nlp_direction_classifier_accuracy"))
     improvement = _float_or_none(comparison.get("mape_improvement_pct"))
+    notes = []
     if accuracy is not None and accuracy >= 0.53:
-        return "Direction classifier is providing a stronger signal than raw return sign in this run."
+        notes.append("Direction classifier shows a modest predictive signal.")
     if improvement is not None and improvement > 0:
-        return "NLP features improved the return error in the latest evaluation run."
-    return "Model performance is shown from the latest local evaluation report."
+        notes.append("NLP features improved return error in the latest evaluation run.")
+    elif improvement is not None:
+        notes.append("NLP model currently performs in line with the technical baseline.")
+    if news_stats and (news_stats.get("rows") or 0) < 250:
+        notes.append("News coverage is limited in the latest artifact, so NLP lift may be muted.")
+    if not notes:
+        notes.append("Latest evaluation available from the local model artifact.")
+    return " ".join(notes)
 
 
 def _dataset_stats(path: str | Path) -> dict[str, int]:
@@ -1092,6 +1352,46 @@ def _mean_or_none(values: list[Any]) -> float | None:
     if not valid:
         return None
     return statistics.fmean(valid)
+
+
+def _neutral_nlp_feature_value(column: str) -> float | None:
+    if column in NEUTRAL_NLP_FEATURE_DEFAULTS:
+        return NEUTRAL_NLP_FEATURE_DEFAULTS[column]
+    if column.startswith(NLP_EMBEDDING_PREFIX):
+        return 0.0
+    return None
+
+
+def _technical_snapshot_from_history(history: list[dict[str, Any]]) -> dict[str, Any]:
+    latest = history[-1] if history else {}
+    previous_5 = history[-6] if len(history) >= 6 else None
+    close = _float_or_none(latest.get("close"))
+    sma20 = _float_or_none(latest.get("SMA_20"))
+    sma50 = _float_or_none(latest.get("SMA_50"))
+    volume = _float_or_none(latest.get("volume"))
+    average_volume = _mean_or_none([row.get("volume") for row in history[-20:]])
+    momentum_return = _float_or_none(latest.get("return_5d"))
+    if momentum_return is None and close is not None and previous_5 and _float_or_none(previous_5.get("close")):
+        momentum_return = (close / float(previous_5["close"])) - 1
+    volume_ratio = _float_or_none(latest.get("volume_ratio_20"))
+    if volume_ratio is None and volume is not None and average_volume:
+        volume_ratio = volume / average_volume
+    volatility = _float_or_none(latest.get("volatility_20d"))
+    if volatility is None:
+        volatility = _return_volatility(history[-21:])
+    return {
+        "date": _date_text(latest.get("date")),
+        "close": close,
+        "sma20": sma20,
+        "sma50": sma50,
+        "trend": _technical_trend_label(close, sma20, sma50),
+        "momentum_return": momentum_return,
+        "momentum": _momentum_label(momentum_return),
+        "volume_ratio": volume_ratio,
+        "volume": _volume_label(volume_ratio),
+        "volatility": volatility,
+        "volatility_label": _volatility_label(volatility),
+    }
 
 
 def _relative_position(left: float | None, right: float | None) -> float | None:
@@ -1195,8 +1495,23 @@ def _driver_summary(
     confidence = _confidence_label(_float_or_none(prediction.get("confidence")))
     sentiment = nlp_summary.get("overall_sentiment") or "Unknown"
     strongest = max(drivers, key=lambda row: abs(float(row.get("score") or 0)), default={})
+    if prediction.get("status") == "technical_snapshot":
+        return (
+            f"{ticker} is shown in technical snapshot mode because model confidence is limited. "
+            f"The strongest available driver is {strongest.get('label', 'latest price movement')}, "
+            "while news sentiment is unavailable."
+        )
     if prediction.get("status") != "ok":
-        return f"{ticker} prediction is not available from the current model artifact."
+        return (
+            f"Technical signals are limited for {ticker}, but latest price movement and volatility "
+            "are still available when price features exist."
+        )
+    if not (_int_or_none(nlp_summary.get("news_count")) or 0):
+        return (
+            f"{ticker} is currently modeled {direction} with {confidence.lower()} confidence in technical-only mode. "
+            f"The strongest available driver is {strongest.get('label', 'market context')}. "
+            "News sentiment is unavailable for this ticker."
+        )
     return (
         f"{ticker} is currently modeled {direction} with {confidence.lower()} confidence. "
         f"The strongest available driver is {strongest.get('label', 'market context')}, "
@@ -1236,7 +1551,10 @@ def _sentiment_summary_text(
     rows: list[dict[str, Any]],
 ) -> str:
     if not rows:
-        return f"No recent news rows are available for {ticker} in the current news artifact."
+        return (
+            "Prediction is based on technical market features. "
+            "News sentiment is not available for this ticker yet."
+        )
     label = sentiment_label(sentiment_score).lower()
     return (
         f"Recent news around {ticker} is mostly {label}, based on "

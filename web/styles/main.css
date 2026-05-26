@@ -252,7 +252,7 @@ h2 {
 .symbol-form {
   display: grid;
   gap: 6px;
-  min-width: 240px;
+  min-width: 220px;
 }
 
 .symbol-search label,
@@ -293,6 +293,7 @@ h2 {
 .symbol-form small {
   color: var(--muted);
   font-size: 12px;
+  font-weight: 600;
 }
 
 .symbol-search input:focus,
@@ -498,6 +499,21 @@ h2 {
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease;
+}
+
+.selected-ticker-pill {
+  align-items: center;
+  background:
+    linear-gradient(180deg, rgba(17, 122, 84, 0.1), rgba(17, 122, 84, 0.04)),
+    rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(17, 122, 84, 0.24);
+  border-radius: 8px;
+  color: var(--text);
+  display: inline-flex;
+  font-size: 15px;
+  font-weight: 780;
+  min-height: 44px;
+  padding: 11px 12px;
 }
 
 .projection-form input:focus {
@@ -749,6 +765,13 @@ h2 {
   min-height: 132px;
   padding: 18px;
   text-align: center;
+}
+
+.empty-state.compact-empty {
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 10px 12px;
+  text-align: left;
 }
 
 footer {
@@ -1648,7 +1671,8 @@ footer {
     rgba(0, 0, 0, 0.18);
   border: 1px solid var(--line);
   border-radius: 8px;
-  min-height: 54px;
+  margin-bottom: 14px;
+  min-height: 164px;
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
@@ -1660,10 +1684,10 @@ footer {
 }
 
 .news-marquee-track {
-  animation: news-marquee 42s linear infinite;
+  animation: news-marquee 56s linear infinite;
   display: flex;
-  gap: 10px;
-  padding: 10px;
+  gap: 12px;
+  padding: 12px;
   width: max-content;
 }
 
@@ -1707,6 +1731,43 @@ footer {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.news-carousel-card {
+  flex: 0 0 360px;
+  grid-template-columns: 126px minmax(0, 1fr);
+  min-height: 138px;
+}
+
+.news-carousel-card .news-image {
+  aspect-ratio: auto;
+  min-height: 100%;
+}
+
+.news-carousel-card .news-body {
+  gap: 8px;
+  padding: 12px;
+}
+
+.news-carousel-card .news-title {
+  font-size: 14px;
+  line-height: 1.35;
+  min-height: 0;
+}
+
+.news-carousel-card .news-summary {
+  -webkit-line-clamp: 2;
+  font-size: 12px;
+  min-height: 0;
+}
+
+.news-placeholder-card {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  font-weight: 700;
+  justify-content: center;
+  padding: 14px;
 }
 
 .reveal-ready {
@@ -1955,8 +2016,8 @@ h1 {
 }
 
 .model-health-badge.degraded {
-  background: var(--red-soft);
-  color: var(--red);
+  background: var(--blue-soft);
+  color: var(--blue);
 }
 
 .guide-grid {
@@ -2260,10 +2321,6 @@ h1 {
   order: 1;
 }
 
-#model {
-  order: 2;
-}
-
 .prediction-depth-panel {
   display: grid;
   gap: 18px;
@@ -2393,6 +2450,19 @@ h1 {
   padding: 10px;
 }
 
+.prediction-mode-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.compact-direction {
+  color: var(--text);
+  font-size: clamp(26px, 2.2vw, 34px);
+  line-height: 1.08;
+}
+
 .data-metric {
   background: #ffffff;
   padding: 16px;
@@ -2508,6 +2578,172 @@ h1 {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+.news-carousel-card .news-title,
+.news-carousel-card .news-summary {
+  min-height: 0;
+}
+
+.news-carousel-card .news-title {
+  font-size: 14px;
+}
+
+.news-carousel-card .news-summary {
+  -webkit-line-clamp: 2;
+  font-size: 12px;
+}
+
+/* Focused portfolio dashboard layout overrides. */
+.hero {
+  padding-bottom: clamp(22px, 3vw, 38px);
+}
+
+.overview-grid {
+  align-items: stretch;
+}
+
+.metric-card {
+  min-height: 136px;
+  padding: 20px;
+}
+
+.metric-card span {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.metric-card strong {
+  font-size: clamp(28px, 2.4vw, 36px);
+  line-height: 1.08;
+}
+
+.metric-card small {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.chart-shell {
+  min-height: 460px;
+}
+
+.main-chart {
+  height: 460px;
+}
+
+.chart-shell:has(.empty-state:not(.hidden)) {
+  min-height: 132px;
+}
+
+.chart-shell:has(.empty-state:not(.hidden)) .main-chart {
+  height: 132px;
+}
+
+.mover-list,
+.prediction-ranking-list {
+  display: grid;
+  gap: 10px;
+}
+
+.prediction-rank-row {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 34px 38px minmax(0, 1fr) minmax(82px, auto) minmax(92px, auto);
+  min-height: 64px;
+  padding: 12px 14px;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.prediction-rank-row:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
+}
+
+.prediction-rank-row.up .prediction-rank-value {
+  color: var(--green);
+}
+
+.prediction-rank-row.down .prediction-rank-value {
+  color: var(--red);
+}
+
+.prediction-rank-value,
+.prediction-rank-meta {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 13px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.prediction-rank-value {
+  font-weight: 800;
+}
+
+.prediction-rank-meta {
+  color: var(--muted);
+}
+
+.projection-panel .panel-heading {
+  margin-bottom: 14px;
+}
+
+.compact-chart-wrap .projection-chart {
+  height: 220px;
+}
+
+.compact-model-panel .model-summary {
+  margin-top: 12px;
+}
+
+.compact-model-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.compact-model-grid .data-metric {
+  min-height: 92px;
+  padding: 13px;
+}
+
+.compact-model-grid .data-metric .value {
+  font-size: 20px;
+}
+
+.compact-model-grid .model-health-header {
+  min-height: 92px;
+}
+
+.news-context-label {
+  font-weight: 700;
+}
+
+.news-marquee {
+  min-height: 156px;
+}
+
+.news-marquee-track {
+  min-height: 156px;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.news-marquee-track.is-transitioning {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
 .news-marquee {

@@ -14,7 +14,7 @@ export function renderMoversLoading(gainersNode, losersNode, emptyNode) {
   });
 }
 
-const DEFAULT_VISIBLE_ROWS = 5;
+const DEFAULT_VISIBLE_ROWS = 10;
 
 export function renderMarketMovers(gainersNode, losersNode, emptyNode, sourceNode, payload, options = {}) {
   gainersNode.innerHTML = "";
@@ -47,7 +47,7 @@ function renderMoverList(container, rows, options) {
     const toggle = document.createElement("button");
     toggle.className = "mover-toggle";
     toggle.type = "button";
-    toggle.textContent = expanded ? "Show top 5" : `Show all ${rows.length}`;
+    toggle.textContent = expanded ? `Show top ${DEFAULT_VISIBLE_ROWS}` : `Show all ${rows.length}`;
     toggle.addEventListener("click", () => {
       container.dataset.expanded = expanded ? "false" : "true";
       container.innerHTML = "";
@@ -55,6 +55,41 @@ function renderMoverList(container, rows, options) {
     });
     container.appendChild(toggle);
   }
+}
+
+export function renderPredictionRankings(upNode, downNode, emptyNode, sourceNode, payload, options = {}) {
+  upNode.innerHTML = "";
+  downNode.innerHTML = "";
+  const upRows = payload?.up || [];
+  const downRows = payload?.down || [];
+  if (!upRows.length && !downRows.length) {
+    sourceNode.textContent = "";
+    showEmpty(emptyNode, "Showing latest available model predictions. Prediction ranking artifact is not available yet.");
+    return;
+  }
+
+  hideEmpty(emptyNode);
+  sourceNode.textContent = payload?.available_predictions
+    ? `${payload.available_predictions} predictions | ${payload.message || "Showing latest available model predictions."}`
+    : payload?.message || "Showing latest available model predictions.";
+  upRows.slice(0, DEFAULT_VISIBLE_ROWS).forEach((row, index) => {
+    upNode.appendChild(predictionRankRow(row, index + 1, "up", options));
+  });
+  downRows.slice(0, DEFAULT_VISIBLE_ROWS).forEach((row, index) => {
+    downNode.appendChild(predictionRankRow(row, index + 1, "down", options));
+  });
+}
+
+export function renderPredictionRankingsLoading(upNode, downNode, emptyNode) {
+  hideEmpty(emptyNode);
+  [upNode, downNode].forEach((node) => {
+    node.innerHTML = "";
+    for (let index = 0; index < 5; index += 1) {
+      const skeleton = document.createElement("div");
+      skeleton.className = "skeleton block";
+      node.appendChild(skeleton);
+    }
+  });
 }
 
 function moverRow(row, rank, options = {}) {
@@ -82,11 +117,40 @@ function moverRow(row, rank, options = {}) {
   return node;
 }
 
+function predictionRankRow(row, rank, tone, options = {}) {
+  const node = document.createElement("button");
+  node.type = "button";
+  node.className = `prediction-rank-row ${tone}`;
+  node.dataset.ticker = row.ticker || "";
+  node.title = row.ticker ? `Load ${row.ticker} in the stock chart` : "Load ticker in the stock chart";
+  node.innerHTML = `
+    <span class="mover-rank"></span>
+    <span class="company-logo mover-logo fallback"></span>
+    <span class="mover-name"><strong></strong><small></small></span>
+    <span class="prediction-rank-value"></span>
+    <span class="prediction-rank-meta"></span>
+  `;
+  node.querySelector(".mover-rank").textContent = String(rank);
+  renderMoverLogo(node.querySelector(".mover-logo"), row);
+  node.querySelector(".mover-name strong").textContent = row.ticker || "n/a";
+  node.querySelector(".mover-name small").textContent = row.company_name || row.symbol || "";
+  const hasPredictedReturn = row.predicted_return !== null && row.predicted_return !== undefined;
+  node.querySelector(".prediction-rank-value").textContent = hasPredictedReturn
+    ? formatPercent(row.predicted_return)
+    : `Score ${formatPercent(row.ranking_score)}`;
+  const confidenceText = row.confidence === null || row.confidence === undefined ? "n/a" : formatPercent(row.confidence);
+  node.querySelector(".prediction-rank-meta").textContent = `${row.direction || "NEUTRAL"} | ${confidenceText}`;
+  node.addEventListener("click", () => {
+    if (row.ticker) options.onTickerClick?.(row.ticker);
+  });
+  return node;
+}
+
 function directionIcon(value) {
   const number = Number(value);
   if (!Number.isFinite(number) || number === 0) return '<span class="mover-direction-icon">-</span>';
   const isUp = number > 0;
-  return `<span class="mover-direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "▲" : "▼"}</span>`;
+  return `<span class="mover-direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "&#9650;" : "&#9660;"}</span>`;
 }
 
 function renderMoverLogo(container, row, allowHydrate = true) {

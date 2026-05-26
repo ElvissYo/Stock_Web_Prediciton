@@ -6,39 +6,36 @@ import {
   loadMarketMovers,
   loadModelPerformance,
   loadNews,
-  loadNlpSummary,
   loadPrediction,
-  loadPredictionDrivers,
   loadProjection,
-  loadPriceFeatures,
   loadSymbols,
+  loadTopPredictions,
 } from "./data-loader.js";
 import { flashRefresh, setupRevealAnimations } from "./animations.js";
 import {
   RANGE_CONFIG,
   updateIndexChart,
   updateMainChart,
-  updatePredictionChart,
   updateProjectionChart,
 } from "./chart.js";
 import { setupFullscreenChart } from "./fullscreen-chart.js";
 import { renderCompanyLogo } from "./logo.js";
-import { renderMarketMovers, renderMoversLoading } from "./market.js";
+import {
+  renderMarketMovers,
+  renderMoversLoading,
+  renderPredictionRankings,
+  renderPredictionRankingsLoading,
+} from "./market.js";
 import { bindNewsControls, renderNews, renderNewsLoading } from "./news.js";
 import {
   renderModelLoading,
   renderModelPerformance,
-  renderNlpSummary,
-  renderPrediction,
-  renderPredictionDrivers,
-  renderPredictionLoading,
   renderProjection,
   renderProjectionLoading,
 } from "./prediction.js";
 import {
   formatNumber,
   formatPercent,
-  hideEmpty,
   isFiniteNumber,
   animateMetricText,
   setupNavbarActiveState,
@@ -86,7 +83,8 @@ async function initialize() {
     refreshIndexChart(),
     refreshChart(),
     refreshMarketMovers(),
-    refreshPredictionContext(),
+    refreshSelectedPredictionSummary(),
+    refreshPredictionRankings(),
     refreshNewsContext(),
     refreshProjection(),
     refreshModelPerformance(),
@@ -106,6 +104,7 @@ function bindNodes() {
     overviewChange: document.getElementById("overviewChange"),
     overviewPrediction: document.getElementById("overviewPrediction"),
     overviewDirection: document.getElementById("overviewDirection"),
+    overviewConfidence: document.getElementById("overviewConfidence"),
     overviewPriceSource: document.getElementById("overviewPriceSource"),
     overviewSentiment: document.getElementById("overviewSentiment"),
     overviewSentimentMeta: document.getElementById("overviewSentimentMeta"),
@@ -115,18 +114,13 @@ function bindNodes() {
     overviewTopLoserMeta: document.getElementById("overviewTopLoserMeta"),
     overviewCoverage: document.getElementById("overviewCoverage"),
     overviewCoverageMeta: document.getElementById("overviewCoverageMeta"),
-    symbolApply: document.getElementById("symbolApply"),
     symbolSelect: document.getElementById("symbolSelect"),
     stockForm: document.getElementById("stockForm"),
     stockUniverseCount: document.getElementById("stockUniverseCount"),
     symbolOptions: document.getElementById("symbolOptions"),
-    predictionInput: document.getElementById("predictionInput"),
-    predictionApply: document.getElementById("predictionApply"),
-    predictionSelect: document.getElementById("predictionSelect"),
-    predictionForm: document.getElementById("predictionForm"),
-    predictionOptions: document.getElementById("predictionOptions"),
     projectionForm: document.getElementById("projectionForm"),
     projectionTicker: document.getElementById("projectionTicker"),
+    projectionTickerDisplay: document.getElementById("projectionTickerDisplay"),
     projectionAmount: document.getElementById("projectionAmount"),
     projectionEntryDate: document.getElementById("projectionEntryDate"),
     projectionExitDate: document.getElementById("projectionExitDate"),
@@ -146,20 +140,14 @@ function bindNodes() {
     stockDataCoverage: document.getElementById("stockDataCoverage"),
     chartLoading: document.getElementById("chartLoading"),
     chartEmpty: document.getElementById("chartEmpty"),
-    predictionTitle: document.getElementById("predictionTitle"),
-    predictionLogo: document.getElementById("predictionLogo"),
-    predictionCompanyName: document.getElementById("predictionCompanyName"),
-    predictionMetrics: document.getElementById("predictionMetrics"),
-    predictionEmpty: document.getElementById("predictionEmpty"),
-    predictionChartEmpty: document.getElementById("predictionChartEmpty"),
-    sentimentSummary: document.getElementById("sentimentSummary"),
-    predictionDrivers: document.getElementById("predictionDrivers"),
-    driverSummary: document.getElementById("driverSummary"),
-    driversEmpty: document.getElementById("driversEmpty"),
     moversSource: document.getElementById("moversSource"),
     topGainers: document.getElementById("topGainers"),
     topLosers: document.getElementById("topLosers"),
     moversEmpty: document.getElementById("moversEmpty"),
+    predictionRankingsSource: document.getElementById("predictionRankingsSource"),
+    topPredictedUp: document.getElementById("topPredictedUp"),
+    topPredictedDown: document.getElementById("topPredictedDown"),
+    predictionRankingsEmpty: document.getElementById("predictionRankingsEmpty"),
     modelMetrics: document.getElementById("modelMetrics"),
     metricsEmpty: document.getElementById("metricsEmpty"),
     modelSummary: document.getElementById("modelSummary"),
@@ -167,8 +155,7 @@ function bindNodes() {
     newsPrev: document.getElementById("newsPrev"),
     newsNext: document.getElementById("newsNext"),
     newsFilterBar: document.getElementById("newsFilterBar"),
-    newsLoadMore: document.getElementById("newsLoadMore"),
-    newsList: document.getElementById("newsList"),
+    newsContextLabel: document.getElementById("newsContextLabel"),
     newsEmpty: document.getElementById("newsEmpty"),
   });
 }
@@ -187,7 +174,7 @@ function bindInteractions() {
   nodes.newsNext.addEventListener("click", () => {
     nodes.newsMarqueeTrack.closest(".news-marquee")?.scrollBy({ left: 320, behavior: "smooth" });
   });
-  bindNewsControls(nodes.newsFilterBar, nodes.newsLoadMore);
+  bindNewsControls(nodes.newsFilterBar);
 
   nodes.indexRangeTabs.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-range]");
@@ -225,31 +212,9 @@ function bindInteractions() {
     }
   });
 
-  nodes.predictionForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    selectPredictionTicker(nodes.predictionInput.value);
-  });
-  nodes.predictionSelect.addEventListener("change", () => {
-    nodes.predictionInput.value = nodes.predictionSelect.value;
-    selectPredictionTicker(nodes.predictionSelect.value);
-  });
-  nodes.predictionInput.addEventListener("change", () => selectPredictionTicker(nodes.predictionInput.value));
-  nodes.predictionInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      selectPredictionTicker(nodes.predictionInput.value);
-    }
-  });
-
   nodes.projectionForm.addEventListener("submit", (event) => {
     event.preventDefault();
     refreshProjection();
-  });
-  nodes.projectionTicker.addEventListener("change", () => {
-    const resolved = resolveTickerAndSymbol(nodes.projectionTicker.value, {
-      defaultTicker: state.selectedTicker,
-    });
-    nodes.projectionTicker.value = resolved.ticker === "IHSG" ? state.selectedTicker : resolved.ticker;
   });
 }
 
@@ -260,9 +225,22 @@ function setProjectionDefaults() {
   const exitDate = new Date(today);
   exitDate.setMonth(today.getMonth() + 1);
 
-  nodes.projectionTicker.value = state.selectedTicker;
+  syncProjectionTicker(state.selectedTicker);
   nodes.projectionEntryDate.value = isoDate(entryDate);
   nodes.projectionExitDate.value = isoDate(exitDate);
+}
+
+function syncProjectionTicker(ticker) {
+  const resolved = resolveTickerAndSymbol(ticker, { defaultTicker: state.selectedTicker || "BBCA" });
+  const value = resolved.ticker === "IHSG" ? state.selectedTicker || "BBCA" : resolved.ticker;
+  if (nodes.projectionTicker) {
+    nodes.projectionTicker.value = value;
+  }
+  if (nodes.projectionTickerDisplay) {
+    nodes.projectionTickerDisplay.textContent = value;
+    const company = state.symbols.get(value)?.name || state.symbols.get(`${value}.JK`)?.name;
+    nodes.projectionTickerDisplay.title = company ? `${value} - ${company}` : value;
+  }
 }
 
 async function loadSymbolOptions() {
@@ -272,6 +250,7 @@ async function loadSymbolOptions() {
       state.symbols.set(row.ticker.toUpperCase(), { ...row, ticker: row.ticker.toUpperCase() });
     });
     renderSymbolOptions();
+    syncProjectionTicker(state.selectedTicker);
   } catch (error) {
     showToast(`Failed to load symbols: ${error.message}`, "error");
   }
@@ -282,7 +261,8 @@ async function refreshDashboardSnapshot() {
     refreshLastUpdated(),
     refreshMarketOverview(),
     refreshMarketMovers(),
-    refreshPredictionContext(),
+    refreshSelectedPredictionSummary(),
+    refreshPredictionRankings(),
     refreshNewsContext(),
     refreshModelPerformance(),
   ]);
@@ -371,6 +351,33 @@ function renderMarketOverview(payload) {
     : "Stocks with prediction snapshot";
 }
 
+function renderOverviewPrediction(payload) {
+  if (!payload || !["ok", "technical_snapshot"].includes(payload.status)) {
+    nodes.overviewPrediction.textContent = "n/a";
+    nodes.overviewPrediction.className = "";
+    nodes.overviewDirection.textContent = "n/a";
+    nodes.overviewDirection.className = "";
+    nodes.overviewConfidence.textContent = "Confidence: n/a";
+    return;
+  }
+
+  if (payload.status === "technical_snapshot") {
+    nodes.overviewPrediction.textContent = "Tech only";
+    nodes.overviewPrediction.className = "neutral";
+    nodes.overviewDirection.textContent = "Limited";
+    nodes.overviewDirection.className = "neutral";
+    nodes.overviewConfidence.textContent = "Confidence: limited model signal";
+    return;
+  }
+
+  const isUp = payload.predicted_direction === 1;
+  nodes.overviewPrediction.textContent = formatPercent(payload.predicted_return);
+  nodes.overviewPrediction.className = signedClass(payload.predicted_return);
+  nodes.overviewDirection.textContent = isUp ? "UP" : "DOWN";
+  nodes.overviewDirection.className = isUp ? "positive" : "negative";
+  nodes.overviewConfidence.textContent = `Confidence: ${formatPercent(payload.confidence)}`;
+}
+
 async function refreshIndexChart() {
   const rangeConfig = chartLoadConfig(state.indexRange);
   nodes.indexChartTitle.textContent = `IHSG ${state.indexRange}`;
@@ -440,85 +447,64 @@ function refreshChartViewport() {
   }
 }
 
-async function refreshPredictionContext() {
-  const ticker = state.selectedTicker;
-  nodes.predictionTitle.textContent = `${ticker} Prediction`;
-  nodes.predictionInput.value = ticker;
-  nodes.projectionTicker.value = ticker;
-  renderKnownCompanyIdentity(ticker, { prediction: true, stock: false });
-  renderPredictionLoading(nodes.predictionMetrics, nodes.predictionEmpty);
-
-  const [prediction, nlp, technical, drivers] = await Promise.allSettled([
-    loadPrediction(ticker),
-    loadNlpSummary(ticker),
-    loadPriceFeatures(ticker),
-    loadPredictionDrivers(ticker),
-  ]);
-
-  const predictionPayload =
-    prediction.status === "fulfilled"
-      ? prediction.value
-      : {
-          status: "error",
-          message: prediction.reason.message,
-        };
-
-  if (prediction.status === "fulfilled") {
-    renderPrediction(nodes.predictionMetrics, nodes.predictionEmpty, predictionPayload);
-  } else {
-    renderPrediction(nodes.predictionMetrics, nodes.predictionEmpty, predictionPayload);
+async function refreshSelectedPredictionSummary() {
+  try {
+    const payload = await loadPrediction(state.selectedTicker);
+    renderOverviewPrediction(payload);
+  } catch (error) {
+    renderOverviewPrediction(null);
+    showToast(`Prediction summary failed: ${error.message}`, "error");
   }
+}
 
-  if (nlp.status === "fulfilled") {
-    renderNlpSummary(nodes.sentimentSummary, nlp.value.summary);
-  } else {
-    renderNlpSummary(nodes.sentimentSummary, {});
-    showToast(`NLP summary failed: ${nlp.reason.message}`, "error");
-  }
-
-  if (technical.status === "fulfilled") {
-    try {
-      const history = technical.value.history || [];
-      updatePredictionChart(history, predictionPayload, nodes.predictionChartEmpty);
-    } catch (error) {
-      showToast(`Technical chart failed: ${error.message}`, "error");
-    }
-  } else {
-    try {
-      updatePredictionChart([], predictionPayload, nodes.predictionChartEmpty);
-    } catch (error) {
-      showToast(`Prediction chart failed: ${error.message}`, "error");
-    }
-    showToast(`Technical features failed: ${technical.reason.message}`, "error");
-  }
-
-  if (drivers.status === "fulfilled") {
-    renderPredictionDrivers(
-      nodes.predictionDrivers,
-      nodes.driversEmpty,
-      nodes.driverSummary,
-      drivers.value,
+async function refreshPredictionRankings() {
+  renderPredictionRankingsLoading(
+    nodes.topPredictedUp,
+    nodes.topPredictedDown,
+    nodes.predictionRankingsEmpty,
+  );
+  try {
+    const payload = await loadTopPredictions(10);
+    renderPredictionRankings(
+      nodes.topPredictedUp,
+      nodes.topPredictedDown,
+      nodes.predictionRankingsEmpty,
+      nodes.predictionRankingsSource,
+      payload,
+      { onTickerClick: selectChartSymbol },
     );
-  } else {
-    renderPredictionDrivers(nodes.predictionDrivers, nodes.driversEmpty, nodes.driverSummary, null);
-    showToast(`Prediction drivers failed: ${drivers.reason.message}`, "error");
+  } catch (error) {
+    renderPredictionRankings(
+      nodes.topPredictedUp,
+      nodes.topPredictedDown,
+      nodes.predictionRankingsEmpty,
+      nodes.predictionRankingsSource,
+      { status: "empty", up: [], down: [] },
+    );
+    showToast(`Prediction rankings failed: ${error.message}`, "error");
   }
 }
 
 async function refreshNewsContext(ticker = state.newsTicker) {
-  renderNewsLoading(nodes.newsList, nodes.newsEmpty);
+  renderNewsLoading(nodes.newsMarqueeTrack, nodes.newsEmpty);
   try {
     const payload = await loadNews(ticker, 50);
-    renderNews(nodes.newsList, nodes.newsEmpty, payload.news || [], nodes.newsMarqueeTrack);
+    if (nodes.newsContextLabel) {
+      nodes.newsContextLabel.textContent = payload.context_message || "Using latest available market news";
+    }
+    renderNews(nodes.newsMarqueeTrack, nodes.newsEmpty, payload.news || []);
   } catch (error) {
-    renderNews(nodes.newsList, nodes.newsEmpty, [], nodes.newsMarqueeTrack);
+    if (nodes.newsContextLabel) {
+      nodes.newsContextLabel.textContent = "Using latest available market news";
+    }
+    renderNews(nodes.newsMarqueeTrack, nodes.newsEmpty, []);
     showToast(`News load failed: ${error.message}`, "error");
   }
 }
 
 async function refreshProjection() {
-  const resolved = resolveTickerAndSymbol(nodes.projectionTicker.value, {
-    defaultTicker: state.selectedTicker,
+  const resolved = resolveTickerAndSymbol(state.selectedTicker, {
+    defaultTicker: "BBCA",
   });
   if (resolved.ticker === "IHSG") {
     renderProjection(nodes.projectionResult, nodes.projectionEmpty, {
@@ -530,14 +516,26 @@ async function refreshProjection() {
     return;
   }
 
-  nodes.projectionTicker.value = resolved.ticker;
+  syncProjectionTicker(resolved.ticker);
+  const amountText = String(nodes.projectionAmount.value || "").trim();
+  const amount = Number(amountText);
+  if (!amountText || !Number.isFinite(amount) || amount <= 0) {
+    renderProjection(nodes.projectionResult, nodes.projectionEmpty, {
+      status: "error",
+      message: "Nominal harus berupa angka positif.",
+    });
+    nodes.projectionEmpty.classList.add("compact-empty");
+    updateProjectionChart(null, nodes.projectionChartEmpty);
+    return;
+  }
+  nodes.projectionEmpty.classList.remove("compact-empty");
   renderProjectionLoading(nodes.projectionResult, nodes.projectionEmpty);
   updateProjectionChart(null, nodes.projectionChartEmpty);
 
   try {
     const payload = await loadProjection({
       ticker: resolved.ticker,
-      amount: nodes.projectionAmount.value,
+      amount,
       entryDate: nodes.projectionEntryDate.value,
       exitDate: nodes.projectionExitDate.value,
     });
@@ -654,43 +652,14 @@ function selectChartSymbol(rawValue) {
   if (resolved.ticker !== "IHSG") {
     state.selectedTicker = resolved.ticker;
     state.newsTicker = resolved.ticker;
-    nodes.predictionInput.value = resolved.ticker;
-    nodes.projectionTicker.value = resolved.ticker;
-    if (nodes.predictionSelect.querySelector(`option[value="${resolved.ticker}"]`)) {
-      nodes.predictionSelect.value = resolved.ticker;
-    }
-    refreshPredictionContext();
+    syncProjectionTicker(resolved.ticker);
+    refreshSelectedPredictionSummary();
     refreshNewsContext();
     refreshProjection();
   } else {
     state.newsTicker = null;
     refreshNewsContext(null);
   }
-}
-
-function selectPredictionTicker(rawValue) {
-  const resolved = resolveTickerAndSymbol(rawValue, { defaultTicker: state.selectedTicker });
-  if (resolved.ticker === "IHSG") {
-    showToast("IHSG has no stock-level prediction artifact.", "error");
-    return;
-  }
-
-  state.selectedTicker = resolved.ticker;
-  state.selectedSymbol = resolved.symbol;
-  state.newsTicker = resolved.ticker;
-  nodes.symbolInput.value = resolved.ticker;
-  nodes.predictionInput.value = resolved.ticker;
-  nodes.projectionTicker.value = resolved.ticker;
-  if (nodes.symbolSelect.querySelector(`option[value="${resolved.ticker}"]`)) {
-    nodes.symbolSelect.value = resolved.ticker;
-  }
-  if (nodes.predictionSelect.querySelector(`option[value="${resolved.ticker}"]`)) {
-    nodes.predictionSelect.value = resolved.ticker;
-  }
-  refreshChart();
-  refreshPredictionContext();
-  refreshNewsContext();
-  refreshProjection();
 }
 
 function resolveTickerAndSymbol(rawValue, { defaultTicker }) {
@@ -715,9 +684,7 @@ function resolveTickerAndSymbol(rawValue, { defaultTicker }) {
 
 function renderSymbolOptions() {
   nodes.symbolOptions.innerHTML = "";
-  nodes.predictionOptions.innerHTML = "";
   nodes.symbolSelect.innerHTML = "";
-  nodes.predictionSelect.innerHTML = "";
   const stockRows = [...state.symbols.entries()].filter(([ticker]) => ticker !== "IHSG");
   stockRows.forEach(([ticker, row]) => {
     const option = document.createElement("option");
@@ -729,19 +696,8 @@ function renderSymbolOptions() {
     selectOption.value = ticker;
     selectOption.textContent = `${ticker} - ${row.name || row.symbol}`;
     nodes.symbolSelect.appendChild(selectOption);
-
-    const predictionOption = document.createElement("option");
-    predictionOption.value = ticker;
-    predictionOption.label = `${row.symbol} - ${row.name || ticker}`;
-    nodes.predictionOptions.appendChild(predictionOption);
-
-    const predictionSelectOption = document.createElement("option");
-    predictionSelectOption.value = ticker;
-    predictionSelectOption.textContent = `${ticker} - ${row.name || row.symbol}`;
-    nodes.predictionSelect.appendChild(predictionSelectOption);
   });
   nodes.symbolSelect.value = state.selectedTicker;
-  nodes.predictionSelect.value = state.selectedTicker;
   nodes.stockUniverseCount.textContent = `${stockRows.length} IDX companies available`;
 }
 
@@ -752,7 +708,7 @@ function renderKnownCompanyIdentity(ticker, targets = { prediction: true, stock:
     renderCompanyLogo(nodes.stockLogo, { ...(row || {}), ticker });
     nodes.stockCompanyName.textContent = name;
   }
-  if (targets.prediction) {
+  if (targets.prediction && nodes.predictionLogo && nodes.predictionCompanyName) {
     renderCompanyLogo(nodes.predictionLogo, { ...(row || {}), ticker });
     nodes.predictionCompanyName.textContent = `${name} | Prediction source: trained global model artifact`;
   }
@@ -769,7 +725,7 @@ async function refreshCompanyProfile(ticker) {
       renderCompanyLogo(nodes.stockLogo, profile);
       nodes.stockCompanyName.textContent = companyLine(profile);
     }
-    if (profile.ticker === state.selectedTicker) {
+    if (profile.ticker === state.selectedTicker && nodes.predictionLogo && nodes.predictionCompanyName) {
       renderCompanyLogo(nodes.predictionLogo, profile);
       nodes.predictionCompanyName.textContent = `${companyLine(profile)} | Prediction source: trained global model artifact`;
     }

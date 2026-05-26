@@ -11,14 +11,22 @@ import {
 
 export function renderPrediction(container, emptyNode, payload) {
   container.innerHTML = "";
-  if (!payload || payload.status !== "ok") {
-    const message = payload?.message || "Data unavailable: prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.";
+  if (!payload || !["ok", "technical_snapshot"].includes(payload.status)) {
+    const message =
+      payload?.message ||
+      "Prediction signal is limited for this ticker. Latest price chart and technical context remain available.";
     showEmpty(emptyNode, message);
     updateOverviewPrediction(null);
     return;
   }
 
   hideEmpty(emptyNode);
+  if (payload.status === "technical_snapshot") {
+    renderTechnicalSnapshotPrediction(container, payload);
+    updateOverviewPrediction(payload);
+    return;
+  }
+
   const direction = payload.predicted_direction === 1 ? "UP" : "DOWN";
   const predictedClose =
     isFiniteNumber(payload.close) && isFiniteNumber(payload.predicted_return)
@@ -28,7 +36,7 @@ export function renderPrediction(container, emptyNode, payload) {
   renderMetric(container, "Predicted Close", formatNumber(predictedClose), signedClass(payload.predicted_return));
   renderMetric(container, "Latest Close", formatNumber(payload.close));
   renderMetric(container, "Prediction Date", payload.date || "n/a");
-  renderMetric(container, "Model Status", payload.model_type || payload.model_name || "artifact");
+  renderMetric(container, "Signal Mode", payload.prediction_mode_label || payload.model_type || "artifact");
   renderMetric(container, "Next-day Return", formatPercent(payload.predicted_return), signedClass(payload.predicted_return));
   animateMetricText(
     container.querySelector(".prediction-return strong"),
@@ -80,9 +88,12 @@ export function renderProjectionLoading(container, emptyNode) {
 export function renderNlpSummary(container, summary) {
   container.innerHTML = "";
   if (!summary || !Object.keys(summary).length) {
-    renderMetric(container, "Overall Sentiment", "n/a");
-    renderMetric(container, "Related News", "n/a");
-    renderInsightCard(container, "Data unavailable: NLP summary belum tersedia dari artifact untuk ticker ini.");
+    renderMetric(container, "Overall Sentiment", "Neutral", "neutral");
+    renderMetric(container, "Related News", "0");
+    renderInsightCard(
+      container,
+      "Prediction is based on technical market features. News sentiment is not available for this ticker yet.",
+    );
     return;
   }
 
@@ -104,8 +115,10 @@ export function renderPredictionDrivers(container, emptyNode, summaryNode, paylo
 
   const drivers = payload?.drivers || [];
   if (!payload || payload.status !== "ok" || !drivers.length) {
-    summaryNode.textContent = payload?.summary || "Data unavailable: prediction drivers belum tersedia dari artifact saat ini.";
-    showEmpty(emptyNode, payload?.message || "Data unavailable: prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.");
+    summaryNode.textContent =
+      payload?.summary ||
+      "Technical signals are limited for this ticker, but latest price movement and volatility are still available.";
+    hideEmpty(emptyNode);
     return;
   }
 
@@ -129,7 +142,7 @@ export function renderModelPerformance(metricsNode, emptyNode, summaryNode, payl
   header.className = "model-health-header";
   header.innerHTML = `
     <div>
-      <span class="model-health-badge ${health.className}">${health.icon} ${health.label}</span>
+      <span class="model-health-badge ${health.className}">${health.label}</span>
       <p>${health.description}</p>
     </div>
   `;
@@ -188,12 +201,51 @@ function updateOverviewPrediction(payload) {
     return;
   }
 
+  if (payload.status === "technical_snapshot") {
+    returnNode.textContent = "Tech only";
+    returnNode.className = "neutral";
+    directionNode.textContent = "Limited";
+    directionNode.className = "neutral";
+    confidenceNode.textContent = "Confidence: limited model signal";
+    return;
+  }
+
   returnNode.textContent = formatPercent(payload.predicted_return);
   returnNode.className = signedClass(payload.predicted_return);
   const isUp = payload.predicted_direction === 1;
   directionNode.innerHTML = `<span class="direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "▲" : "▼"}</span><span>${isUp ? "UP" : "DOWN"}</span>`;
   directionNode.className = payload.predicted_direction === 1 ? "positive" : "negative";
   confidenceNode.textContent = `Confidence: ${formatPercent(payload.confidence)}`;
+}
+
+function renderTechnicalSnapshotPrediction(container, payload) {
+  const snapshot = payload.technical_snapshot || {};
+  const card = document.createElement("article");
+  card.className = "data-metric prediction-hero-card neutral";
+  card.innerHTML = `
+    <div class="prediction-hero-top">
+      <div>
+        <div class="label">Signal Mode</div>
+        <div class="prediction-direction compact-direction">Technical-only</div>
+      </div>
+      <div class="prediction-return">
+        Model forecast
+        <strong>Limited</strong>
+      </div>
+    </div>
+    <p class="prediction-mode-note"></p>
+    <p class="prediction-disclaimer">This prediction view is not investment advice. For educational purposes only.</p>
+  `;
+  card.querySelector(".prediction-mode-note").textContent =
+    payload.message ||
+    "Technical-only mode uses latest price features while the trained model signal is unavailable.";
+  container.appendChild(card);
+  renderMetric(container, "Latest Close", formatNumber(payload.close));
+  renderMetric(container, "Prediction Date", payload.date || snapshot.date || "n/a");
+  renderMetric(container, "Technical Trend", snapshot.trend || "Mixed trend");
+  renderMetric(container, "Market Momentum", snapshot.momentum || formatPercent(snapshot.momentum_return));
+  renderMetric(container, "Volume Pressure", snapshot.volume || "Normal activity");
+  renderMetric(container, "Volatility", snapshot.volatility_label || formatPercent(snapshot.volatility));
 }
 
 function predictionHeroCard(payload, direction) {
@@ -226,8 +278,11 @@ function predictionHeroCard(payload, direction) {
       </div>
       <div class="confidence-scale"><span>Low</span><span>Medium</span><span>High</span></div>
     </div>
-    <p class="prediction-disclaimer">&#9888;&#65039; This prediction is not investment advice. For educational purposes only.</p>
+    <p class="prediction-mode-note"></p>
+    <p class="prediction-disclaimer">This prediction is not investment advice. For educational purposes only.</p>
   `;
+  card.querySelector(".prediction-mode-note").textContent =
+    payload.confidence_note || payload.message || "Latest signal loaded from the trained model artifact.";
   return card;
 }
 
@@ -239,27 +294,24 @@ function modelHealth(payload) {
   const hasMape = Number.isFinite(nlpMape);
   const mapeImproved = Number.isFinite(baselineMape) && hasMape ? nlpMape <= baselineMape : true;
 
-  if ((hasAccuracy && directionalAccuracy < 0.48) || (Number.isFinite(baselineMape) && hasMape && nlpMape > baselineMape * 1.15)) {
-    return {
-      className: "degraded",
-      icon: "&#10060;",
-      label: "Degraded",
-      description: "Model perlu dicek karena akurasi arah rendah atau error prediksi naik dibanding baseline.",
-    };
-  }
-  if ((hasAccuracy && directionalAccuracy >= 0.52 && mapeImproved) || (hasMape && nlpMape <= 0.08)) {
+  if ((hasAccuracy && directionalAccuracy >= 0.53 && mapeImproved) || (hasMape && nlpMape <= 0.08)) {
     return {
       className: "healthy",
-      icon: "&#9989;",
-      label: "Healthy",
-      description: "Metrik terbaru masih berada dalam batas yang layak untuk dashboard edukasi.",
+      label: "Operational",
+      description: "Latest evaluation available. Direction classifier shows a modest predictive signal.",
+    };
+  }
+  if (Number.isFinite(payload.improvement_pct) && Number(payload.improvement_pct) <= 0) {
+    return {
+      className: "review",
+      label: "Technical Baseline Stable",
+      description: "NLP model currently performs in line with the technical baseline.",
     };
   }
   return {
     className: "review",
-    icon: "&#9888;&#65039;",
-    label: "Review Needed",
-    description: "Metrik belum buruk, tetapi perlu dipantau karena sinyal belum cukup kuat.",
+    label: "Model Active",
+    description: "Latest evaluation available from the local model artifacts.",
   };
 }
 
