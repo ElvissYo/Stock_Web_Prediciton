@@ -25,6 +25,8 @@ jobs:
       MAX_TICKERS: ${{ github.event.inputs.max_tickers || '30' }}
       NEWS_PROVIDER: ${{ github.event.inputs.news_provider || 'rss' }}
       NEWS_LIMIT: ${{ github.event.inputs.news_limit || '1000' }}
+      NEWS_MAX_PER_TICKER: "10"
+      NEWS_REQUEST_DELAY: "8"
       PYTHONPATH: ${{ github.workspace }}
       HF_USERNAME: ${{ secrets.HF_USERNAME }}
       HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
@@ -65,8 +67,41 @@ jobs:
 
       - name: Run retraining pipeline
         run: |
+          validate_news_artifact() {
+            local path="$1"
+            python -c "import pandas as pd; path='$path'; df=pd.read_parquet(path); assert len(df) > 0, f'{path} has no rows'; print(f'News artifact validation passed; path={path} rows={len(df)}')"
+          }
+
+          collect_news_candidate() {
+            local provider="$1"
+            rm -f data/news_raw_candidate.parquet
+            echo "Collecting news with provider=${provider}"
+            python scripts/collect_news.py \
+              --provider "$provider" \
+              --limit "$NEWS_LIMIT" \
+              --max-per-ticker "$NEWS_MAX_PER_TICKER" \
+              --request-delay "$NEWS_REQUEST_DELAY" \
+              --output data/news_raw_candidate.parquet
+          }
+
           python scripts/collect_prices.py --limit "$MAX_TICKERS"
-          python scripts/collect_news.py --provider "$NEWS_PROVIDER" --limit "$NEWS_LIMIT"
+
+          if collect_news_candidate "$NEWS_PROVIDER" && validate_news_artifact data/news_raw_candidate.parquet; then
+            mv data/news_raw_candidate.parquet data/news_raw.parquet
+            echo "Selected news provider succeeded; provider=${NEWS_PROVIDER}"
+          else
+            echo "::warning::Selected news provider failed; provider=${NEWS_PROVIDER}"
+            echo "Fallback news provider attempted; provider=gdelt"
+            if collect_news_candidate gdelt && validate_news_artifact data/news_raw_candidate.parquet; then
+              mv data/news_raw_candidate.parquet data/news_raw.parquet
+              echo "Fallback news provider succeeded; provider=gdelt"
+            else
+              echo "::warning::Fallback news provider failed; provider=gdelt"
+              echo "Using existing news artifact; path=data/news_raw.parquet"
+              validate_news_artifact data/news_raw.parquet
+            fi
+          fi
+
           python scripts/build_price_features.py
           python scripts/build_nlp_features.py --sentiment-backend lexicon --embedding-backend hashing
           python scripts/build_final_dataset.py --metadata data/seeds/idx_stock_universe.csv
