@@ -1,0 +1,272 @@
+{
+  "BBCA": {
+    "ticker": "BBCA",
+    "company_name": "PT Bank Central Asia Tbk",
+    "domain": "bca.co.id",
+    "website": "https://www.bca.co.id",
+    "logo_url": "https://www.bca.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.bca.co.id"
+  },
+  "DCII": {
+    "ticker": "DCII",
+    "company_name": "PT DCI Indonesia Tbk",
+    "domain": "dci-indonesia.com",
+    "website": "https://dci-indonesia.com",
+    "logo_url": "https://dci-indonesia.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://dci-indonesia.com"
+  },
+  "BBRI": {
+    "ticker": "BBRI",
+    "company_name": "PT Bank Rakyat Indonesia (Persero) Tbk",
+    "domain": "bri.co.id",
+    "website": "https://bri.co.id",
+    "logo_url": "https://bri.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://bri.co.id"
+  },
+  "BMRI": {
+    "ticker": "BMRI",
+    "company_name": "PT Bank Mandiri (Persero) Tbk",
+    "domain": "bankmandiri.co.id",
+    "website": "https://bankmandiri.co.id",
+    "logo_url": "https://bankmandiri.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://bankmandiri.co.id"
+  },
+  "BYAN": {
+    "ticker": "BYAN",
+    "company_name": "PT Bayan Resources Tbk",
+    "domain": "bayan.com.sg",
+    "website": "https://www.bayan.com.sg",
+    "logo_url": "https://www.bayan.com.sg/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.bayan.com.sg"
+  },
+  "BREN": {
+    "ticker": "BREN",
+    "company_name": "PT Barito Renewables Energy Tbk",
+    "domain": "baritorenewables.co.id",
+    "website": "https://www.baritorenewables.co.id",
+    "logo_url": "https://www.baritorenewables.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.baritorenewables.co.id"
+  },
+  "TLKM": {
+    "ticker": "TLKM",
+    "company_name": "Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk",
+    "domain": "telkom.co.id",
+    "website": "https://www.telkom.co.id",
+    "logo_url": "https://www.telkom.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.telkom.co.id"
+  },
+  "ASII": {
+    "ticker": "ASII",
+    "company_name": "PT Astra International Tbk",
+    "domain": "astra.co.id",
+    "website": "https://www.astra.co.id",
+    "logo_url": "https://www.astra.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.astra.co.id"
+  },
+  "AMMN": {
+    "ticker": "AMMN",
+    "company_name": "PT Amman Mineral Internasional Tbk",
+    "domain": "amman.co.id",
+    "website": "https://www.amman.co.id",
+    "logo_url": "https://www.amman.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.amman.co.id"
+  },
+  "TPIA": {
+    "ticker": "TPIA",
+    "company_name": "PT Chandra Asri Pacific Tbk",
+    "domain": "chandra-asri.com",
+    "website": "https://www.chandra-asri.com",
+    "logo_url": "https://www.chandra-asri.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.chandra-asri.com"
+  },
+  "SRAJ": {
+    "ticker": "SRAJ",
+    "company_name": "PT Sejahteraraya Anugrahjaya Tbk",
+    "domain": "mayapadahospital.com",
+    "website": "https://mayapadahospital.com",
+    "logo_url": "https://mayapadahospital.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://mayapadahospital.com"
+  },
+  "MORA": {
+    "ticker": "MORA",
+    "company_name": "PT Mora Telematika Indonesia Tbk",
+    "domain": "moratelindo.co.id",
+    "website": "https://www.moratelindo.co.id",
+    "logo_url": "https://www.moratelindo.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.moratelindo.co.id"
+  },
+  "BRPT": {
+    "ticker": "BRPT",
+    "company_name": "PT Barito Pacific Tbk",
+    "domain": "barito-pacific.com",
+    "website": "https://www.barito-pacific.com",
+    "logo_url": "https://www.barito-pacific.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.barito-pacific.com"
+  },
+  "BBNI": {
+    "ticker": "BBNI",
+    "company_name": "PT Bank Negara Indonesia (Persero) Tbk",
+    "domain": "bni.co.id",
+    "website": "https://www.bni.co.id",
+    "logo_url": "https://www.bni.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.bni.co.id"
+  },
+  "PANI": {
+    "ticker": "PANI",
+    "company_name": "PT Pantai Indah Kapuk Dua Tbk",
+    "domain": "pantaiindahkapukdua.com",
+    "website": "https://pantaiindahkapukdua.com",
+    "logo_url": "https://pantaiindahkapukdua.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://pantaiindahkapukdua.com"
+  },
+  "DNET": {
+    "ticker": "DNET",
+    "company_name": "PT Indoritel Makmur Internasional Tbk",
+    "domain": "indoritel.co.id",
+    "website": "https://www.indoritel.co.id",
+    "logo_url": "https://www.indoritel.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.indoritel.co.id"
+  },
+  "SMMA": {
+    "ticker": "SMMA",
+    "company_name": "PT Sinar Mas Multiartha Tbk",
+    "domain": "smma.co.id",
+    "website": "https://smma.co.id",
+    "logo_url": "https://smma.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://smma.co.id"
+  },
+  "BNLI": {
+    "ticker": "BNLI",
+    "company_name": "PT Bank Permata Tbk",
+    "domain": "permatabank.com",
+    "website": "https://www.permatabank.com",
+    "logo_url": "https://www.permatabank.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.permatabank.com"
+  },
+  "EMAS": {
+    "ticker": "EMAS",
+    "company_name": "PT Merdeka Gold Resources Tbk",
+    "domain": "merdekagoldresources.com",
+    "website": "https://merdekagoldresources.com",
+    "logo_url": "https://merdekagoldresources.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://merdekagoldresources.com"
+  },
+  "IMPC": {
+    "ticker": "IMPC",
+    "company_name": "PT Impack Pratama Industri Tbk",
+    "domain": "impack-pratama.com",
+    "website": "https://www.impack-pratama.com",
+    "logo_url": "https://www.impack-pratama.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.impack-pratama.com"
+  },
+  "DSSA": {
+    "ticker": "DSSA",
+    "company_name": "PT Dian Swastatika Sentosa Tbk",
+    "domain": "dssa.co.id",
+    "website": "https://dssa.co.id",
+    "logo_url": "https://dssa.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://dssa.co.id"
+  },
+  "MPRO": {
+    "ticker": "MPRO",
+    "company_name": "PT Maha Properti Indonesia Tbk",
+    "domain": "mahaproperti.co.id",
+    "website": "https://mahaproperti.co.id",
+    "logo_url": "https://mahaproperti.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://mahaproperti.co.id"
+  },
+  "BRMS": {
+    "ticker": "BRMS",
+    "company_name": "PT Bumi Resources Minerals Tbk",
+    "domain": "bumiresourcesminerals.com",
+    "website": "https://www.bumiresourcesminerals.com",
+    "logo_url": "https://www.bumiresourcesminerals.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.bumiresourcesminerals.com"
+  },
+  "CDIA": {
+    "ticker": "CDIA",
+    "company_name": "PT Chandra Daya Investasi Tbk",
+    "domain": "chandradaya-investasi.com",
+    "website": "https://chandradaya-investasi.com",
+    "logo_url": "https://chandradaya-investasi.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://chandradaya-investasi.com"
+  },
+  "HMSP": {
+    "ticker": "HMSP",
+    "company_name": "PT Hanjaya Mandala Sampoerna Tbk",
+    "domain": "sampoerna.com",
+    "website": "https://www.sampoerna.com",
+    "logo_url": "https://www.sampoerna.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.sampoerna.com"
+  },
+  "UNTR": {
+    "ticker": "UNTR",
+    "company_name": "PT United Tractors Tbk",
+    "domain": "unitedtractors.com",
+    "website": "https://www.unitedtractors.com",
+    "logo_url": "https://www.unitedtractors.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.unitedtractors.com"
+  },
+  "BRIS": {
+    "ticker": "BRIS",
+    "company_name": "PT Bank Syariah Indonesia Tbk",
+    "domain": "bankbsi.co.id",
+    "website": "https://www.bankbsi.co.id",
+    "logo_url": "https://www.bankbsi.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.bankbsi.co.id"
+  },
+  "ICBP": {
+    "ticker": "ICBP",
+    "company_name": "PT Indofood CBP Sukses Makmur Tbk",
+    "domain": "indofoodcbp.com",
+    "website": "https://www.indofoodcbp.com",
+    "logo_url": "https://www.indofoodcbp.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.indofoodcbp.com"
+  },
+  "CASA": {
+    "ticker": "CASA",
+    "company_name": "PT Capital Financial Indonesia Tbk",
+    "domain": "capitalfinancial.co.id",
+    "website": "https://capitalfinancial.co.id",
+    "logo_url": "https://capitalfinancial.co.id/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://capitalfinancial.co.id"
+  },
+  "ANTM": {
+    "ticker": "ANTM",
+    "company_name": "PT Antam Tbk",
+    "domain": "antam.com",
+    "website": "https://www.antam.com",
+    "logo_url": "https://www.antam.com/favicon.ico",
+    "logo_source": "official website favicon",
+    "metadata_source_url": "https://www.antam.com"
+  }
+}

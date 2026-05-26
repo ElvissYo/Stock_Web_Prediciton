@@ -20,6 +20,10 @@ export async function loadStocks(limit = 100) {
   return api(`/api/stocks?limit=${encodeURIComponent(String(limit))}`);
 }
 
+export async function loadStockMetadata(limit = 100) {
+  return api(`/api/stocks/metadata?limit=${encodeURIComponent(String(limit))}`);
+}
+
 export async function loadMarketOverview() {
   return api("/api/market/overview");
 }

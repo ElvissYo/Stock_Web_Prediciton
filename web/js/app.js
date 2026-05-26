@@ -22,6 +22,7 @@ import {
   updateProjectionChart,
 } from "./chart.js";
 import { setupFullscreenChart } from "./fullscreen-chart.js";
+import { renderCompanyLogo } from "./logo.js";
 import { renderMarketMovers, renderMoversLoading } from "./market.js";
 import { bindNewsControls, renderNews, renderNewsLoading } from "./news.js";
 import {
@@ -748,11 +749,11 @@ function renderKnownCompanyIdentity(ticker, targets = { prediction: true, stock:
   const row = state.symbols.get(ticker);
   const name = row?.name || ticker;
   if (targets.stock) {
-    renderLogo(nodes.stockLogo, { ...(row || {}), ticker });
+    renderCompanyLogo(nodes.stockLogo, { ...(row || {}), ticker });
     nodes.stockCompanyName.textContent = name;
   }
   if (targets.prediction) {
-    renderLogo(nodes.predictionLogo, { ...(row || {}), ticker });
+    renderCompanyLogo(nodes.predictionLogo, { ...(row || {}), ticker });
     nodes.predictionCompanyName.textContent = `${name} | Prediction source: trained global model artifact`;
   }
 }
@@ -765,49 +766,16 @@ async function refreshCompanyProfile(ticker) {
       state.symbols.set(profile.ticker, { ...(state.symbols.get(profile.ticker) || {}), ...profile });
     }
     if (profile.ticker === displayTickerForSymbol(state.selectedSymbol)) {
-      renderLogo(nodes.stockLogo, profile);
+      renderCompanyLogo(nodes.stockLogo, profile);
       nodes.stockCompanyName.textContent = companyLine(profile);
     }
     if (profile.ticker === state.selectedTicker) {
-      renderLogo(nodes.predictionLogo, profile);
+      renderCompanyLogo(nodes.predictionLogo, profile);
       nodes.predictionCompanyName.textContent = `${companyLine(profile)} | Prediction source: trained global model artifact`;
     }
   } catch (error) {
     showToast(`Company profile failed: ${error.message}`, "error");
   }
-}
-
-function renderLogo(container, profile) {
-  const ticker = profile?.ticker || "?";
-  container.innerHTML = "";
-  container.textContent = tickerFallback(ticker);
-  container.classList.add("fallback");
-  const candidates = logoCandidates(profile);
-  if (!candidates.length) return;
-
-  let index = 0;
-  const loadNext = () => {
-    if (index >= candidates.length) {
-      container.innerHTML = "";
-      container.textContent = tickerFallback(ticker);
-      container.classList.add("fallback");
-      return;
-    }
-
-    const image = document.createElement("img");
-    image.alt = `${ticker} logo`;
-    image.loading = "lazy";
-    image.decoding = "async";
-    image.src = candidates[index];
-    index += 1;
-    image.addEventListener("load", () => {
-      container.innerHTML = "";
-      container.classList.remove("fallback");
-      container.appendChild(image);
-    });
-    image.addEventListener("error", loadNext, { once: true });
-  };
-  loadNext();
 }
 
 function companyLine(profile) {
@@ -830,15 +798,6 @@ function renderDataCoverage(node, candles, requestedRange) {
   const yearsText = years >= 1 ? `${years.toFixed(1)} years` : `${Math.max(1, rows.length)} candles`;
   const fullHistoryNote = requestedRange === "ALL" ? " | full available history" : "";
   node.textContent = `Available data: ${first} to ${last} | ${rows.length} candles | ${yearsText}${fullHistoryNote}`;
-}
-
-function tickerFallback(ticker) {
-  return String(ticker || "?").slice(0, 4);
-}
-
-function logoCandidates(profile) {
-  const candidates = [profile?.logo_url, ...(profile?.logo_candidates || [])].filter(Boolean);
-  return candidates.filter((value, index) => candidates.indexOf(value) === index);
 }
 
 function isoDate(date) {

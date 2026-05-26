@@ -28,6 +28,7 @@ DEFAULT_PRICE_HISTORY_PATH = Path("data/prices_full_top100.parquet")
 LEGACY_PRICE_HISTORY_PATH = Path("data/prices_20y_top100.parquet")
 DEFAULT_PRICE_FEATURES_PATH = Path("data/processed/price_features.parquet")
 DEFAULT_STOCK_UNIVERSE_PATH = Path("data/seeds/idx_stock_universe.csv")
+DEFAULT_COMPANY_METADATA_PATH = Path("data/company_metadata.json")
 DEFAULT_COMPANY_PROFILE_CACHE_PATH = Path("data/processed/company_profiles.json")
 DEFAULT_NEWS_PATH = Path("data/news_raw.parquet")
 DEFAULT_NLP_FEATURES_PATH = Path("data/nlp_features.parquet")
@@ -288,6 +289,7 @@ def load_market_symbols(
 
     with universe_path.open("r", encoding="utf-8", newline="") as file:
         rows = list(csv.DictReader(file))
+    company_metadata = _read_company_metadata()
     profile_cache = _read_profile_cache()
 
     def rank(row: dict[str, Any]) -> int:
@@ -297,16 +299,22 @@ def load_market_symbols(
         ticker = str(row.get("ticker") or "").strip().upper()
         if not ticker:
             continue
-        cached_profile = profile_cache.get(ticker, {})
+        cached_profile = _merge_profile_metadata(
+            company_metadata.get(ticker, {}),
+            profile_cache.get(ticker, {}),
+        )
         symbols.append(
             {
                 "ticker": ticker,
                 "symbol": str(row.get("yfinance_symbol") or f"{ticker}.JK").strip(),
                 "name": cached_profile.get("name") or str(row.get("name") or ticker).strip(),
                 "sector": cached_profile.get("sector") or str(row.get("sector") or "UNKNOWN").strip(),
+                "domain": cached_profile.get("domain") or "",
+                "website": cached_profile.get("website") or "",
                 "logo_url": cached_profile.get("logo_url"),
                 "logo_candidates": _logo_candidates(cached_profile),
-                "website": cached_profile.get("website") or "",
+                "logo_source": cached_profile.get("logo_source"),
+                "metadata_source_url": cached_profile.get("metadata_source_url"),
                 "rank": rank(row),
             }
         )
@@ -345,7 +353,6 @@ def load_market_movers(
     frame = frame.dropna(subset=["ticker", "date", "close"]).sort_values(["ticker", "date"])
 
     metadata = {row["ticker"]: row for row in load_market_symbols(limit=1000)}
-    profile_cache = _read_profile_cache()
     rows = []
     for ticker, group in frame.groupby(frame["ticker"].astype(str).str.upper()):
         valid = group.dropna(subset=["close"]).tail(2)
@@ -356,15 +363,16 @@ def load_market_movers(
         if previous <= 0:
             continue
         symbol_meta = metadata.get(ticker, {})
-        cached_profile = profile_cache.get(ticker, {})
         rows.append(
             {
                 "ticker": ticker,
                 "symbol": valid.iloc[1].get("yfinance_symbol") or symbol_meta.get("symbol") or f"{ticker}.JK",
                 "name": symbol_meta.get("name") or ticker,
-                "logo_url": cached_profile.get("logo_url"),
-                "logo_candidates": _logo_candidates(cached_profile),
-                "website": cached_profile.get("website") or "",
+                "domain": symbol_meta.get("domain") or "",
+                "website": symbol_meta.get("website") or "",
+                "logo_url": symbol_meta.get("logo_url"),
+                "logo_candidates": symbol_meta.get("logo_candidates") or [],
+                "logo_source": symbol_meta.get("logo_source"),
                 "date": _date_text(valid.iloc[1].get("date")),
                 "close": latest,
                 "previous_close": previous,
@@ -462,6 +470,9 @@ def load_market_watchlist(
                 "prediction_probability_up": prediction.get("probability_up"),
                 "logo_url": meta.get("logo_url"),
                 "logo_candidates": meta.get("logo_candidates") or [],
+                "logo_source": meta.get("logo_source"),
+                "domain": meta.get("domain") or "",
+                "website": meta.get("website") or "",
             }
         )
 
@@ -513,11 +524,15 @@ def load_company_profile(
             "rank": None,
         },
     )
+    company_metadata = _read_company_metadata()
     cache = _read_profile_cache(cache_path)
     cached = cache.get(cleaned, {})
-    profile = {**base, **cached}
+    static_profile = company_metadata.get(cleaned, {})
+    profile = _merge_profile_metadata(base, static_profile, cached)
+    if static_profile:
+        profile["checked"] = True
 
-    if cached.get("checked") or not fetch_remote:
+    if profile.get("checked") or not fetch_remote:
         return _with_logo_candidates(profile)
 
     try:
@@ -1500,6 +1515,60 @@ def _read_profile_cache(path: str | Path = DEFAULT_COMPANY_PROFILE_CACHE_PATH) -
     return {str(key).upper(): value for key, value in payload.items() if isinstance(value, dict)}
 
 
+def _read_company_metadata(path: str | Path = DEFAULT_COMPANY_METADATA_PATH) -> dict[str, dict[str, Any]]:
+    metadata_path = Path(path)
+    if not metadata_path.exists():
+        return {}
+    try:
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+    if isinstance(payload, dict):
+        raw_records = []
+        for key, value in payload.items():
+            if isinstance(value, dict):
+                raw_records.append({"ticker": key, **value})
+    elif isinstance(payload, list):
+        raw_records = [value for value in payload if isinstance(value, dict)]
+    else:
+        return {}
+
+    records: dict[str, dict[str, Any]] = {}
+    for raw in raw_records:
+        ticker = str(raw.get("ticker") or "").upper().replace(".JK", "").strip()
+        if not ticker:
+            continue
+        profile = dict(raw)
+        company_name = _string_or_empty(profile.get("company_name"))
+        if company_name and not profile.get("name"):
+            profile["name"] = company_name
+        domain = _domain_from_profile(profile)
+        if domain:
+            profile["domain"] = domain
+        if not _http_url(profile.get("website")) and domain:
+            profile["website"] = f"https://{domain}"
+        if not profile.get("logo_url") and domain:
+            profile["logo_url"] = _logo_dev_url(domain)
+            profile["logo_source"] = "Logo.dev domain lookup"
+        profile.setdefault("checked", True)
+        records[ticker] = profile
+    return records
+
+
+def _merge_profile_metadata(*profiles: dict[str, Any]) -> dict[str, Any]:
+    merged: dict[str, Any] = {}
+    for profile in profiles:
+        for key, value in profile.items():
+            if value is None or value == "" or value == []:
+                continue
+            merged[key] = value
+    company_name = _string_or_empty(merged.get("company_name"))
+    if company_name and not merged.get("name"):
+        merged["name"] = company_name
+    return merged
+
+
 def _write_profile_cache(
     payload: dict[str, dict[str, Any]],
     path: str | Path = DEFAULT_COMPANY_PROFILE_CACHE_PATH,
@@ -1537,6 +1606,9 @@ def _logo_candidates(profile: dict[str, Any]) -> list[str]:
             candidates.append(url)
 
     add(profile.get("logo_url"))
+    domain = _domain_from_profile(profile)
+    if domain:
+        add(_logo_dev_url(domain))
     website = _http_url(profile.get("website"))
     if website:
         add(urljoin(website, "/favicon.ico"))
@@ -1549,6 +1621,22 @@ def _logo_candidates(profile: dict[str, Any]) -> list[str]:
         add(candidate)
 
     return candidates
+
+
+def _domain_from_profile(profile: dict[str, Any]) -> str:
+    domain = _string_or_empty(profile.get("domain")).lower()
+    if not domain:
+        website = _http_url(profile.get("website"))
+        domain = (urlparse(website).hostname or "").lower() if website else ""
+    domain = domain.removeprefix("www.").strip("/")
+    return domain
+
+
+def _logo_dev_url(domain: str) -> str:
+    clean_domain = _string_or_empty(domain).lower().removeprefix("www.").strip("/")
+    if not clean_domain:
+        return ""
+    return f"https://img.logo.dev/{quote(clean_domain, safe='.-')}?size=128&format=png&fallback=404"
 
 
 def _fetch_yfinance_profile(symbol: str) -> dict[str, Any]:

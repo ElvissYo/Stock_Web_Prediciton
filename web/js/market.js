@@ -1,4 +1,5 @@
 import { loadCompanyProfile } from "./data-loader.js";
+import { logoCandidates, logoFallbackText, renderCompanyLogo } from "./logo.js";
 import { formatNumber, formatPercent, hideEmpty, showEmpty, signedClass } from "./ui.js";
 
 export function renderMoversLoading(gainersNode, losersNode, emptyNode) {
@@ -89,36 +90,11 @@ function directionIcon(value) {
 }
 
 function renderMoverLogo(container, row, allowHydrate = true) {
-  container.textContent = tickerFallback(row.ticker);
+  renderCompanyLogo(container, row);
   const candidates = logoCandidates(row);
   if (!candidates.length) {
     if (allowHydrate) hydrateMoverLogo(container, row.ticker);
-    return;
   }
-
-  let index = 0;
-  const loadNext = () => {
-    if (index >= candidates.length) {
-      if (allowHydrate) hydrateMoverLogo(container, row.ticker);
-      container.textContent = tickerFallback(row.ticker);
-      container.classList.add("fallback");
-      return;
-    }
-
-    const image = document.createElement("img");
-    image.alt = `${row.ticker} logo`;
-    image.loading = "lazy";
-    image.decoding = "async";
-    image.src = candidates[index];
-    index += 1;
-    image.addEventListener("load", () => {
-      container.textContent = "";
-      container.classList.remove("fallback");
-      container.appendChild(image);
-    });
-    image.addEventListener("error", loadNext, { once: true });
-  };
-  loadNext();
 }
 
 async function hydrateMoverLogo(container, ticker) {
@@ -130,16 +106,7 @@ async function hydrateMoverLogo(container, ticker) {
     if (!profile.logo_url) return;
     renderMoverLogo(container, profile, false);
   } catch {
-    container.textContent = tickerFallback(ticker);
+    container.textContent = logoFallbackText(ticker);
     container.classList.add("fallback");
   }
-}
-
-function tickerFallback(ticker) {
-  return String(ticker || "?").slice(0, 4);
-}
-
-function logoCandidates(row) {
-  const candidates = [row?.logo_url, ...(row?.logo_candidates || [])].filter(Boolean);
-  return candidates.filter((value, index) => candidates.indexOf(value) === index);
 }

@@ -1,6 +1,7 @@
 import { loadChart, loadNews, loadNlpSummary, loadPrediction, loadStocks } from "./data-loader.js";
 import { DrawingLayer } from "./drawing-layer.js";
 import { TOOL_GROUPS, TOOLS } from "./drawing-tools.js";
+import { renderCompanyLogo } from "./logo.js";
 import { formatNumber, formatPercent, isFiniteNumber, showToast, signedClass } from "./ui.js";
 
 const RANGES = ["1D", "5D", "1M", "3M", "6M", "YTD", "1Y", "5Y", "ALL"];
@@ -559,6 +560,7 @@ class FullscreenChartWorkspace {
     this.filteredStocks = rows;
     this.watchlistStatusNode.textContent = `${rows.length} stocks | ${this.watchlistFilter}`;
     this.watchlistNode.innerHTML = rows.map((row) => this.watchlistRow(row)).join("");
+    this.renderWatchlistLogos(rows);
   }
 
   watchlistComparator(a, b) {
@@ -578,6 +580,7 @@ class FullscreenChartWorkspace {
     const badgeClass = String(row.prediction_direction || "NEUTRAL").toLowerCase();
     return `
       <button type="button" class="watchlist-row ${active}" data-watchlist-ticker="${escapeHtml(row.ticker)}">
+        <span class="company-logo watchlist-logo fallback" data-watchlist-logo="${escapeHtml(row.ticker)}">${escapeHtml(row.ticker.slice(0, 4))}</span>
         <span class="watchlist-main">
           <strong>${escapeHtml(row.ticker)}</strong>
           <small>${escapeHtml(row.company_name || row.name || row.symbol || "")}</small>
@@ -589,6 +592,14 @@ class FullscreenChartWorkspace {
         <span class="prediction-badge ${badgeClass}">${escapeHtml(row.prediction_direction || "NEUTRAL")}</span>
       </button>
     `;
+  }
+
+  renderWatchlistLogos(rows) {
+    const byTicker = new Map(rows.map((row) => [row.ticker, row]));
+    this.watchlistNode.querySelectorAll("[data-watchlist-logo]").forEach((node) => {
+      const row = byTicker.get(node.dataset.watchlistLogo);
+      renderCompanyLogo(node, row || { ticker: node.dataset.watchlistLogo });
+    });
   }
 
   async switchTicker(ticker) {

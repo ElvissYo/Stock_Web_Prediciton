@@ -375,7 +375,7 @@ body.chart-fullscreen-open {
   cursor: pointer;
   display: grid;
   gap: 8px;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: 34px minmax(0, 1fr) auto auto;
   min-height: 62px;
   padding: 9px;
   text-align: left;
@@ -384,6 +384,12 @@ body.chart-fullscreen-open {
     border-color 160ms ease,
     box-shadow 160ms ease,
     transform 160ms ease;
+}
+
+.watchlist-logo {
+  font-size: 10px;
+  height: 34px;
+  width: 34px;
 }
 
 .watchlist-row:hover {

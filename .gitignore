@@ -17,6 +17,7 @@ models/*.txt
 reports/*
 !reports/.gitkeep
 data/*
+!data/company_metadata.json
 !data/raw/
 data/raw/*
 !data/raw/.gitkeep

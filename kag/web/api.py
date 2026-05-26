@@ -95,6 +95,14 @@ def api_response(path: str, query: dict[str, list[str]]) -> tuple[HTTPStatus, di
             "symbols": load_market_symbols(limit=limit),
         }
 
+    if path == "/api/stocks/metadata":
+        limit = _query_int(query, "limit", 100)
+        return HTTPStatus.OK, {
+            "status": "ok",
+            "source": "data/company_metadata.json",
+            "stocks": [row for row in load_market_symbols(limit=limit) if row["ticker"] != "IHSG"],
+        }
+
     if path == "/api/stocks":
         limit = _query_int(query, "limit", 100)
         watchlist = load_market_watchlist(limit=limit)

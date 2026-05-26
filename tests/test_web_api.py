@@ -18,6 +18,19 @@ def test_api_symbols_route_includes_jkse():
     assert any(row["ticker"] == "IHSG" and row["symbol"] == "^JKSE" for row in payload["symbols"])
     assert len(payload["symbols"]) == 101
     assert any(row["ticker"] == "BBCA" and row["name"] for row in payload["symbols"])
+    bbri = next(row for row in payload["symbols"] if row["ticker"] == "BBRI")
+    assert bbri["domain"] == "bri.co.id"
+    assert bbri["logo_url"].startswith("https://")
+
+
+def test_api_stocks_metadata_route():
+    status, payload = api_response("/api/stocks/metadata", {"limit": ["30"]})
+
+    assert status == HTTPStatus.OK
+    assert payload["status"] == "ok"
+    assert payload["source"] == "data/company_metadata.json"
+    assert len(payload["stocks"]) == 30
+    assert any(row["ticker"] == "BBCA" and row["domain"] == "bca.co.id" for row in payload["stocks"])
 
 
 def test_api_market_movers_route(monkeypatch):
