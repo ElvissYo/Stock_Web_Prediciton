@@ -1,0 +1,118 @@
+name: Manual Retrain and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_tickers:
+        description: "Maximum stock universe size"
+        required: false
+        default: "30"
+      news_provider:
+        description: "News provider: rss, gdelt, or newsapi"
+        required: false
+        default: "rss"
+      news_limit:
+        description: "Maximum news articles to collect"
+        required: false
+        default: "1000"
+
+jobs:
+  manual-retrain-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    env:
+      MAX_TICKERS: ${{ github.event.inputs.max_tickers || '30' }}
+      NEWS_PROVIDER: ${{ github.event.inputs.news_provider || 'rss' }}
+      NEWS_LIMIT: ${{ github.event.inputs.news_limit || '1000' }}
+      PYTHONPATH: ${{ github.workspace }}
+      HF_USERNAME: ${{ secrets.HF_USERNAME }}
+      HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install Git LFS
+        run: |
+          git lfs install
+          git lfs pull
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -e .
+
+      - name: Compile check
+        run: |
+          python -m py_compile scripts/run_web_dashboard.py
+          python -m py_compile kag/web/api.py
+
+      - name: Import check
+        run: |
+          python -c "import kag; print('kag import OK')"
+
+      - name: Run retraining pipeline
+        run: |
+          python scripts/collect_prices.py --limit "$MAX_TICKERS"
+          python scripts/collect_news.py --provider "$NEWS_PROVIDER" --limit "$NEWS_LIMIT"
+          python scripts/build_price_features.py
+          python scripts/build_nlp_features.py --sentiment-backend lexicon --embedding-backend hashing
+          python scripts/build_final_dataset.py --metadata data/seeds/idx_stock_universe.csv
+          python scripts/train_baseline.py
+          python scripts/train_global_model.py
+          python scripts/evaluate_models.py
+
+      - name: Validate runtime artifacts
+        run: |
+          python scripts/validate_runtime_artifacts.py
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Deploy updated project to Hugging Face Space
+        run: |
+          if [ -z "$HF_USERNAME" ] || [ -z "$HF_SPACE_NAME" ] || [ -z "$HF_TOKEN" ]; then
+            echo "HF_USERNAME, HF_SPACE_NAME, and HF_TOKEN secrets are required."
+            exit 1
+          fi
+
+          rm -rf /tmp/hf-space
+          HF_AUTH="$(printf "%s:%s" "$HF_USERNAME" "$HF_TOKEN" | base64 -w0)"
+          git -c http.extraheader="Authorization: Basic ${HF_AUTH}" \
+            clone "https://huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME}" /tmp/hf-space
+
+          rsync -av \
+            --exclude ".git" \
+            --exclude "__pycache__" \
+            --exclude ".pytest_cache" \
+            --exclude ".venv" \
+            --exclude "venv" \
+            --exclude "node_modules" \
+            ./ /tmp/hf-space/
+
+          cd /tmp/hf-space
+          git lfs install
+          git lfs track "*.parquet" "*.joblib" "*.pkl" "*.png" "models/*.txt"
+          git add .gitattributes
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to deploy."
+          else
+            git commit -m "Manual retrain artifact update"
+            git -c http.extraheader="Authorization: Basic ${HF_AUTH}" push
+          fi
