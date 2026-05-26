@@ -37,6 +37,7 @@ def test_articles_from_gdelt_payload_maps_rows():
     assert rows[0].ticker == "BBCA"
     assert rows[0].date == "2026-05-23"
     assert rows[0].source == "GDELT - example.com"
+    assert rows[0].provider == "gdelt"
     assert rows[0].image_url == "https://example.com/bbca.jpg"
 
 
@@ -61,4 +62,5 @@ def test_articles_from_newsapi_payload_maps_rows():
     assert rows[0].ticker == "BBRI"
     assert rows[0].date == "2026-05-23"
     assert rows[0].source == "NewsAPI - Example News"
+    assert rows[0].provider == "newsapi"
     assert rows[0].image_url == "https://example.com/bbri.jpg"

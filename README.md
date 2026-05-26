@@ -91,6 +91,7 @@ News API options:
 
 - `gdelt`: no API key required, useful for proof-of-concept collection
 - `newsapi`: NewsAPI.org-compatible provider, requires `NEWSAPI_API_KEY`
+- `all`: combines RSS, GDELT, and NewsAPI when `NEWSAPI_API_KEY` is configured
 
 ---
 
@@ -304,6 +305,8 @@ Example commands:
 ```powershell
 python scripts/collect_news.py --provider gdelt --limit 500 --max-per-ticker 50
 python scripts/collect_news.py --provider newsapi --api-key YOUR_KEY --limit 500
+python scripts/collect_news.py --provider all --limit 2000 --max-per-ticker 50
+python scripts/collect_news.py --providers rss,gdelt,newsapi --api-key YOUR_KEY --limit 2000
 ```
 
 ### News Images
@@ -355,8 +358,19 @@ sentiment_mean
 sentiment_std
 news_count
 sentiment_momentum
+sentiment_min
+sentiment_max
+sentiment_abs_mean
+positive_news_count
+neutral_news_count
+negative_news_count
+source_count
+provider_count
+source_diversity
 embedding_dim_0 ... embedding_dim_49
 ```
+
+News rows are deduplicated by canonical URL and near-identical title before NLP features are built, so the same insight from multiple providers does not inflate `news_count`.
 
 By default, NLP rows are shifted by one trading row before joining price features. This is a conservative design because raw news artifacts may store dates without exact publication timestamps.
 

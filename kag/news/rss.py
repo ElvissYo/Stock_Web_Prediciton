@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 from typing import Iterable
 
 from kag.market_data.top_universe import StockMetadata, ticker_aliases
+from kag.news.dedup import deduplicate_news_items, infer_provider_from_source
 
 
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ class NewsArticle:
     source: str
     sentiment_score: float | None = None
     image_url: str | None = None
+    provider: str | None = None
 
     def to_record(self) -> dict[str, str | float | None]:
         return asdict(self)
@@ -88,7 +90,6 @@ def collect_rss_news(
 
     aliases = ticker_aliases(stocks)
     articles: list[NewsArticle] = []
-    seen_keys: set[tuple[str, str, str]] = set()
 
     for source in sources:
         for entry in _source_entries(source):
@@ -104,10 +105,6 @@ def collect_rss_news(
             image_url = extract_article_image_url(entry, article_url=url)
 
             for ticker in matched_tickers:
-                key = (ticker, url, title)
-                if key in seen_keys:
-                    continue
-                seen_keys.add(key)
                 articles.append(
                     NewsArticle(
                         ticker=ticker,
@@ -117,12 +114,14 @@ def collect_rss_news(
                         url=url,
                         source=source.name,
                         image_url=image_url,
+                        provider="rss",
                     )
                 )
-                if limit is not None and len(articles) >= limit:
-                    return articles
 
-    return articles
+    deduplicated = deduplicate_news_items(articles)
+    if limit is not None:
+        return deduplicated[:limit]
+    return deduplicated
 
 
 def extract_tickers(text: str, aliases: dict[str, set[str]]) -> list[str]:
@@ -143,11 +142,17 @@ def write_news_parquet(articles: Iterable[NewsArticle], output_path: str | Path)
     """Write raw ticker-level news rows to Parquet."""
 
     pd = _require_pandas()
-    rows = [article.to_record() for article in articles]
+    rows = [article.to_record() for article in deduplicate_news_items(articles)]
     if not rows:
         raise ValueError("No ticker-matched news articles were collected")
 
     frame = pd.DataFrame(rows)
+    if "provider" not in frame.columns:
+        frame["provider"] = None
+    frame["provider"] = [
+        _clean_provider(provider) or infer_provider_from_source(source)
+        for provider, source in zip(frame["provider"], frame["source"], strict=False)
+    ]
     if "sentiment_score" not in frame.columns:
         frame["sentiment_score"] = None
     missing_sentiment = frame["sentiment_score"].isna()
@@ -165,6 +170,7 @@ def write_news_parquet(articles: Iterable[NewsArticle], output_path: str | Path)
             "summary",
             "url",
             "source",
+            "provider",
             "sentiment_score",
             "image_url",
         ]
@@ -178,6 +184,17 @@ def write_news_parquet(articles: Iterable[NewsArticle], output_path: str | Path)
             "Parquet support is not installed. Run: .venv\\Scripts\\python.exe -m pip install -e \".[data]\""
         ) from exc
     return len(frame)
+
+
+def _clean_provider(value: object) -> str:
+    if value is None:
+        return ""
+    try:
+        if value != value:
+            return ""
+    except TypeError:
+        pass
+    return " ".join(str(value).lower().split()).strip()
 
 
 def _entry_date(entry: object) -> str:

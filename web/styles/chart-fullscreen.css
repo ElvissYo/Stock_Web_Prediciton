@@ -670,3 +670,204 @@ body.chart-fullscreen-open {
     display: none !important;
   }
 }
+
+/* Light-mode fullscreen trading workspace. */
+.fullscreen-chart-button {
+  background: linear-gradient(180deg, #ffffff, #f5f8fc);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.expand-icon::before,
+.expand-icon::after {
+  background: #ffffff;
+}
+
+.chart-fullscreen-overlay {
+  background: rgba(244, 247, 251, 0.98);
+}
+
+.fs-workspace {
+  background: #ffffff;
+  border-color: var(--line);
+  box-shadow: 0 28px 90px rgba(20, 42, 71, 0.2);
+}
+
+.fs-topbar {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: var(--line);
+  grid-template-columns: minmax(190px, 0.8fr) auto minmax(300px, auto) minmax(520px, 1.5fr) minmax(250px, auto);
+}
+
+.fs-symbol-block strong,
+.fs-price-strip span:first-child,
+.fs-side-details strong {
+  color: var(--text);
+}
+
+.fs-symbol-block span,
+.watchlist-status,
+.watchlist-main small,
+.fs-side-details span {
+  color: var(--muted);
+}
+
+.fs-range-tabs,
+.fs-chart-controls,
+.fs-persist-controls {
+  align-items: stretch;
+}
+
+.fs-toolbar-group {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 6px;
+}
+
+.fs-chart-controls {
+  background: transparent;
+  border: 0;
+  display: flex;
+  gap: 8px;
+  padding: 0;
+}
+
+.fs-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.fs-toolbar-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.fs-topbar button,
+.watchlist-filters button,
+.watchlist-heading button,
+.watchlist-mobile-button,
+.watchlist-collapse,
+.watchlist-slim-button {
+  background: #ffffff;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.fs-topbar button:hover,
+.watchlist-filters button:hover,
+.watchlist-heading button:hover,
+.watchlist-mobile-button:hover,
+.watchlist-collapse:hover,
+.watchlist-slim-button:hover {
+  background: var(--blue-soft);
+  border-color: rgba(22, 119, 210, 0.28);
+  color: var(--text);
+}
+
+.fs-topbar button.active,
+.watchlist-filters button.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #ffffff;
+}
+
+.fs-close-button {
+  background: var(--red-soft) !important;
+  border-color: rgba(214, 79, 92, 0.28) !important;
+  color: var(--red) !important;
+}
+
+.fs-chart-stage {
+  background: linear-gradient(180deg, #ffffff, #f7fafc);
+  border-color: var(--line);
+}
+
+.fs-chart-grid {
+  background:
+    repeating-linear-gradient(90deg, rgba(20, 42, 71, 0.035) 0 1px, transparent 1px 80px),
+    repeating-linear-gradient(0deg, rgba(20, 42, 71, 0.03) 0 1px, transparent 1px 64px);
+}
+
+.fs-loading,
+.fs-empty {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--muted);
+}
+
+.fs-ohlc-tooltip {
+  background: #ffffff;
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+}
+
+.fs-watchlist-sidebar {
+  background: #ffffff;
+  border-left-color: var(--line);
+}
+
+.watchlist-search,
+.watchlist-sort {
+  background: #ffffff;
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.watchlist-row,
+.fs-side-details section {
+  background: #ffffff;
+  border-color: var(--line);
+  color: var(--text);
+}
+
+.watchlist-row:hover {
+  background: #f6faff;
+  border-color: rgba(22, 119, 210, 0.28);
+}
+
+.watchlist-row.active {
+  background: var(--green-soft);
+  border-color: rgba(15, 159, 110, 0.36);
+}
+
+.watchlist-skeleton {
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.74), transparent),
+    #e8eef6;
+}
+
+.fs-side-details {
+  border-top-color: var(--line);
+}
+
+.fs-prediction-layout {
+  display: grid;
+  gap: 7px;
+}
+
+.fs-confidence-mini {
+  background: #edf2f7;
+  border-radius: 999px;
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.fs-confidence-mini i {
+  background: linear-gradient(90deg, var(--red), var(--amber), var(--green));
+  display: block;
+  height: 100%;
+}
+
+@media (max-width: 1240px) {
+  .fs-topbar {
+    grid-template-columns: minmax(160px, 0.8fr) auto minmax(260px, auto);
+  }
+}

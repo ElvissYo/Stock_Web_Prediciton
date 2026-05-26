@@ -12,7 +12,7 @@ import {
 export function renderPrediction(container, emptyNode, payload) {
   container.innerHTML = "";
   if (!payload || payload.status !== "ok") {
-    const message = payload?.message || "Prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.";
+    const message = payload?.message || "Data unavailable: prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.";
     showEmpty(emptyNode, message);
     updateOverviewPrediction(null);
     return;
@@ -24,15 +24,14 @@ export function renderPrediction(container, emptyNode, payload) {
     isFiniteNumber(payload.close) && isFiniteNumber(payload.predicted_return)
       ? Number(payload.close) * (1 + Number(payload.predicted_return))
       : null;
-  renderMetric(container, "Next-day Return", formatPercent(payload.predicted_return), signedClass(payload.predicted_return));
-  renderMetric(container, "Direction", direction, payload.predicted_direction === 1 ? "positive" : "negative");
-  renderMetric(container, "Confidence", formatPercent(payload.confidence));
+  container.appendChild(predictionHeroCard(payload, direction));
   renderMetric(container, "Predicted Close", formatNumber(predictedClose), signedClass(payload.predicted_return));
   renderMetric(container, "Latest Close", formatNumber(payload.close));
   renderMetric(container, "Prediction Date", payload.date || "n/a");
   renderMetric(container, "Model Status", payload.model_type || payload.model_name || "artifact");
+  renderMetric(container, "Next-day Return", formatPercent(payload.predicted_return), signedClass(payload.predicted_return));
   animateMetricText(
-    container.querySelector(".data-metric .value"),
+    container.querySelector(".prediction-return strong"),
     payload.predicted_return,
     formatPercent,
   );
@@ -53,7 +52,7 @@ export function renderProjection(container, emptyNode, payload) {
   container.innerHTML = "";
   const projection = payload?.projection;
   if (!payload || payload.status !== "ok" || !projection) {
-    showEmpty(emptyNode, payload?.message || "Projection belum tersedia untuk input ini.");
+    showEmpty(emptyNode, payload?.message || "Data unavailable: projection belum tersedia untuk input ini.");
     return;
   }
 
@@ -83,7 +82,7 @@ export function renderNlpSummary(container, summary) {
   if (!summary || !Object.keys(summary).length) {
     renderMetric(container, "Overall Sentiment", "n/a");
     renderMetric(container, "Related News", "n/a");
-    renderInsightCard(container, "NLP summary belum tersedia dari artifact untuk ticker ini.");
+    renderInsightCard(container, "Data unavailable: NLP summary belum tersedia dari artifact untuk ticker ini.");
     return;
   }
 
@@ -105,8 +104,8 @@ export function renderPredictionDrivers(container, emptyNode, summaryNode, paylo
 
   const drivers = payload?.drivers || [];
   if (!payload || payload.status !== "ok" || !drivers.length) {
-    summaryNode.textContent = payload?.summary || "Prediction drivers belum tersedia dari artifact saat ini.";
-    showEmpty(emptyNode, payload?.message || "Prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.");
+    summaryNode.textContent = payload?.summary || "Data unavailable: prediction drivers belum tersedia dari artifact saat ini.";
+    showEmpty(emptyNode, payload?.message || "Data unavailable: prediction data belum tersedia. Jalankan pipeline model terlebih dahulu.");
     return;
   }
 
@@ -120,17 +119,38 @@ export function renderModelPerformance(metricsNode, emptyNode, summaryNode, payl
   summaryNode.innerHTML = "";
 
   if (!payload || payload.status !== "ok") {
-    showEmpty(emptyNode, payload?.message || "Model performance report belum ditemukan.");
+    showEmpty(emptyNode, payload?.message || "Data unavailable: model health report belum ditemukan.");
     return;
   }
 
   hideEmpty(emptyNode);
+  const health = modelHealth(payload);
+  const header = document.createElement("div");
+  header.className = "model-health-header";
+  header.innerHTML = `
+    <div>
+      <span class="model-health-badge ${health.className}">${health.icon} ${health.label}</span>
+      <p>${health.description}</p>
+    </div>
+  `;
+  metricsNode.appendChild(header);
   renderMetric(metricsNode, "Baseline MAPE", formatPercent(payload.baseline_mape));
-  renderMetric(metricsNode, "NLP Model MAPE", formatPercent(payload.nlp_model_mape));
-  renderMetric(metricsNode, "Directional Accuracy", formatPercent(payload.directional_accuracy));
-  renderMetric(metricsNode, "Direction Classifier", formatPercent(payload.direction_classifier_accuracy));
+  metricsNode.lastElementChild.querySelector(".label").classList.add("tooltip");
+  metricsNode.lastElementChild.querySelector(".label").dataset.tooltip = "MAPE mengukur rata-rata besar error prediksi. Lebih kecil berarti lebih baik.";
+  metricsNode.lastElementChild.querySelector(".label").title = "MAPE mengukur rata-rata besar error prediksi. Lebih kecil berarti lebih baik.";
+  renderMetric(metricsNode, "NLP Model MAPE", formatPercent(payload.nlp_model_mape), "", {
+    tooltip: "MAPE model yang memakai fitur harga dan sentimen berita. Lebih kecil berarti prediksi return lebih dekat.",
+  });
+  renderMetric(metricsNode, "Directional Accuracy", formatPercent(payload.directional_accuracy), "", {
+    tooltip: "Persentase prediksi arah naik/turun yang benar. Lebih besar berarti sinyal arah lebih konsisten.",
+  });
+  renderMetric(metricsNode, "Direction Classifier", formatPercent(payload.direction_classifier_accuracy), "", {
+    tooltip: "Akurasi classifier untuk menentukan arah pasar. Nilai lebih tinggi lebih baik.",
+  });
   renderMetric(metricsNode, "Improvement", formatPctValue(payload.improvement_pct), signedClass(payload.improvement_pct));
-  renderMetric(metricsNode, "Rank IC", formatNumber(payload.rank_ic), signedClass(payload.rank_ic));
+  renderMetric(metricsNode, "Rank IC", formatNumber(payload.rank_ic), signedClass(payload.rank_ic), {
+    tooltip: "Rank IC menunjukkan apakah ranking saham dari model sejalan dengan hasil aktual. Positif lebih baik.",
+  });
   renderMetric(metricsNode, "Top Basket Excess", formatPercent(payload.top_n_excess_return), signedClass(payload.top_n_excess_return));
   renderMetric(metricsNode, "Stocks Covered", formatNumber(payload.stocks_covered));
   renderMetric(metricsNode, "Training Rows", formatNumber(payload.data_rows));
@@ -170,9 +190,82 @@ function updateOverviewPrediction(payload) {
 
   returnNode.textContent = formatPercent(payload.predicted_return);
   returnNode.className = signedClass(payload.predicted_return);
-  directionNode.textContent = payload.predicted_direction === 1 ? "UP" : "DOWN";
+  const isUp = payload.predicted_direction === 1;
+  directionNode.innerHTML = `<span class="direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "▲" : "▼"}</span><span>${isUp ? "UP" : "DOWN"}</span>`;
   directionNode.className = payload.predicted_direction === 1 ? "positive" : "negative";
   confidenceNode.textContent = `Confidence: ${formatPercent(payload.confidence)}`;
+}
+
+function predictionHeroCard(payload, direction) {
+  const isUp = direction === "UP";
+  const confidence = boundedPercent(payload.confidence);
+  const card = document.createElement("article");
+  card.className = `data-metric prediction-hero-card ${isUp ? "positive" : "negative"}`;
+  card.innerHTML = `
+    <div class="prediction-hero-top">
+      <div>
+        <div class="label">Direction</div>
+        <div class="prediction-direction">
+          <span class="direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "▲" : "▼"}</span>
+          <span>${direction}</span>
+        </div>
+      </div>
+      <div class="prediction-return">
+        Next-day return
+        <strong>${formatPercent(payload.predicted_return)}</strong>
+      </div>
+    </div>
+    <div class="confidence-block">
+      <div class="confidence-head">
+        <span class="tooltip" data-tooltip="Confidence adalah tingkat keyakinan relatif model berdasarkan pola historis dan fitur yang tersedia. Ini bukan probabilitas keuntungan pasti." title="Confidence adalah tingkat keyakinan relatif model berdasarkan pola historis dan fitur yang tersedia. Ini bukan probabilitas keuntungan pasti.">Confidence</span>
+        <span class="confidence-value">${formatPercent(payload.confidence)}</span>
+      </div>
+      <div class="confidence-bar" aria-label="Confidence ${formatPercent(payload.confidence)}">
+        <span style="width: 100%"></span>
+        <i class="confidence-marker" style="left: ${confidence}%"></i>
+      </div>
+      <div class="confidence-scale"><span>Low</span><span>Medium</span><span>High</span></div>
+    </div>
+    <p class="prediction-disclaimer">&#9888;&#65039; This prediction is not investment advice. For educational purposes only.</p>
+  `;
+  return card;
+}
+
+function modelHealth(payload) {
+  const directionalAccuracy = Number(payload.directional_accuracy ?? payload.direction_classifier_accuracy);
+  const nlpMape = Number(payload.nlp_model_mape);
+  const baselineMape = Number(payload.baseline_mape);
+  const hasAccuracy = Number.isFinite(directionalAccuracy);
+  const hasMape = Number.isFinite(nlpMape);
+  const mapeImproved = Number.isFinite(baselineMape) && hasMape ? nlpMape <= baselineMape : true;
+
+  if ((hasAccuracy && directionalAccuracy < 0.48) || (Number.isFinite(baselineMape) && hasMape && nlpMape > baselineMape * 1.15)) {
+    return {
+      className: "degraded",
+      icon: "&#10060;",
+      label: "Degraded",
+      description: "Model perlu dicek karena akurasi arah rendah atau error prediksi naik dibanding baseline.",
+    };
+  }
+  if ((hasAccuracy && directionalAccuracy >= 0.52 && mapeImproved) || (hasMape && nlpMape <= 0.08)) {
+    return {
+      className: "healthy",
+      icon: "&#9989;",
+      label: "Healthy",
+      description: "Metrik terbaru masih berada dalam batas yang layak untuk dashboard edukasi.",
+    };
+  }
+  return {
+    className: "review",
+    icon: "&#9888;&#65039;",
+    label: "Review Needed",
+    description: "Metrik belum buruk, tetapi perlu dipantau karena sinyal belum cukup kuat.",
+  };
+}
+
+function boundedPercent(value) {
+  if (!isFiniteNumber(value)) return 0;
+  return Math.min(100, Math.max(0, Number(value) * 100));
 }
 
 function driverCard(row) {

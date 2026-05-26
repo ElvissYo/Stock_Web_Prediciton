@@ -35,13 +35,20 @@ export function setLoading(node, isLoading) {
   node.classList.toggle("hidden", !isLoading);
 }
 
-export function renderMetric(parent, label, value, className = "") {
+export function renderMetric(parent, label, value, className = "", options = {}) {
   const node = document.createElement("div");
   node.className = `data-metric ${className}`;
   node.innerHTML = '<div class="label"></div><div class="value"></div>';
-  node.querySelector(".label").textContent = label;
+  const labelNode = node.querySelector(".label");
+  labelNode.textContent = label;
+  if (options.tooltip) {
+    labelNode.classList.add("tooltip");
+    labelNode.dataset.tooltip = options.tooltip;
+    labelNode.title = options.tooltip;
+  }
   node.querySelector(".value").textContent = value ?? "n/a";
   parent.appendChild(node);
+  return node;
 }
 
 export function animateMetricText(node, value, formatter = formatNumber) {

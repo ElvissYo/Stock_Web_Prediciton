@@ -10,109 +10,109 @@
     "artifact_path": "models\\baseline_model.joblib",
     "train_rows": 366993,
     "evaluation_rows": 347555,
-    "feature_count": 74,
+    "feature_count": 72,
     "train_start_date": "2000-06-06",
     "train_end_date": "2026-05-21",
     "cv_gap_dates": 1,
     "selection_top_n": 10,
     "metrics": {
-      "mape": 0.018478,
-      "rmse": 279.487264,
-      "mae": 60.229826,
-      "target_rmse": 0.049134,
-      "target_mae": 0.018444,
-      "directional_accuracy": 0.468056,
-      "up_precision": 0.363419,
-      "down_precision": 0.675918,
-      "rank_ic": 0.028095,
-      "top_n_avg_return": 0.005364,
-      "top_n_hit_rate": 0.393996,
-      "top_n_excess_return": 0.00415,
-      "top_n_outperform_rate": 0.469442,
-      "long_short_return": 0.00569,
+      "mape": 0.018226,
+      "rmse": 283.36264,
+      "mae": 60.223182,
+      "target_rmse": 0.046859,
+      "target_mae": 0.018194,
+      "directional_accuracy": 0.466613,
+      "up_precision": 0.364458,
+      "down_precision": 0.678712,
+      "rank_ic": 0.031299,
+      "top_n_avg_return": 0.005359,
+      "top_n_hit_rate": 0.393773,
+      "top_n_excess_return": 0.004145,
+      "top_n_outperform_rate": 0.46961,
+      "long_short_return": 0.005681,
       "folds": 5,
       "evaluation_rows": 347555,
       "selection_dates": 5380,
       "gap_dates": 1,
       "selection_top_n": 10,
-      "direction_classifier_accuracy": 0.534742,
-      "direction_classifier_precision": 0.411528,
-      "direction_classifier_recall": 0.780942,
-      "direction_classifier_f1": 0.537965,
-      "direction_classifier_roc_auc": 0.621758,
+      "direction_classifier_accuracy": 0.532952,
+      "direction_classifier_precision": 0.412382,
+      "direction_classifier_recall": 0.795207,
+      "direction_classifier_f1": 0.54265,
+      "direction_classifier_roc_auc": 0.624522,
       "direction_classifier_folds": 5,
       "direction_classifier_evaluation_rows": 347555,
       "direction_classifier_gap_dates": 1
     },
     "direction_metrics": {
-      "accuracy": 0.534742,
-      "precision": 0.411528,
-      "recall": 0.780942,
-      "f1": 0.537965,
-      "roc_auc": 0.621758,
+      "accuracy": 0.532952,
+      "precision": 0.412382,
+      "recall": 0.795207,
+      "f1": 0.54265,
+      "roc_auc": 0.624522,
       "folds": 5,
       "evaluation_rows": 347555,
       "gap_dates": 1
     },
     "top_feature_importance": [
       {
-        "feature": "gap_return",
-        "importance": 548.0
-      },
-      {
         "feature": "BB_percent_b",
-        "importance": 430.0
+        "importance": 471.0
       },
       {
         "feature": "return_1d",
-        "importance": 415.0
+        "importance": 465.0
       },
       {
         "feature": "close_to_sma_200",
-        "importance": 353.0
+        "importance": 420.0
       },
       {
-        "feature": "day",
-        "importance": 353.0
+        "feature": "gap_return",
+        "importance": 417.0
       },
       {
-        "feature": "obv",
-        "importance": 349.0
+        "feature": "volume_change_1d",
+        "importance": 386.0
       },
       {
         "feature": "sma50_to_sma200",
-        "importance": 310.0
+        "importance": 361.0
       },
       {
-        "feature": "week",
-        "importance": 304.0
+        "feature": "day",
+        "importance": 357.0
       },
       {
         "feature": "volume_ratio_50",
-        "importance": 303.0
-      },
-      {
-        "feature": "dollar_volume",
-        "importance": 292.0
+        "importance": 352.0
       },
       {
         "feature": "obv_20d_change",
-        "importance": 291.0
-      },
-      {
-        "feature": "BB_width",
-        "importance": 282.0
-      },
-      {
-        "feature": "RSI",
-        "importance": 267.0
-      },
-      {
-        "feature": "volatility_60d",
-        "importance": 260.0
+        "importance": 326.0
       },
       {
         "feature": "sma20_to_sma50",
+        "importance": 314.0
+      },
+      {
+        "feature": "volatility_60d",
+        "importance": 294.0
+      },
+      {
+        "feature": "return_5d",
+        "importance": 281.0
+      },
+      {
+        "feature": "RSI",
+        "importance": 280.0
+      },
+      {
+        "feature": "true_range_pct",
+        "importance": 270.0
+      },
+      {
+        "feature": "dollar_volume",
         "importance": 260.0
       },
       {
@@ -120,20 +120,20 @@
         "importance": 258.0
       },
       {
+        "feature": "week",
+        "importance": 256.0
+      },
+      {
         "feature": "volume_zscore_20",
-        "importance": 254.0
+        "importance": 251.0
       },
       {
-        "feature": "MACD_hist",
-        "importance": 245.0
+        "feature": "atr_pct",
+        "importance": 248.0
       },
       {
-        "feature": "volume_change_1d",
-        "importance": 235.0
-      },
-      {
-        "feature": "volatility_10d",
-        "importance": 231.0
+        "feature": "momentum_60d",
+        "importance": 240.0
       }
     ]
   },
@@ -148,109 +148,109 @@
     "artifact_path": "models\\global_model_with_nlp.joblib",
     "train_rows": 366993,
     "evaluation_rows": 347555,
-    "feature_count": 128,
+    "feature_count": 135,
     "train_start_date": "2000-06-06",
     "train_end_date": "2026-05-21",
     "cv_gap_dates": 1,
     "selection_top_n": 10,
     "metrics": {
-      "mape": 0.018478,
-      "rmse": 279.487264,
-      "mae": 60.229826,
-      "target_rmse": 0.049134,
-      "target_mae": 0.018444,
-      "directional_accuracy": 0.468056,
-      "up_precision": 0.363419,
-      "down_precision": 0.675918,
-      "rank_ic": 0.028095,
-      "top_n_avg_return": 0.005364,
-      "top_n_hit_rate": 0.393996,
-      "top_n_excess_return": 0.00415,
-      "top_n_outperform_rate": 0.469442,
-      "long_short_return": 0.00569,
+      "mape": 0.018226,
+      "rmse": 283.36264,
+      "mae": 60.223182,
+      "target_rmse": 0.046859,
+      "target_mae": 0.018194,
+      "directional_accuracy": 0.466613,
+      "up_precision": 0.364458,
+      "down_precision": 0.678712,
+      "rank_ic": 0.031299,
+      "top_n_avg_return": 0.005359,
+      "top_n_hit_rate": 0.393773,
+      "top_n_excess_return": 0.004145,
+      "top_n_outperform_rate": 0.46961,
+      "long_short_return": 0.005681,
       "folds": 5,
       "evaluation_rows": 347555,
       "selection_dates": 5380,
       "gap_dates": 1,
       "selection_top_n": 10,
-      "direction_classifier_accuracy": 0.534742,
-      "direction_classifier_precision": 0.411528,
-      "direction_classifier_recall": 0.780942,
-      "direction_classifier_f1": 0.537965,
-      "direction_classifier_roc_auc": 0.621758,
+      "direction_classifier_accuracy": 0.532952,
+      "direction_classifier_precision": 0.412382,
+      "direction_classifier_recall": 0.795207,
+      "direction_classifier_f1": 0.54265,
+      "direction_classifier_roc_auc": 0.624522,
       "direction_classifier_folds": 5,
       "direction_classifier_evaluation_rows": 347555,
       "direction_classifier_gap_dates": 1
     },
     "direction_metrics": {
-      "accuracy": 0.534742,
-      "precision": 0.411528,
-      "recall": 0.780942,
-      "f1": 0.537965,
-      "roc_auc": 0.621758,
+      "accuracy": 0.532952,
+      "precision": 0.412382,
+      "recall": 0.795207,
+      "f1": 0.54265,
+      "roc_auc": 0.624522,
       "folds": 5,
       "evaluation_rows": 347555,
       "gap_dates": 1
     },
     "top_feature_importance": [
       {
-        "feature": "gap_return",
-        "importance": 548.0
-      },
-      {
         "feature": "BB_percent_b",
-        "importance": 430.0
+        "importance": 471.0
       },
       {
         "feature": "return_1d",
-        "importance": 415.0
+        "importance": 465.0
       },
       {
         "feature": "close_to_sma_200",
-        "importance": 353.0
+        "importance": 420.0
       },
       {
-        "feature": "day",
-        "importance": 353.0
+        "feature": "gap_return",
+        "importance": 417.0
       },
       {
-        "feature": "obv",
-        "importance": 349.0
+        "feature": "volume_change_1d",
+        "importance": 386.0
       },
       {
         "feature": "sma50_to_sma200",
-        "importance": 310.0
+        "importance": 361.0
       },
       {
-        "feature": "week",
-        "importance": 304.0
+        "feature": "day",
+        "importance": 357.0
       },
       {
         "feature": "volume_ratio_50",
-        "importance": 303.0
-      },
-      {
-        "feature": "dollar_volume",
-        "importance": 292.0
+        "importance": 352.0
       },
       {
         "feature": "obv_20d_change",
-        "importance": 291.0
-      },
-      {
-        "feature": "BB_width",
-        "importance": 282.0
-      },
-      {
-        "feature": "RSI",
-        "importance": 267.0
-      },
-      {
-        "feature": "volatility_60d",
-        "importance": 260.0
+        "importance": 326.0
       },
       {
         "feature": "sma20_to_sma50",
+        "importance": 314.0
+      },
+      {
+        "feature": "volatility_60d",
+        "importance": 294.0
+      },
+      {
+        "feature": "return_5d",
+        "importance": 281.0
+      },
+      {
+        "feature": "RSI",
+        "importance": 280.0
+      },
+      {
+        "feature": "true_range_pct",
+        "importance": 270.0
+      },
+      {
+        "feature": "dollar_volume",
         "importance": 260.0
       },
       {
@@ -258,38 +258,38 @@
         "importance": 258.0
       },
       {
+        "feature": "week",
+        "importance": 256.0
+      },
+      {
         "feature": "volume_zscore_20",
-        "importance": 254.0
+        "importance": 251.0
       },
       {
-        "feature": "MACD_hist",
-        "importance": 245.0
+        "feature": "atr_pct",
+        "importance": 248.0
       },
       {
-        "feature": "volume_change_1d",
-        "importance": 235.0
-      },
-      {
-        "feature": "volatility_10d",
-        "importance": 231.0
+        "feature": "momentum_60d",
+        "importance": 240.0
       }
     ]
   },
   "comparison": {
-    "baseline_mape": 0.018478,
-    "nlp_model_mape": 0.018478,
+    "baseline_mape": 0.018226,
+    "nlp_model_mape": 0.018226,
     "mape_improvement_pct": 0.0,
-    "baseline_directional_accuracy": 0.468056,
-    "nlp_directional_accuracy": 0.468056,
+    "baseline_directional_accuracy": 0.466613,
+    "nlp_directional_accuracy": 0.466613,
     "directional_accuracy_delta": 0.0,
-    "baseline_direction_classifier_accuracy": 0.534742,
-    "nlp_direction_classifier_accuracy": 0.534742,
+    "baseline_direction_classifier_accuracy": 0.532952,
+    "nlp_direction_classifier_accuracy": 0.532952,
     "direction_classifier_accuracy_delta": 0.0,
-    "baseline_rank_ic": 0.028095,
-    "nlp_rank_ic": 0.028095,
+    "baseline_rank_ic": 0.031299,
+    "nlp_rank_ic": 0.031299,
     "rank_ic_delta": 0.0,
-    "baseline_top_n_excess_return": 0.00415,
-    "nlp_top_n_excess_return": 0.00415,
+    "baseline_top_n_excess_return": 0.004145,
+    "nlp_top_n_excess_return": 0.004145,
     "top_n_excess_return_delta": 0.0,
     "nlp_helped": false
   }

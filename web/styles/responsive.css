@@ -187,3 +187,166 @@
     line-height: 1.12;
   }
 }
+
+@media (max-width: 1180px) {
+  main {
+    padding-inline: 32px;
+  }
+
+  .prediction-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prediction-depth-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-hero-card {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 780px) {
+  main {
+    gap: 48px;
+    max-width: 100%;
+    padding: 24px;
+    width: 100%;
+  }
+
+  main > * {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .hero-copy {
+    display: block;
+    font-size: 14px;
+  }
+
+  .hero {
+    padding-top: 28px;
+  }
+
+  .hero,
+  .hero > div,
+  .hero-tagline {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .guide-grid,
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .overview-grid {
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prediction-grid,
+  .model-grid,
+  .sentiment-strip,
+  .projection-grid,
+  .driver-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-card {
+    min-height: 138px;
+    padding: 16px;
+  }
+
+  .metric-card strong {
+    font-size: 25px;
+  }
+
+  .chart-toolbar,
+  .chart-actions,
+  .news-controls,
+  .news-filter-bar {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .toolbar-group,
+  .range-tabs,
+  .chart-actions,
+  .news-filter-bar {
+    width: 100%;
+  }
+
+  .range-tabs,
+  .news-filter-bar {
+    justify-content: flex-start;
+  }
+
+  .range-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .range-tabs button,
+  .news-filter-bar button {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .main-chart {
+    height: 420px;
+    min-width: 0;
+  }
+
+  .chart-shell {
+    min-height: 420px;
+    overflow: hidden;
+  }
+
+  .technical-chart,
+  .prediction-chart,
+  .projection-chart {
+    min-width: 0;
+  }
+
+  .movers-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mover-row {
+    grid-template-columns: 30px 34px minmax(0, 1fr) minmax(72px, auto);
+  }
+
+  .news-title {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  main {
+    padding-inline: 24px;
+  }
+
+  main > * {
+    max-width: 100%;
+  }
+
+  .guide-grid,
+  .overview-grid,
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .prediction-direction {
+    font-size: 42px;
+  }
+}

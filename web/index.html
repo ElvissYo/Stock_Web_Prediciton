@@ -34,12 +34,17 @@
     <main>
       <section id="home" class="hero section">
         <div>
-          <p class="eyebrow">Real Indonesian Market Data</p>
+          <div class="hero-kicker">
+            <p class="eyebrow">Real Indonesian Market Data</p>
+            <span class="market-status-badge closed" id="heroMarketStatus">Market status loading</span>
+          </div>
           <h1>Analyze Indonesian stocks with market data, news sentiment, and forecasting signals.</h1>
           <p class="hero-copy">
             One dashboard for IHSG context, technical price action, stock prediction, and recent
             market news. Values are loaded from the local API, model artifacts, and news pipeline.
           </p>
+          <p class="hero-updated" id="heroLastUpdated">Last updated: loading latest artifact timestamp...</p>
+          <p class="hero-tagline">Powered by LSTM + Knowledge-Augmented Generation (KAG)</p>
           <div class="guide-grid" aria-label="Dashboard guide">
             <article>
               <strong>Market Overview</strong>
@@ -61,7 +66,7 @@
         </div>
       </section>
 
-      <section class="overview-grid section" aria-label="Market overview cards">
+      <section class="overview-grid section is-loading" id="marketOverview" aria-label="Market overview cards">
         <article class="metric-card">
           <span>IHSG Latest</span>
           <strong id="overviewPrice">n/a</strong>
@@ -118,18 +123,21 @@
         </div>
 
         <div class="chart-toolbar">
-          <div class="range-tabs" id="indexRangeTabs" aria-label="IHSG time range selector">
-            <button data-range="1D">1D</button>
-            <button data-range="5D">5D</button>
-            <button data-range="1M">1M</button>
-            <button data-range="3M">3M</button>
-            <button data-range="6M">6M</button>
-            <button data-range="YTD">YTD</button>
-            <button data-range="1Y" class="active">1Y</button>
-            <button data-range="5Y">5Y</button>
-            <button data-range="ALL">ALL</button>
+          <div class="toolbar-group">
+            <span class="toolbar-label">Timeframe</span>
+            <div class="range-tabs" id="indexRangeTabs" aria-label="IHSG time range selector">
+              <button data-range="1D">1D</button>
+              <button data-range="5D">5D</button>
+              <button data-range="1M">1M</button>
+              <button data-range="3M">3M</button>
+              <button data-range="6M">6M</button>
+              <button data-range="YTD">YTD</button>
+              <button data-range="1Y" class="active">1Y</button>
+              <button data-range="5Y">5Y</button>
+              <button data-range="ALL">ALL</button>
+            </div>
           </div>
-          <div class="ohlc-readout" id="ihsgReadout">Hover over the IHSG chart for OHLCV</div>
+          <div class="ohlc-readout" id="ihsgReadout">Latest IHSG candle loading...</div>
         </div>
 
         <div class="chart-shell">
@@ -166,19 +174,22 @@
         </div>
 
         <div class="chart-toolbar">
-          <div class="range-tabs" id="rangeTabs" aria-label="Stock time range selector">
-            <button data-range="1D">1D</button>
-            <button data-range="5D">5D</button>
-            <button data-range="1M">1M</button>
-            <button data-range="3M">3M</button>
-            <button data-range="6M">6M</button>
-            <button data-range="YTD">YTD</button>
-            <button data-range="1Y" class="active">1Y</button>
-            <button data-range="5Y">5Y</button>
-            <button data-range="ALL">ALL</button>
+          <div class="toolbar-group">
+            <span class="toolbar-label">Timeframe</span>
+            <div class="range-tabs" id="rangeTabs" aria-label="Stock time range selector">
+              <button data-range="1D">1D</button>
+              <button data-range="5D">5D</button>
+              <button data-range="1M">1M</button>
+              <button data-range="3M">3M</button>
+              <button data-range="6M">6M</button>
+              <button data-range="YTD">YTD</button>
+              <button data-range="1Y" class="active">1Y</button>
+              <button data-range="5Y">5Y</button>
+              <button data-range="ALL">ALL</button>
+            </div>
           </div>
           <div class="chart-actions">
-            <div class="ohlc-readout" id="ohlcReadout">Hover over the stock chart for OHLCV</div>
+            <div class="ohlc-readout" id="ohlcReadout">Latest stock candle loading...</div>
             <button id="openFullscreenChart" class="fullscreen-chart-button" type="button" aria-label="Open fullscreen chart">
               <span class="expand-icon" aria-hidden="true"></span>
               <span>Fullscreen</span>
@@ -272,7 +283,9 @@
           </div>
 
           <div class="sentiment-strip" id="sentimentSummary"></div>
+        </div>
 
+        <div class="panel prediction-depth-panel">
           <div class="drivers-panel">
             <div class="projection-heading">
               <p class="eyebrow">Prediction Drivers</p>
@@ -324,7 +337,7 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">A/B Evaluation</p>
-              <h2>Model Performance</h2>
+              <h2>Model Health</h2>
               <p class="source-note">Readable summary from the latest model evaluation and dataset artifacts.</p>
             </div>
           </div>
@@ -346,6 +359,12 @@
             <p class="source-note">News source: local news artifact; sentiment source: NLP sentiment artifact.</p>
           </div>
           <div class="news-controls">
+            <div class="news-filter-bar" id="newsFilterBar" aria-label="Filter news by sentiment">
+              <button type="button" class="active" data-news-filter="all">All</button>
+              <button type="button" data-news-filter="positive">Positive</button>
+              <button type="button" data-news-filter="neutral">Neutral</button>
+              <button type="button" data-news-filter="negative">Negative</button>
+            </div>
             <button id="newsPrev" type="button" aria-label="Previous news">Prev</button>
             <button id="newsNext" type="button" aria-label="Next news">Next</button>
           </div>
@@ -358,6 +377,7 @@
           <div class="skeleton news"></div>
           <div class="skeleton news"></div>
         </div>
+        <button id="newsLoadMore" class="load-more-button hidden" type="button">Load more</button>
         <div id="newsEmpty" class="empty-state hidden"></div>
       </section>
     </main>

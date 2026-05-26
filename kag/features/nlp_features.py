@@ -8,6 +8,8 @@ from pathlib import Path
 import re
 from typing import Any, Iterable
 
+from kag.news.dedup import deduplicate_news_items, infer_provider_from_source
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +17,22 @@ DEFAULT_SENTIMENT_MODEL = "mdhugol/indonesia-bert-sentiment-classification"
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 DEFAULT_EMBEDDING_DIMENSIONS = 50
 HASHING_EMBEDDING_SIZE = 384
+SENTIMENT_BUCKET_THRESHOLD = 0.05
+NLP_DAILY_FEATURE_COLUMNS = [
+    "sentiment_mean",
+    "sentiment_std",
+    "news_count",
+    "sentiment_momentum",
+    "sentiment_min",
+    "sentiment_max",
+    "sentiment_abs_mean",
+    "positive_news_count",
+    "neutral_news_count",
+    "negative_news_count",
+    "source_count",
+    "provider_count",
+    "source_diversity",
+]
 POSITIVE_TERMS = {
     "akumulasi",
     "bullish",
@@ -66,6 +84,7 @@ def build_nlp_feature_frame(
     frame = news_frame.copy()
     frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.normalize()
     frame = frame.dropna(subset=["ticker", "date"])
+    frame = _deduplicate_news_frame(frame)
     frame["text"] = [
         preprocess_text(f"{title} {summary}")
         for title, summary in zip(frame["title"].fillna(""), frame["summary"].fillna(""), strict=False)
@@ -74,11 +93,30 @@ def build_nlp_feature_frame(
     if frame.empty:
         return _empty_nlp_frame(embedding_dimensions)
 
+    frame["source"] = frame["source"].fillna("Unknown").astype(str).str.strip()
+    frame.loc[frame["source"] == "", "source"] = "Unknown"
+    if "provider" not in frame.columns:
+        frame["provider"] = None
+    frame["provider"] = [
+        _clean_provider(provider) or infer_provider_from_source(source)
+        for provider, source in zip(frame["provider"], frame["source"], strict=False)
+    ]
     frame["sentiment_score"] = sentiment_scores(
         frame["text"].tolist(),
         backend=sentiment_backend,
         model_name=sentiment_model,
     )
+    frame["positive_news_count"] = (
+        frame["sentiment_score"] > SENTIMENT_BUCKET_THRESHOLD
+    ).astype(int)
+    frame["negative_news_count"] = (
+        frame["sentiment_score"] < -SENTIMENT_BUCKET_THRESHOLD
+    ).astype(int)
+    frame["neutral_news_count"] = (
+        (frame["sentiment_score"] >= -SENTIMENT_BUCKET_THRESHOLD)
+        & (frame["sentiment_score"] <= SENTIMENT_BUCKET_THRESHOLD)
+    ).astype(int)
+    frame["sentiment_abs"] = frame["sentiment_score"].abs()
     embeddings = text_embeddings(
         frame["text"].tolist(),
         backend=embedding_backend,
@@ -98,6 +136,15 @@ def build_nlp_feature_frame(
         "sentiment_mean": ("sentiment_score", "mean"),
         "sentiment_std": ("sentiment_score", "std"),
         "news_count": ("sentiment_score", "size"),
+        "sentiment_min": ("sentiment_score", "min"),
+        "sentiment_max": ("sentiment_score", "max"),
+        "sentiment_abs_mean": ("sentiment_abs", "mean"),
+        "positive_news_count": ("positive_news_count", "sum"),
+        "neutral_news_count": ("neutral_news_count", "sum"),
+        "negative_news_count": ("negative_news_count", "sum"),
+        "source_count": ("source", "nunique"),
+        "provider_count": ("provider", "nunique"),
+        "source_diversity": ("source", _source_diversity),
     }
     for column in embedding_columns:
         aggregations[column] = (column, "mean")
@@ -112,10 +159,7 @@ def build_nlp_feature_frame(
     ordered_columns = [
         "ticker",
         "date",
-        "sentiment_mean",
-        "sentiment_std",
-        "news_count",
-        "sentiment_momentum",
+        *NLP_DAILY_FEATURE_COLUMNS,
         *embedding_columns,
     ]
     return features[ordered_columns]
@@ -353,10 +397,7 @@ def _empty_nlp_frame(embedding_dimensions: int) -> Any:
     columns = [
         "ticker",
         "date",
-        "sentiment_mean",
-        "sentiment_std",
-        "news_count",
-        "sentiment_momentum",
+        *NLP_DAILY_FEATURE_COLUMNS,
         *[f"embedding_dim_{index}" for index in range(embedding_dimensions)],
     ]
     return pd.DataFrame(columns=columns)
@@ -367,6 +408,47 @@ def _validate_news_frame(frame: Any) -> None:
     missing = required_columns - set(frame.columns)
     if missing:
         raise ValueError(f"news data is missing required columns: {', '.join(sorted(missing))}")
+
+
+def _deduplicate_news_frame(frame: Any) -> Any:
+    if frame.empty:
+        return frame
+
+    working = frame.reset_index(drop=True)
+    records = working.reset_index(names="_position").to_dict("records")
+    unique_records = deduplicate_news_items(records)
+    kept_positions = [record["_position"] for record in unique_records]
+    return working.iloc[kept_positions].copy()
+
+
+def _source_diversity(values: Any) -> float:
+    counts: dict[str, int] = {}
+    for value in values:
+        source = str(value or "").strip()
+        if not source:
+            continue
+        counts[source] = counts.get(source, 0) + 1
+
+    if len(counts) <= 1:
+        return 0.0
+
+    total = sum(counts.values())
+    entropy = 0.0
+    for count in counts.values():
+        probability = count / total
+        entropy -= probability * math.log(probability)
+    return float(entropy / math.log(len(counts)))
+
+
+def _clean_provider(value: Any) -> str:
+    if value is None:
+        return ""
+    try:
+        if value != value:
+            return ""
+    except TypeError:
+        pass
+    return " ".join(str(value).lower().split()).strip()
 
 
 def _require_pandas() -> Any:

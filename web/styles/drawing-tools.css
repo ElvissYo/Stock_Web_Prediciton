@@ -305,3 +305,64 @@ rect.drawing-hit {
     top: auto !important;
   }
 }
+
+/* Light-mode drawing toolbar and popovers. */
+.fs-left-toolbar {
+  background: #ffffff;
+  border-right-color: var(--line);
+}
+
+.drawing-tool-group {
+  border-bottom-color: var(--line);
+}
+
+.drawing-tool-button {
+  background: var(--panel-strong);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.drawing-tool-button:hover {
+  background: var(--blue-soft);
+  border-color: rgba(22, 119, 210, 0.32);
+  color: var(--text);
+}
+
+.drawing-tool-button.active {
+  background: var(--green-soft);
+  border-color: rgba(15, 159, 110, 0.38);
+  box-shadow: none;
+  color: var(--green);
+}
+
+.drawing-tool-button::after,
+.drawing-tool-status,
+.drawing-text-editor,
+.drawing-settings-panel {
+  background: #ffffff;
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+}
+
+.drawing-handle {
+  fill: #ffffff;
+  stroke: var(--text);
+}
+
+.drawing-label,
+.drawing-text {
+  stroke: rgba(255, 255, 255, 0.92);
+}
+
+.drawing-settings-panel label {
+  color: var(--muted);
+}
+
+.drawing-settings-panel input,
+.drawing-settings-panel select,
+.drawing-settings-actions button {
+  background: #ffffff;
+  border-color: var(--line);
+  color: var(--text);
+}

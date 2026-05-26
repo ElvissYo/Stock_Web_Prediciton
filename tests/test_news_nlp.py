@@ -1,6 +1,10 @@
 import pytest
 
-from kag.features.nlp_features import _lexicon_sentiment_score, preprocess_text
+from kag.features.nlp_features import (
+    _lexicon_sentiment_score,
+    build_nlp_feature_frame,
+    preprocess_text,
+)
 from kag.market_data.top_universe import StockMetadata, ticker_aliases
 from kag.news.rss import (
     NewsArticle,
@@ -75,6 +79,93 @@ def test_write_news_parquet_includes_sentiment_and_image_columns(tmp_path):
     frame = pd.read_parquet(output)
 
     assert "sentiment_score" in frame.columns
+    assert "provider" in frame.columns
     assert "image_url" in frame.columns
     assert frame.loc[0, "sentiment_score"] > 0
+    assert frame.loc[0, "provider"] == "rss"
     assert frame.loc[0, "image_url"] == "https://example.com/bbca.jpg"
+
+
+def test_write_news_parquet_deduplicates_provider_overlap(tmp_path):
+    pd = pytest.importorskip("pandas")
+    pytest.importorskip("pyarrow")
+    output = tmp_path / "news.parquet"
+
+    rows = [
+        NewsArticle(
+            ticker="BBCA",
+            date="2026-05-23",
+            title="BBCA laba tumbuh",
+            summary="Saham menguat",
+            url="https://example.com/bbca?utm_source=gdelt",
+            source="GDELT - example.com",
+            provider="gdelt",
+        ),
+        NewsArticle(
+            ticker="BBCA",
+            date="2026-05-23",
+            title="BBCA laba tumbuh",
+            summary="Saham menguat dari API lain",
+            url="https://example.com/bbca",
+            source="NewsAPI - Example",
+            provider="newsapi",
+        ),
+    ]
+
+    assert write_news_parquet(rows, output) == 1
+    frame = pd.read_parquet(output)
+
+    assert len(frame) == 1
+    assert frame.loc[0, "ticker"] == "BBCA"
+
+
+def test_build_nlp_feature_frame_adds_source_diversity_features():
+    pd = pytest.importorskip("pandas")
+    pytest.importorskip("sklearn")
+
+    news = pd.DataFrame(
+        [
+            {
+                "ticker": "BBCA",
+                "date": "2026-05-23",
+                "title": "BBCA laba tumbuh",
+                "summary": "Saham menguat positif",
+                "url": "https://example.com/bbca-1",
+                "source": "GDELT - example.com",
+                "provider": "gdelt",
+            },
+            {
+                "ticker": "BBCA",
+                "date": "2026-05-23",
+                "title": "BBCA laba tumbuh",
+                "summary": "Duplikat dari API lain",
+                "url": "https://example.com/bbca-1?utm_medium=api",
+                "source": "NewsAPI - Example",
+                "provider": "newsapi",
+            },
+            {
+                "ticker": "BBCA",
+                "date": "2026-05-23",
+                "title": "BBCA volume transaksi naik",
+                "summary": "Investor asing akumulasi",
+                "url": "https://example.com/bbca-2",
+                "source": "CNBC Indonesia Market",
+                "provider": "rss",
+            },
+        ]
+    )
+
+    features = build_nlp_feature_frame(
+        news,
+        embedding_dimensions=2,
+        sentiment_backend="lexicon",
+        embedding_backend="hashing",
+        pca_path=None,
+    )
+
+    row = features.iloc[0]
+    assert row["news_count"] == 2
+    assert row["source_count"] == 2
+    assert row["provider_count"] == 2
+    assert row["positive_news_count"] >= 1
+    assert 0 <= row["source_diversity"] <= 1

@@ -14,6 +14,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from kag.market_data.top_universe import StockMetadata
+from kag.news.dedup import deduplicate_news_items
 from kag.news.rss import NewsArticle, extract_article_image_url
 
 
@@ -56,7 +57,6 @@ def collect_news_from_api(
         raise ValueError("NEWSAPI_API_KEY is required when provider=newsapi")
 
     articles: list[NewsArticle] = []
-    seen_keys: set[tuple[str, str, str]] = set()
     for stock in stocks:
         try:
             provider_rows = _fetch_provider_rows(stock, config=config)
@@ -65,18 +65,17 @@ def collect_news_from_api(
             continue
 
         for article in provider_rows:
-            key = (article.ticker, article.url, article.title)
-            if key in seen_keys:
-                continue
-            seen_keys.add(key)
             articles.append(article)
-            if limit is not None and len(articles) >= limit:
-                return articles
+        if limit is not None and len(deduplicate_news_items(articles)) >= limit:
+            return deduplicate_news_items(articles)[:limit]
 
         if config.request_delay_seconds > 0:
             time.sleep(config.request_delay_seconds)
 
-    return articles
+    deduplicated = deduplicate_news_items(articles)
+    if limit is not None:
+        return deduplicated[:limit]
+    return deduplicated
 
 
 def build_news_query(stock: StockMetadata, *, provider: str) -> str:
@@ -165,6 +164,7 @@ def _articles_from_gdelt_payload(payload: dict[str, Any], stock: StockMetadata) 
                     {"image_url": item.get("socialimage") or item.get("image")},
                     article_url=url,
                 ),
+                provider="gdelt",
             )
         )
     return rows
@@ -194,6 +194,7 @@ def _articles_from_newsapi_payload(payload: dict[str, Any], stock: StockMetadata
                     {"image_url": item.get("urlToImage")},
                     article_url=url,
                 ),
+                provider="newsapi",
             )
         )
     return rows

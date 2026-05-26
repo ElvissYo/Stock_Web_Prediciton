@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from kag.features.nlp_features import NLP_DAILY_FEATURE_COLUMNS
 from kag.market_data.top_universe import load_stock_metadata
 
 
@@ -113,10 +114,7 @@ def nlp_feature_columns(embedding_dimensions: int = DEFAULT_EMBEDDING_DIMENSIONS
     """Return stable NLP feature columns used by model A/B evaluation."""
 
     return [
-        "sentiment_mean",
-        "sentiment_std",
-        "news_count",
-        "sentiment_momentum",
+        *NLP_DAILY_FEATURE_COLUMNS,
         *[f"embedding_dim_{index}" for index in range(embedding_dimensions)],
     ]
 
@@ -211,16 +209,44 @@ def _collapse_duplicate_nlp_dates(nlp: Any, *, embedding_dimensions: int) -> Any
     for column in numeric_columns:
         frame[column] = pd.to_numeric(frame[column], errors="coerce").fillna(0.0)
 
-    aggregations = {
-        "sentiment_mean": ("sentiment_mean", "mean"),
-        "sentiment_std": ("sentiment_std", "mean"),
-        "news_count": ("news_count", "sum"),
-        "sentiment_momentum": ("sentiment_momentum", "mean"),
-    }
+    aggregations = _nlp_duplicate_date_aggregations()
     for index in range(embedding_dimensions):
         column = f"embedding_dim_{index}"
         aggregations[column] = (column, "mean")
     return frame.groupby(["ticker", "date"], as_index=False).agg(**aggregations)[columns]
+
+
+def _nlp_duplicate_date_aggregations() -> dict[str, tuple[str, str]]:
+    aggregations: dict[str, tuple[str, str]] = {}
+    mean_columns = {
+        "sentiment_mean",
+        "sentiment_std",
+        "sentiment_abs_mean",
+        "sentiment_momentum",
+        "source_diversity",
+    }
+    sum_columns = {
+        "news_count",
+        "positive_news_count",
+        "neutral_news_count",
+        "negative_news_count",
+        "source_count",
+    }
+    max_columns = {"sentiment_max", "provider_count"}
+    min_columns = {"sentiment_min"}
+
+    for column in NLP_DAILY_FEATURE_COLUMNS:
+        if column in sum_columns:
+            aggregations[column] = (column, "sum")
+        elif column in max_columns:
+            aggregations[column] = (column, "max")
+        elif column in min_columns:
+            aggregations[column] = (column, "min")
+        elif column in mean_columns:
+            aggregations[column] = (column, "mean")
+        else:
+            aggregations[column] = (column, "mean")
+    return aggregations
 
 
 def _fill_missing_nlp(dataset: Any, *, embedding_dimensions: int) -> Any:

@@ -23,7 +23,7 @@ import {
 } from "./chart.js";
 import { setupFullscreenChart } from "./fullscreen-chart.js";
 import { renderMarketMovers, renderMoversLoading } from "./market.js";
-import { renderNews, renderNewsLoading } from "./news.js";
+import { bindNewsControls, renderNews, renderNewsLoading } from "./news.js";
 import {
   renderModelLoading,
   renderModelPerformance,
@@ -39,6 +39,7 @@ import {
   formatPercent,
   hideEmpty,
   isFiniteNumber,
+  animateMetricText,
   setupNavbarActiveState,
   setLoading,
   showEmpty,
@@ -97,8 +98,13 @@ function bindNodes() {
     symbolInput: document.getElementById("symbolInput"),
     manualRefresh: document.getElementById("manualRefresh"),
     lastUpdatedLabel: document.getElementById("lastUpdatedLabel"),
+    marketOverview: document.getElementById("marketOverview"),
+    heroMarketStatus: document.getElementById("heroMarketStatus"),
+    heroLastUpdated: document.getElementById("heroLastUpdated"),
     overviewPrice: document.getElementById("overviewPrice"),
     overviewChange: document.getElementById("overviewChange"),
+    overviewPrediction: document.getElementById("overviewPrediction"),
+    overviewDirection: document.getElementById("overviewDirection"),
     overviewPriceSource: document.getElementById("overviewPriceSource"),
     overviewSentiment: document.getElementById("overviewSentiment"),
     overviewSentimentMeta: document.getElementById("overviewSentimentMeta"),
@@ -159,6 +165,8 @@ function bindNodes() {
     newsMarqueeTrack: document.getElementById("newsMarqueeTrack"),
     newsPrev: document.getElementById("newsPrev"),
     newsNext: document.getElementById("newsNext"),
+    newsFilterBar: document.getElementById("newsFilterBar"),
+    newsLoadMore: document.getElementById("newsLoadMore"),
     newsList: document.getElementById("newsList"),
     newsEmpty: document.getElementById("newsEmpty"),
   });
@@ -178,6 +186,7 @@ function bindInteractions() {
   nodes.newsNext.addEventListener("click", () => {
     nodes.newsMarqueeTrack.closest(".news-marquee")?.scrollBy({ left: 320, behavior: "smooth" });
   });
+  bindNewsControls(nodes.newsFilterBar, nodes.newsLoadMore);
 
   nodes.indexRangeTabs.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-range]");
@@ -285,8 +294,12 @@ async function refreshLastUpdated() {
       ? new Date(payload.latest_artifact_update).toLocaleString()
       : "unknown";
     nodes.lastUpdatedLabel.textContent = `${payload.status_label || "Latest available data"} | Updated ${updated}`;
+    nodes.heroLastUpdated.textContent = `Last updated: ${updated}`;
+    renderMarketStatusBadge();
   } catch (error) {
     nodes.lastUpdatedLabel.textContent = "Data status unavailable";
+    nodes.heroLastUpdated.textContent = "Last updated: data unavailable";
+    renderMarketStatusBadge();
     showToast(`Data status failed: ${error.message}`, "error");
   }
 }
@@ -296,11 +309,25 @@ async function refreshMarketOverview() {
     const payload = await loadMarketOverview();
     renderMarketOverview(payload);
   } catch (error) {
+    nodes.marketOverview?.classList.remove("is-loading");
+    [
+      nodes.overviewPrice,
+      nodes.overviewChange,
+      nodes.overviewPrediction,
+      nodes.overviewDirection,
+      nodes.overviewSentiment,
+      nodes.overviewTopGainer,
+      nodes.overviewTopLoser,
+      nodes.overviewCoverage,
+    ].forEach((node) => {
+      if (node) node.textContent = "Data unavailable";
+    });
     showToast(`Market overview failed: ${error.message}`, "error");
   }
 }
 
 function renderMarketOverview(payload) {
+  nodes.marketOverview?.classList.remove("is-loading");
   const index = payload?.index || {};
   const sentiment = payload?.sentiment || {};
   const prediction = payload?.prediction || {};
@@ -309,11 +336,14 @@ function renderMarketOverview(payload) {
   const topLoser = movers.top_loser;
 
   nodes.overviewPrice.dataset.lockedTo = "market-overview";
-  nodes.overviewPrice.textContent = formatNumber(index.close);
-  nodes.overviewChange.textContent = formatPercent(index.daily_change);
+  animateMetricText(nodes.overviewPrice, index.close, formatNumber);
+  animateDirectionalMetric(nodes.overviewChange, index.daily_change, {
+    formatter: formatPercent,
+    showNeutral: true,
+  });
   nodes.overviewChange.className = signedClass(index.daily_change);
   nodes.overviewPriceSource.textContent = index.date
-    ? `IHSG latest available close | ${index.date}`
+    ? `Latest available close | ${index.date}`
     : `Source: ${payload?.source || "local artifacts"}`;
 
   nodes.overviewSentiment.textContent = sentiment.label || "n/a";
@@ -322,16 +352,16 @@ function renderMarketOverview(payload) {
     ? `${formatNumber(sentiment.news_count)} news rows | score ${formatNumber(sentiment.score)}`
     : `${formatNumber(sentiment.news_count)} news rows`;
 
-  nodes.overviewTopGainer.textContent = topGainer?.ticker || "n/a";
+  setTickerMoverMetric(nodes.overviewTopGainer, topGainer);
   nodes.overviewTopGainer.className = signedClass(topGainer?.change_pct);
   nodes.overviewTopGainerMeta.textContent = topGainer
-    ? `${formatPercent(topGainer.change_pct)} latest change`
+    ? `Most Up | ${formatPercent(topGainer.change_pct)} latest change`
     : "From latest local prices";
 
-  nodes.overviewTopLoser.textContent = topLoser?.ticker || "n/a";
+  setTickerMoverMetric(nodes.overviewTopLoser, topLoser);
   nodes.overviewTopLoser.className = signedClass(topLoser?.change_pct);
   nodes.overviewTopLoserMeta.textContent = topLoser
-    ? `${formatPercent(topLoser.change_pct)} latest change`
+    ? `Most Down | ${formatPercent(topLoser.change_pct)} latest change`
     : "From latest local prices";
 
   nodes.overviewCoverage.textContent = formatNumber(prediction.covered_stocks);
@@ -535,7 +565,9 @@ async function refreshMarketMovers() {
   renderMoversLoading(nodes.topGainers, nodes.topLosers, nodes.moversEmpty);
   try {
     const payload = await loadMarketMovers(10);
-    renderMarketMovers(nodes.topGainers, nodes.topLosers, nodes.moversEmpty, nodes.moversSource, payload);
+    renderMarketMovers(nodes.topGainers, nodes.topLosers, nodes.moversEmpty, nodes.moversSource, payload, {
+      onTickerClick: selectChartSymbol,
+    });
   } catch (error) {
     renderMarketMovers(nodes.topGainers, nodes.topLosers, nodes.moversEmpty, nodes.moversSource, {
       available_tickers: 0,
@@ -544,6 +576,69 @@ async function refreshMarketMovers() {
     });
     showToast(`Market movers failed: ${error.message}`, "error");
   }
+}
+
+function renderMarketStatusBadge() {
+  if (!nodes.heroMarketStatus) return;
+  const status = currentMarketStatus();
+  nodes.heroMarketStatus.className = `market-status-badge ${status.open ? "open" : "closed"}`;
+  nodes.heroMarketStatus.textContent = status.open ? "Market Open" : "Market Closed";
+  nodes.heroMarketStatus.title = "Approximate IDX regular market hours in Asia/Jakarta.";
+}
+
+function currentMarketStatus() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jakarta",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const weekday = values.weekday;
+  const minutes = Number(values.hour) * 60 + Number(values.minute);
+  const isWeekday = !["Sat", "Sun"].includes(weekday);
+  return { open: isWeekday && minutes >= 9 * 60 && minutes <= 16 * 60 };
+}
+
+function setDirectionalMetric(node, value, { formatter = formatNumber, showNeutral = false } = {}) {
+  if (!isFiniteNumber(value)) {
+    node.textContent = "n/a";
+    return;
+  }
+  const number = Number(value);
+  const icon = number > 0 ? "▲" : number < 0 ? "▼" : showNeutral ? "-" : "";
+  const iconClass = number > 0 ? "up" : number < 0 ? "down" : "";
+  node.innerHTML = `<span class="direction-icon ${iconClass}" aria-hidden="true">${icon}</span><span>${formatter(number)}</span>`;
+}
+
+function animateDirectionalMetric(node, value, options = {}) {
+  if (!isFiniteNumber(value)) {
+    setDirectionalMetric(node, value, options);
+    return;
+  }
+  const target = Number(value);
+  const start = 0;
+  const duration = 520;
+  const startTime = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - (1 - progress) ** 3;
+    setDirectionalMetric(node, start + (target - start) * eased, options);
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function setTickerMoverMetric(node, row) {
+  if (!row?.ticker) {
+    node.textContent = "n/a";
+    return;
+  }
+  const change = Number(row.change_pct);
+  const icon = change > 0 ? "▲" : change < 0 ? "▼" : "-";
+  const iconClass = change > 0 ? "up" : change < 0 ? "down" : "";
+  node.innerHTML = `<span class="direction-icon ${iconClass}" aria-hidden="true">${icon}</span><span>${row.ticker}</span>`;
 }
 
 function selectChartSymbol(rawValue) {

@@ -1,31 +1,81 @@
 import { formatNumber, hideEmpty, isFiniteNumber, showEmpty, signedClass } from "./ui.js";
 
+const INITIAL_NEWS_LIMIT = 6;
+let activeFilter = "all";
+let visibleLimit = INITIAL_NEWS_LIMIT;
+let currentRows = [];
+let currentContainer = null;
+let currentEmptyNode = null;
+let currentLoadMoreButton = null;
+
+export function bindNewsControls(filterBar, loadMoreButton) {
+  currentLoadMoreButton = loadMoreButton;
+  filterBar?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-news-filter]");
+    if (!button) return;
+    activeFilter = button.dataset.newsFilter || "all";
+    visibleLimit = INITIAL_NEWS_LIMIT;
+    filterBar.querySelectorAll("[data-news-filter]").forEach((node) => {
+      node.classList.toggle("active", node === button);
+    });
+    renderCurrentNewsCards();
+  });
+  loadMoreButton?.addEventListener("click", () => {
+    visibleLimit = Number.POSITIVE_INFINITY;
+    renderCurrentNewsCards();
+  });
+}
+
 export function renderNews(container, emptyNode, rows, marqueeNode = null) {
   container.innerHTML = "";
+  currentContainer = container;
+  currentEmptyNode = emptyNode;
+  currentRows = rows || [];
+  visibleLimit = INITIAL_NEWS_LIMIT;
   if (marqueeNode) marqueeNode.innerHTML = "";
-  if (!rows || !rows.length) {
-    showEmpty(emptyNode, "News data belum tersedia. Jalankan pipeline collect_news.py terlebih dahulu.");
+  if (!currentRows.length) {
+    showEmpty(emptyNode, "Data unavailable: news artifact belum tersedia. Jalankan pipeline collect_news.py terlebih dahulu.");
     if (marqueeNode) {
       const item = document.createElement("span");
       item.className = "headline-chip neutral";
-      item.textContent = "News data belum tersedia dari artifact.";
+      item.textContent = "Data unavailable: news artifact belum tersedia.";
       marqueeNode.appendChild(item);
     }
     return;
   }
 
   hideEmpty(emptyNode);
-  if (marqueeNode) renderNewsMarquee(marqueeNode, rows);
-  rows.forEach((row) => container.appendChild(newsCard(row)));
+  if (marqueeNode) renderNewsMarquee(marqueeNode, currentRows);
+  renderCurrentNewsCards();
 }
 
 export function renderNewsLoading(container, emptyNode) {
   hideEmpty(emptyNode);
+  currentLoadMoreButton?.classList.add("hidden");
   container.innerHTML = "";
   for (let index = 0; index < 3; index += 1) {
     const skeleton = document.createElement("div");
     skeleton.className = "skeleton news";
     container.appendChild(skeleton);
+  }
+}
+
+function renderCurrentNewsCards() {
+  if (!currentContainer || !currentEmptyNode) return;
+  currentContainer.innerHTML = "";
+  const filteredRows = currentRows.filter((row) => activeFilter === "all" || sentimentBucket(row) === activeFilter);
+  if (!filteredRows.length) {
+    showEmpty(currentEmptyNode, "Data unavailable: tidak ada berita untuk filter sentimen ini.");
+    currentLoadMoreButton?.classList.add("hidden");
+    return;
+  }
+
+  hideEmpty(currentEmptyNode);
+  filteredRows.slice(0, visibleLimit).forEach((row) => currentContainer.appendChild(newsCard(row)));
+  if (currentLoadMoreButton) {
+    const hasMore = Number.isFinite(visibleLimit) && filteredRows.length > visibleLimit;
+    currentLoadMoreButton.classList.toggle("hidden", !hasMore);
+    currentLoadMoreButton.textContent = `Load more (${filteredRows.length - visibleLimit} more)`;
   }
 }
 
@@ -121,4 +171,16 @@ function sentimentPill(row) {
   pill.className = `sentiment-pill ${signedClass(score) || "unknown"}`;
   pill.textContent = `${label} ${scoreText}`;
   return pill;
+}
+
+function sentimentBucket(row) {
+  const label = String(row.sentiment_label || "").toLowerCase();
+  if (label.includes("positive")) return "positive";
+  if (label.includes("negative")) return "negative";
+  if (label.includes("neutral")) return "neutral";
+  const score = Number(row.sentiment_score);
+  if (!Number.isFinite(score)) return "neutral";
+  if (score > 0.05) return "positive";
+  if (score < -0.05) return "negative";
+  return "neutral";
 }

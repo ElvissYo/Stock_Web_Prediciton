@@ -22,7 +22,9 @@ MARKET_OUTPERFORM_TARGET = "outperform_market"
 SECTOR_RETURN_TARGET = "sector_next_return"
 SECTOR_EXCESS_RETURN_TARGET = "target_sector_excess_return"
 SECTOR_OUTPERFORM_TARGET = "outperform_sector"
-CATEGORICAL_FEATURES = ["ticker", "sector"]
+# Ticker/sector identity is carried by ticker_encoded and sector_encoded.
+# Keeping raw one-hot categories makes the full top-100 training matrix too large.
+CATEGORICAL_FEATURES: list[str] = []
 NON_FEATURE_COLUMNS = {
     DATE_COLUMN,
     RETURN_TARGET,
@@ -94,6 +96,12 @@ def train_global_return_model(
         include_nlp=include_nlp,
     )
     feature_columns = categorical_features + numeric_features
+    training_features = _model_feature_frame(
+        training_frame,
+        feature_columns=feature_columns,
+        categorical_features=categorical_features,
+        numeric_features=numeric_features,
+    )
 
     cv_metrics = evaluate_time_series_cv(
         training_frame,
@@ -114,7 +122,7 @@ def train_global_return_model(
         random_state=random_state,
         prefer_lightgbm=prefer_lightgbm,
     )
-    model.fit(training_frame[feature_columns], training_frame[target_column])
+    model.fit(training_features, training_frame[target_column])
 
     direction_model = None
     direction_model_type = None
@@ -138,8 +146,14 @@ def train_global_return_model(
                 random_state=random_state,
                 prefer_lightgbm=prefer_lightgbm,
             )
+            direction_features = _model_feature_frame(
+                direction_frame,
+                feature_columns=feature_columns,
+                categorical_features=categorical_features,
+                numeric_features=numeric_features,
+            )
             direction_model.fit(
-                direction_frame[feature_columns],
+                direction_features,
                 direction_frame[DIRECTION_TARGET].astype(int),
             )
             cv_metrics.update(
@@ -269,10 +283,22 @@ def evaluate_time_series_cv(
             random_state=random_state,
             prefer_lightgbm=prefer_lightgbm,
         )
-        model.fit(train_frame[feature_columns], train_frame[target_column])
+        train_features = _model_feature_frame(
+            train_frame,
+            feature_columns=feature_columns,
+            categorical_features=categorical_features,
+            numeric_features=numeric_features,
+        )
+        test_features = _model_feature_frame(
+            test_frame,
+            feature_columns=feature_columns,
+            categorical_features=categorical_features,
+            numeric_features=numeric_features,
+        )
+        model.fit(train_features, train_frame[target_column])
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message="X does not have valid feature names")
-            predicted_values = model.predict(test_frame[feature_columns])
+            predicted_values = model.predict(test_features)
         fold_metrics.append(
             _regression_metrics(
                 test_frame,
@@ -363,11 +389,23 @@ def evaluate_direction_time_series_cv(
             random_state=random_state,
             prefer_lightgbm=prefer_lightgbm,
         )
-        classifier.fit(train_frame[feature_columns], train_frame[DIRECTION_TARGET])
+        train_features = _model_feature_frame(
+            train_frame,
+            feature_columns=feature_columns,
+            categorical_features=categorical_features,
+            numeric_features=numeric_features,
+        )
+        test_features = _model_feature_frame(
+            test_frame,
+            feature_columns=feature_columns,
+            categorical_features=categorical_features,
+            numeric_features=numeric_features,
+        )
+        classifier.fit(train_features, train_frame[DIRECTION_TARGET])
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message="X does not have valid feature names")
-            predictions = classifier.predict(test_frame[feature_columns])
-            probabilities = classifier.predict_proba(test_frame[feature_columns])[:, 1]
+            predictions = classifier.predict(test_features)
+            probabilities = classifier.predict_proba(test_features)[:, 1]
 
         target = test_frame[DIRECTION_TARGET]
         metric = {
@@ -415,6 +453,29 @@ def infer_feature_columns(frame: Any, *, include_nlp: bool) -> tuple[list[str], 
     return categorical_features, numeric_features
 
 
+def _model_feature_frame(
+    frame: Any,
+    *,
+    feature_columns: list[str],
+    categorical_features: list[str],
+    numeric_features: list[str],
+) -> Any:
+    """Return a compact feature frame for sklearn preprocessing."""
+
+    pd = _require_pandas()
+    categorical_set = set(categorical_features)
+    numeric_set = set(numeric_features)
+    data = {}
+    for column in feature_columns:
+        if column in categorical_set:
+            data[column] = frame[column].astype("string").fillna("UNKNOWN")
+        elif column in numeric_set:
+            data[column] = pd.to_numeric(frame[column], errors="coerce").astype("float32")
+        else:
+            data[column] = frame[column]
+    return pd.DataFrame(data, index=frame.index)
+
+
 def build_regression_pipeline(
     *,
     categorical_features: list[str],
@@ -428,7 +489,7 @@ def build_regression_pipeline(
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.impute import SimpleImputer
     from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    from sklearn.preprocessing import OneHotEncoder
 
     categorical_pipeline = Pipeline(
         steps=[
@@ -438,8 +499,7 @@ def build_regression_pipeline(
     )
     numeric_pipeline = Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
-            ("scaler", StandardScaler()),
+            ("imputer", SimpleImputer(strategy="mean", keep_empty_features=True)),
         ]
     )
     preprocessor = ColumnTransformer(
@@ -454,7 +514,7 @@ def build_regression_pipeline(
         try:
             from lightgbm import LGBMRegressor
 
-            estimator = LGBMRegressor(
+            return LGBMRegressor(
                 objective="regression",
                 n_estimators=400,
                 learning_rate=0.03,
@@ -463,8 +523,7 @@ def build_regression_pipeline(
                 colsample_bytree=0.9,
                 random_state=random_state,
                 verbosity=-1,
-            )
-            return Pipeline([("preprocessor", preprocessor), ("model", estimator)]), "lightgbm"
+            ), "lightgbm"
         except ImportError:
             pass
 
@@ -490,7 +549,7 @@ def build_classification_pipeline(
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.impute import SimpleImputer
     from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    from sklearn.preprocessing import OneHotEncoder
 
     categorical_pipeline = Pipeline(
         steps=[
@@ -500,8 +559,7 @@ def build_classification_pipeline(
     )
     numeric_pipeline = Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
-            ("scaler", StandardScaler()),
+            ("imputer", SimpleImputer(strategy="mean", keep_empty_features=True)),
         ]
     )
     preprocessor = ColumnTransformer(
@@ -516,7 +574,7 @@ def build_classification_pipeline(
         try:
             from lightgbm import LGBMClassifier
 
-            estimator = LGBMClassifier(
+            return LGBMClassifier(
                 objective="binary",
                 n_estimators=300,
                 learning_rate=0.03,
@@ -526,8 +584,7 @@ def build_classification_pipeline(
                 class_weight="balanced",
                 random_state=random_state,
                 verbosity=-1,
-            )
-            return Pipeline([("preprocessor", preprocessor), ("model", estimator)]), "lightgbm"
+            ), "lightgbm"
         except ImportError:
             pass
 
@@ -571,15 +628,29 @@ def predict_latest_returns(
         if column not in latest_rows.columns:
             latest_rows[column] = np.nan
 
+    latest_features = _model_feature_frame(
+        latest_rows,
+        feature_columns=feature_columns,
+        categorical_features=[
+            column for column in CATEGORICAL_FEATURES if column in feature_columns
+        ],
+        numeric_features=[
+            column
+            for column in feature_columns
+            if column not in CATEGORICAL_FEATURES
+            and column in latest_rows.columns
+            and _is_numeric_series(latest_rows[column])
+        ],
+    )
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", message="X does not have valid feature names")
-        predicted_returns = model.predict(latest_rows[feature_columns])
+        predicted_returns = model.predict(latest_features)
 
     if direction_model is not None:
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", message="X does not have valid feature names")
-            direction_probabilities = direction_model.predict_proba(latest_rows[feature_columns])[:, 1]
-            predicted_directions = direction_model.predict(latest_rows[feature_columns]).astype(int)
+            direction_probabilities = direction_model.predict_proba(latest_features)[:, 1]
+            predicted_directions = direction_model.predict(latest_features).astype(int)
         confidence = pd.Series(abs(direction_probabilities - 0.5) * 2, index=latest_rows.index).clip(
             upper=1.0
         )
@@ -641,7 +712,7 @@ def persist_model_artifact(
     artifact_path = model_path if model_path.suffix == ".joblib" else model_path.with_suffix(".joblib")
     joblib.dump(artifact, artifact_path)
 
-    estimator = model.named_steps["model"]
+    estimator = _underlying_estimator(model)
     if model_path.suffix != ".joblib":
         if hasattr(estimator, "booster_"):
             estimator.booster_.save_model(str(model_path))
@@ -658,15 +729,11 @@ def persist_model_artifact(
 def extract_feature_importance(model: Any) -> list[dict[str, float | str]]:
     """Extract sorted feature importances from the fitted estimator."""
 
-    estimator = model.named_steps["model"]
+    estimator = _underlying_estimator(model)
     if not hasattr(estimator, "feature_importances_"):
         return []
 
-    preprocessor = model.named_steps["preprocessor"]
-    try:
-        feature_names = list(preprocessor.get_feature_names_out())
-    except Exception:
-        feature_names = [f"feature_{index}" for index in range(len(estimator.feature_importances_))]
+    feature_names = _feature_importance_names(model, estimator)
 
     rows = [
         {
@@ -677,6 +744,26 @@ def extract_feature_importance(model: Any) -> list[dict[str, float | str]]:
     ]
     rows.sort(key=lambda row: float(row["importance"]), reverse=True)
     return rows
+
+
+def _underlying_estimator(model: Any) -> Any:
+    if hasattr(model, "named_steps") and "model" in model.named_steps:
+        return model.named_steps["model"]
+    return model
+
+
+def _feature_importance_names(model: Any, estimator: Any) -> list[str]:
+    if hasattr(model, "named_steps") and "preprocessor" in model.named_steps:
+        try:
+            return list(model.named_steps["preprocessor"].get_feature_names_out())
+        except Exception:
+            pass
+
+    if hasattr(estimator, "feature_name_"):
+        return list(estimator.feature_name_)
+    if hasattr(estimator, "feature_names_in_"):
+        return list(estimator.feature_names_in_)
+    return [f"feature_{index}" for index in range(len(estimator.feature_importances_))]
 
 
 def write_feature_importance_plot(

@@ -13,7 +13,9 @@ export function renderMoversLoading(gainersNode, losersNode, emptyNode) {
   });
 }
 
-export function renderMarketMovers(gainersNode, losersNode, emptyNode, sourceNode, payload) {
+const DEFAULT_VISIBLE_ROWS = 5;
+
+export function renderMarketMovers(gainersNode, losersNode, emptyNode, sourceNode, payload, options = {}) {
   gainersNode.innerHTML = "";
   losersNode.innerHTML = "";
 
@@ -22,7 +24,7 @@ export function renderMarketMovers(gainersNode, losersNode, emptyNode, sourceNod
   const available = payload?.available_tickers || 0;
   if (!available || (!gainers.length && !losers.length)) {
     sourceNode.textContent = "";
-    showEmpty(emptyNode, "Market movers belum tersedia. Jalankan pipeline collect_prices.py terlebih dahulu.");
+    showEmpty(emptyNode, "Data unavailable: market movers belum tersedia. Jalankan pipeline collect_prices.py terlebih dahulu.");
     return;
   }
 
@@ -31,13 +33,35 @@ export function renderMarketMovers(gainersNode, losersNode, emptyNode, sourceNod
   sourceNode.textContent = latestDate
     ? `${available} tickers | latest price date ${latestDate}`
     : `${available} tickers from latest price artifact`;
-  gainers.forEach((row, index) => gainersNode.appendChild(moverRow(row, index + 1)));
-  losers.forEach((row, index) => losersNode.appendChild(moverRow(row, index + 1)));
+  renderMoverList(gainersNode, gainers, options);
+  renderMoverList(losersNode, losers, options);
 }
 
-function moverRow(row, rank) {
-  const node = document.createElement("div");
+function renderMoverList(container, rows, options) {
+  const expanded = container.dataset.expanded === "true";
+  const visibleRows = expanded ? rows : rows.slice(0, DEFAULT_VISIBLE_ROWS);
+  visibleRows.forEach((row, index) => container.appendChild(moverRow(row, index + 1, options)));
+
+  if (rows.length > DEFAULT_VISIBLE_ROWS) {
+    const toggle = document.createElement("button");
+    toggle.className = "mover-toggle";
+    toggle.type = "button";
+    toggle.textContent = expanded ? "Show top 5" : `Show all ${rows.length}`;
+    toggle.addEventListener("click", () => {
+      container.dataset.expanded = expanded ? "false" : "true";
+      container.innerHTML = "";
+      renderMoverList(container, rows, options);
+    });
+    container.appendChild(toggle);
+  }
+}
+
+function moverRow(row, rank, options = {}) {
+  const node = document.createElement("button");
+  node.type = "button";
   node.className = `mover-row ${signedClass(row.change_pct)}`;
+  node.dataset.ticker = row.ticker || "";
+  node.title = row.ticker ? `Load ${row.ticker} in the main chart` : "Load ticker in the main chart";
   node.innerHTML = `
     <span class="mover-rank"></span>
     <span class="company-logo mover-logo fallback"></span>
@@ -50,8 +74,18 @@ function moverRow(row, rank) {
   node.querySelector(".mover-name strong").textContent = row.ticker || "n/a";
   node.querySelector(".mover-name small").textContent = row.name || row.symbol || "";
   node.querySelector(".mover-price").textContent = formatNumber(row.close);
-  node.querySelector(".mover-change").textContent = formatPercent(row.change_pct);
+  node.querySelector(".mover-change").innerHTML = `${directionIcon(row.change_pct)} ${formatPercent(row.change_pct)}`;
+  node.addEventListener("click", () => {
+    if (row.ticker) options.onTickerClick?.(row.ticker);
+  });
   return node;
+}
+
+function directionIcon(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number === 0) return '<span class="mover-direction-icon">-</span>';
+  const isUp = number > 0;
+  return `<span class="mover-direction-icon ${isUp ? "up" : "down"}" aria-hidden="true">${isUp ? "▲" : "▼"}</span>`;
 }
 
 function renderMoverLogo(container, row, allowHydrate = true) {

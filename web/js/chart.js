@@ -100,7 +100,7 @@ export function ensureCharts() {
         ...chartOptions(container),
         height: container.clientHeight || 320,
       });
-      closeSeries = technicalChart.addLineSeries({ color: "#e6edf3", lineWidth: 2 });
+      closeSeries = technicalChart.addLineSeries({ color: "#122033", lineWidth: 2 });
       technicalSma20Series = technicalChart.addLineSeries({ color: "#58a6ff", lineWidth: 1 });
       technicalSma50Series = technicalChart.addLineSeries({ color: "#f0b84f", lineWidth: 1 });
     }
@@ -112,7 +112,7 @@ export function ensureCharts() {
         ...chartOptions(container),
         height: container.clientHeight || 280,
       });
-      predictionCloseSeries = predictionChart.addLineSeries({ color: "#e6edf3", lineWidth: 2 });
+      predictionCloseSeries = predictionChart.addLineSeries({ color: "#122033", lineWidth: 2 });
       predictionForecastSeries = predictionChart.addLineSeries({
         color: "#2fd47a",
         lineWidth: 2,
@@ -159,7 +159,7 @@ export function updateIndexChart(candles, emptyNode, range = "ALL") {
     indexVolumeSeries.setData([]);
     indexSma20Series.setData([]);
     indexSma50Series.setData([]);
-    showEmpty(emptyNode, "Data IHSG belum tersedia. Cek koneksi yfinance atau jalankan pipeline harga.");
+    showEmpty(emptyNode, "Data unavailable: IHSG belum tersedia. Cek koneksi yfinance atau jalankan pipeline harga.");
     return;
   }
   hideEmpty(emptyNode);
@@ -168,6 +168,7 @@ export function updateIndexChart(candles, emptyNode, range = "ALL") {
   indexSma20Series.setData(movingAverage(latestIndexCandles, 20));
   indexSma50Series.setData(movingAverage(latestIndexCandles, 50));
   applyVisibleRange(indexChart, latestIndexCandles, range);
+  renderLatestReadout("ihsgReadout", latestIndexCandles);
 }
 
 export function updateMainChart(candles, emptyNode, range = "ALL") {
@@ -180,7 +181,7 @@ export function updateMainChart(candles, emptyNode, range = "ALL") {
     volumeSeries.setData([]);
     sma20Series.setData([]);
     sma50Series.setData([]);
-    showEmpty(emptyNode, "Data belum tersedia. Jalankan pipeline atau cek koneksi yfinance.");
+    showEmpty(emptyNode, "Data unavailable: chart belum tersedia. Jalankan pipeline atau cek koneksi yfinance.");
     return;
   }
   hideEmpty(emptyNode);
@@ -190,6 +191,7 @@ export function updateMainChart(candles, emptyNode, range = "ALL") {
   sma50Series.setData(movingAverage(latestCandles, 50));
   applyVisibleRange(mainChart, latestCandles, range);
   updateOverviewFromCandles(latestCandles);
+  renderLatestReadout("ohlcReadout", latestCandles);
 }
 
 export function updateTechnicalChart(rows, emptyNode) {
@@ -200,7 +202,7 @@ export function updateTechnicalChart(rows, emptyNode) {
     closeSeries.setData([]);
     technicalSma20Series.setData([]);
     technicalSma50Series.setData([]);
-    showEmpty(emptyNode, "Data belum tersedia. Jalankan pipeline build_price_features.py terlebih dahulu.");
+    showEmpty(emptyNode, "Data unavailable: price features belum tersedia. Jalankan pipeline build_price_features.py terlebih dahulu.");
     return;
   }
   hideEmpty(emptyNode);
@@ -223,7 +225,7 @@ export function updatePredictionChart(rows, prediction, emptyNode) {
     predictionCloseSeries.setData([]);
     predictionForecastSeries.setData([]);
     predictionForecastSeries.setMarkers([]);
-    showEmpty(emptyNode, "Prediction chart belum tersedia. Jalankan pipeline model dan price features terlebih dahulu.");
+    showEmpty(emptyNode, "Data unavailable: prediction chart belum tersedia. Jalankan pipeline model dan price features terlebih dahulu.");
     return;
   }
 
@@ -273,7 +275,7 @@ export function updateProjectionChart(projection, emptyNode) {
     projectionValueSeries.setData([]);
     projectionLowerSeries.setData([]);
     projectionUpperSeries.setData([]);
-    showEmpty(emptyNode, "Projection belum tersedia untuk input ini.");
+    showEmpty(emptyNode, "Data unavailable: projection belum tersedia untuk input ini.");
     return;
   }
 
@@ -317,23 +319,23 @@ function chartOptions(container) {
     autoSize: true,
     layout: {
       background: { color: "transparent" },
-      textColor: "#8ea0ae",
+      textColor: "#607086",
       fontFamily: "Inter, sans-serif",
     },
     grid: {
-      vertLines: { color: "rgba(148, 163, 184, 0.08)" },
-      horzLines: { color: "rgba(148, 163, 184, 0.1)" },
+      vertLines: { color: "rgba(20, 42, 71, 0.08)" },
+      horzLines: { color: "rgba(20, 42, 71, 0.1)" },
     },
     crosshair: {
       mode: window.LightweightCharts.CrosshairMode.Normal,
-      vertLine: { color: "rgba(230, 237, 243, 0.38)", width: 1, style: 3, labelVisible: true },
-      horzLine: { color: "rgba(230, 237, 243, 0.38)", width: 1, style: 3, labelVisible: true },
+      vertLine: { color: "rgba(18, 32, 51, 0.32)", width: 1, style: 3, labelVisible: true },
+      horzLine: { color: "rgba(18, 32, 51, 0.32)", width: 1, style: 3, labelVisible: true },
     },
     rightPriceScale: {
-      borderColor: "rgba(148, 163, 184, 0.18)",
+      borderColor: "rgba(20, 42, 71, 0.16)",
     },
     timeScale: {
-      borderColor: "rgba(148, 163, 184, 0.18)",
+      borderColor: "rgba(20, 42, 71, 0.16)",
       rightOffset: 12,
       barSpacing: 7,
       fixLeftEdge: false,
@@ -347,7 +349,7 @@ function chartOptions(container) {
 function updateCrosshairReadout(param, readoutId, series, rows) {
   const readout = document.getElementById(readoutId);
   if (!param.time || !param.seriesData || !param.seriesData.has(series)) {
-    readout.textContent = readoutId === "ihsgReadout" ? "Hover over the IHSG chart for OHLCV" : "Hover over the stock chart for OHLCV";
+    renderLatestReadout(readoutId, rows);
     return;
   }
   const value = param.seriesData.get(series);
@@ -358,6 +360,23 @@ function updateCrosshairReadout(param, readoutId, series, rows) {
     `L ${formatNumber(value.low)}`,
     `C ${formatNumber(value.close)}`,
     `V ${formatNumber(candle?.volume)}`,
+  ].join("  ");
+}
+
+function renderLatestReadout(readoutId, rows) {
+  const readout = document.getElementById(readoutId);
+  const latest = rows?.at(-1);
+  if (!readout || !latest) {
+    readout.textContent = readoutId === "ihsgReadout" ? "Data unavailable: IHSG OHLCV" : "Data unavailable: stock OHLCV";
+    return;
+  }
+  readout.textContent = [
+    `Latest ${latest.date?.slice?.(0, 10) || "n/a"}`,
+    `O ${formatNumber(latest.open)}`,
+    `H ${formatNumber(latest.high)}`,
+    `L ${formatNumber(latest.low)}`,
+    `C ${formatNumber(latest.close)}`,
+    `V ${formatNumber(latest.volume)}`,
   ].join("  ");
 }
 

@@ -70,24 +70,40 @@ class FullscreenChartWorkspace {
               <span id="fsLastPrice">n/a</span>
               <span id="fsDailyChange" class="neutral">n/a</span>
             </div>
-            <div class="fs-range-tabs" id="fsRangeTabs" aria-label="Fullscreen chart time range">
-              ${RANGES.map((range) => `<button type="button" data-range="${range}">${range}</button>`).join("")}
+            <div class="fs-range-tabs fs-toolbar-group" id="fsRangeTabs" aria-label="Fullscreen chart time range">
+              <span class="fs-toolbar-label">Timeframe</span>
+              <div class="fs-button-row">
+                ${RANGES.map((range) => `<button type="button" data-range="${range}">${range}</button>`).join("")}
+              </div>
             </div>
             <div class="fs-chart-controls" aria-label="Chart controls">
-              <button type="button" data-control="volume" class="active">Volume</button>
-              <button type="button" data-control="sma20" class="active">SMA 20</button>
-              <button type="button" data-control="sma50" class="active">SMA 50</button>
-              <button type="button" data-control="prediction" class="active">Prediction</button>
-              <button type="button" data-control="news" class="active">News</button>
-              <button type="button" data-action="fit">Fit</button>
-              <button type="button" data-action="reset">Reset Zoom</button>
+              <div class="fs-toolbar-group">
+                <span class="fs-toolbar-label">Overlays</span>
+                <div class="fs-button-row">
+                  <button type="button" data-control="volume" class="active">Volume</button>
+                  <button type="button" data-control="sma20" class="active">SMA 20</button>
+                  <button type="button" data-control="sma50" class="active">SMA 50</button>
+                  <button type="button" data-control="prediction" class="active">Prediction</button>
+                  <button type="button" data-control="news" class="active">News</button>
+                </div>
+              </div>
+              <div class="fs-toolbar-group">
+                <span class="fs-toolbar-label">Controls</span>
+                <div class="fs-button-row">
+                  <button type="button" data-action="fit">Fit</button>
+                  <button type="button" data-action="reset">Reset Zoom</button>
+                  <button type="button" data-action="undo">Undo</button>
+                  <button type="button" data-action="redo">Redo</button>
+                </div>
+              </div>
             </div>
-            <div class="fs-persist-controls">
-              <button type="button" data-action="undo">Undo</button>
-              <button type="button" data-action="redo">Redo</button>
-              <button type="button" data-action="save">Save Drawing</button>
-              <button type="button" data-action="clear">Clear Drawings</button>
-              <button type="button" class="fs-close-button" id="closeFullscreenChart" aria-label="Close fullscreen chart">Close</button>
+            <div class="fs-persist-controls fs-toolbar-group">
+              <span class="fs-toolbar-label">Drawing</span>
+              <div class="fs-button-row">
+                <button type="button" data-action="save">Save Drawing</button>
+                <button type="button" data-action="clear">Clear Drawings</button>
+                <button type="button" class="fs-close-button" id="closeFullscreenChart" aria-label="Close fullscreen chart">Close</button>
+              </div>
             </div>
           </header>
 
@@ -138,7 +154,7 @@ class FullscreenChartWorkspace {
               <div class="fs-side-details">
                 <section>
                   <span>OHLC</span>
-                  <strong id="fsOhlcDetails">Hover chart for candle details.</strong>
+                  <strong id="fsOhlcDetails">Loading latest candle...</strong>
                 </section>
                 <section>
                   <span>Prediction</span>
@@ -343,21 +359,21 @@ class FullscreenChartWorkspace {
       autoSize: true,
       layout: {
         background: { color: "transparent" },
-        textColor: "#9fb0aa",
+        textColor: "#607086",
         fontFamily: "Inter, sans-serif",
       },
       grid: {
-        vertLines: { color: "rgba(148, 163, 184, 0.09)" },
-        horzLines: { color: "rgba(148, 163, 184, 0.1)" },
+        vertLines: { color: "rgba(20, 42, 71, 0.08)" },
+        horzLines: { color: "rgba(20, 42, 71, 0.1)" },
       },
       crosshair: {
         mode: window.LightweightCharts.CrosshairMode.Normal,
-        vertLine: { color: "rgba(237, 244, 241, 0.42)", width: 1, style: 3, labelVisible: true },
-        horzLine: { color: "rgba(237, 244, 241, 0.42)", width: 1, style: 3, labelVisible: true },
+        vertLine: { color: "rgba(18, 32, 51, 0.32)", width: 1, style: 3, labelVisible: true },
+        horzLine: { color: "rgba(18, 32, 51, 0.32)", width: 1, style: 3, labelVisible: true },
       },
-      rightPriceScale: { borderColor: "rgba(148, 163, 184, 0.24)" },
+      rightPriceScale: { borderColor: "rgba(20, 42, 71, 0.16)" },
       timeScale: {
-        borderColor: "rgba(148, 163, 184, 0.24)",
+        borderColor: "rgba(20, 42, 71, 0.16)",
         rightOffset: 12,
         barSpacing: 8,
         lockVisibleTimeRangeOnResize: true,
@@ -405,7 +421,7 @@ class FullscreenChartWorkspace {
 
   renderChartData() {
     if (!this.candles.length) {
-      this.showEmpty(`Chart ${this.currentTicker} kosong. Pastikan artifact harga sudah tersedia.`);
+      this.showEmpty(`Data unavailable: chart ${this.currentTicker} kosong. Pastikan artifact harga sudah tersedia.`);
       return;
     }
     this.hideEmpty();
@@ -415,6 +431,7 @@ class FullscreenChartWorkspace {
     this.sma50Series.setData(this.showSma50 ? movingAverage(this.candles, 50) : []);
     this.chart.timeScale().fitContent();
     this.drawingLayer?.updateCandles(this.candles);
+    this.updateLatestOhlcDetails();
   }
 
   renderMarkers() {
@@ -468,7 +485,7 @@ class FullscreenChartWorkspace {
     const detailNode = document.getElementById("fsOhlcDetails");
     if (!param.time || !param.seriesData || !param.seriesData.has(this.candleSeries)) {
       this.tooltipNode.classList.add("hidden");
-      if (detailNode) detailNode.textContent = "Hover chart for candle details.";
+      this.updateLatestOhlcDetails();
       return;
     }
     const value = param.seriesData.get(this.candleSeries);
@@ -520,7 +537,7 @@ class FullscreenChartWorkspace {
   renderWatchlist() {
     if (!this.watchlistNode) return;
     if (!this.stocks.length) {
-      this.watchlistStatusNode.textContent = "Stock watchlist belum tersedia. Pastikan data prices/predictions sudah digenerate.";
+      this.watchlistStatusNode.textContent = "Data unavailable: stock watchlist belum tersedia. Pastikan data prices/predictions sudah digenerate.";
       this.watchlistNode.innerHTML = "";
       return;
     }
@@ -682,14 +699,32 @@ class FullscreenChartWorkspace {
     const sentimentNode = document.getElementById("fsSentimentDetails");
     const newsNode = document.getElementById("fsNewsDetails");
     if (this.prediction?.status === "ok") {
-      predictionNode.textContent = `${directionLabel(this.prediction)} | return ${formatPercent(this.prediction.predicted_return)} | confidence ${formatPercent(this.prediction.confidence)}`;
+      predictionNode.innerHTML = structuredPredictionDetails(this.prediction);
     } else {
-      predictionNode.textContent = this.prediction?.message || "Prediction belum tersedia.";
+      predictionNode.textContent = this.prediction?.message || "Data unavailable: prediction belum tersedia.";
     }
-    sentimentNode.textContent = this.nlpSummary?.summary_text || "NLP summary belum tersedia.";
+    sentimentNode.textContent = this.nlpSummary?.summary_text || "Data unavailable: NLP summary belum tersedia.";
+    sentimentNode.className = signedClass(this.nlpSummary?.sentiment_mean);
     newsNode.textContent = this.newsRows.length
       ? `${this.newsRows.length} recent news rows. Latest: ${this.newsRows[0]?.title || this.newsRows[0]?.source || "headline"}`
-      : "News marker belum tersedia untuk ticker ini.";
+      : "Data unavailable: news marker belum tersedia untuk ticker ini.";
+  }
+
+  updateLatestOhlcDetails() {
+    const detailNode = document.getElementById("fsOhlcDetails");
+    const latest = this.candles.at(-1);
+    const previous = this.candles.at(-2);
+    if (!detailNode || !latest) return;
+    const change = previous?.close ? latest.close / previous.close - 1 : null;
+    detailNode.textContent = [
+      `Latest ${dateLabel(latest.time)}`,
+      `O ${formatNumber(latest.open)}`,
+      `H ${formatNumber(latest.high)}`,
+      `L ${formatNumber(latest.low)}`,
+      `C ${formatNumber(latest.close)}`,
+      `V ${formatNumber(latest.volume)}`,
+      formatPercent(change),
+    ].join("  ");
   }
 
   updateRangeButtons() {
@@ -788,6 +823,23 @@ function directionLabel(prediction) {
   if (Number(prediction?.predicted_return) > 0) return "UP";
   if (Number(prediction?.predicted_return) < 0) return "DOWN";
   return "NEUTRAL";
+}
+
+function structuredPredictionDetails(prediction) {
+  const direction = directionLabel(prediction);
+  const className = direction === "UP" ? "up" : direction === "DOWN" ? "down" : "neutral";
+  const confidence = Math.min(100, Math.max(0, Number(prediction.confidence || 0) * 100));
+  const icon = direction === "UP" ? "▲" : direction === "DOWN" ? "▼" : "-";
+  return `
+    <span class="fs-prediction-layout">
+      <span class="prediction-badge ${className}">${icon} ${direction}</span>
+      <span>Return ${formatPercent(prediction.predicted_return)}</span>
+      <span class="fs-confidence-mini" aria-label="Confidence ${formatPercent(prediction.confidence)}">
+        <i style="width: ${confidence}%"></i>
+      </span>
+      <span>Confidence ${formatPercent(prediction.confidence)}</span>
+    </span>
+  `;
 }
 
 function dateLabel(value) {

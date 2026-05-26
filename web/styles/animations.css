@@ -42,8 +42,8 @@
 .skeleton {
   animation: shimmer 1.25s linear infinite;
   background:
-    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent),
-    rgba(255, 255, 255, 0.045);
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.74), transparent),
+    #e8eef6;
   background-size: 420px 100%;
   border-radius: 8px;
 }
@@ -63,7 +63,7 @@
 .loading-overlay {
   align-items: center;
   backdrop-filter: blur(4px);
-  background: rgba(7, 16, 20, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   border-radius: 10px;
   bottom: 0;
   color: var(--muted);
@@ -79,9 +79,9 @@
 
 .spinner {
   animation: spin 760ms linear infinite;
-  border: 2px solid rgba(255, 255, 255, 0.18);
+  border: 2px solid rgba(22, 119, 210, 0.18);
   border-radius: 50%;
-  border-top-color: var(--green);
+  border-top-color: var(--blue);
   height: 22px;
   width: 22px;
 }
@@ -97,7 +97,7 @@
 
 .toast {
   animation: toast-in 200ms ease both;
-  background: rgba(12, 22, 28, 0.96);
+  background: #ffffff;
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   box-shadow: var(--shadow);
