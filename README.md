@@ -1,5 +1,5 @@
 ---
-title: IHSG Forecasting Dashboard
+title: Indonesian Stock Prediction Dashboard for 100 IDX Stocks
 emoji: 📈
 colorFrom: blue
 colorTo: indigo
@@ -8,10 +8,9 @@ app_port: 7860
 pinned: false
 ---
 
-# IHSG Forecasting Dashboard
+# Indonesian Stock Prediction Dashboard for 100 IDX Stocks
 
-A public portfolio dashboard for Indonesian stock forecasting.  
-The project combines historical market data, technical indicators, news sentiment, NLP features, and a single global machine learning model to support short-horizon stock movement analysis.
+An interactive forecasting dashboard that ranks predicted upside and downside signals across 100 Indonesian stocks using technical indicators and machine learning artifacts.
 
 > This project is for educational and portfolio purposes only. It is not financial advice.
 
